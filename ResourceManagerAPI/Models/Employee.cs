@@ -1,17 +1,40 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResourceManagerAPI.Models
 {
-    [Table("employee")]
+    [Table("employees")]
     public partial class Employee
     {
-        public int ID { get; set; }
-        public string name { get; set; }
-        public string email_address { get; set; }
-        public string task_name { get; set; }
-        public string start { get; set; }
-        public string finish { get; set; }
+        [Key]
+        public int EmpID { get; set; }
+        public string ResourceName { get; set; }
+        public string EmailID { get; set; }
     }
+
+    public partial class EmployeeTasks
+    {
+        [Key]
+        public int EmpID { get; set; }
+        public string TaskName { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime Finish { get; set; }
+        
+    }
+
+    public partial class EmployeeManager
+    {
+        public int EmpID { get; set; }
+        public string EmailID { get; set; }
+        public string ResourceName { get; set; }
+        public string TaskName { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime Finish { get; set; }
+
+    }
+
 }

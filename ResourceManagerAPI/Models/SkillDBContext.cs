@@ -14,32 +14,32 @@ namespace ResourceManagerAPI.Models
         {
         }
 
-        public virtual DbSet<Skill> skill { get; set; } = null!;
+        public virtual DbSet<Skills> skill { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Skill>(entity =>
+            modelBuilder.Entity<Skills>(entity =>
             {
 
-                entity.Property(e => e.resource_name)
+                entity.Property(e => e.ResourceName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.email_id)
+                entity.Property(e => e.EmailID)
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
                 //  entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-                entity.Property(e => e.skill_group)
+                entity.Property(e => e.SkillGroup)
                       .HasMaxLength(250)
                       .IsUnicode(false);
-                entity.Property(e => e.skill)
+                entity.Property(e => e.Skill)
                     .HasMaxLength(250)
                     .IsUnicode(false);
-                entity.Property(e => e.master_resource_uid)
+                entity.Property(e => e.MasterResourceUID)
                     .HasMaxLength(250)
                     .IsUnicode(false);
-                entity.Property(e => e.skill_set_uid)
+                entity.Property(e => e.SkillSetUID)
                    .HasMaxLength(250)
                    .IsUnicode(false);
             });

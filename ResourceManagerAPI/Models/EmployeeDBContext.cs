@@ -11,31 +11,33 @@ namespace ResourceManagerAPI.Models
         public EmployeeDBContext(DbContextOptions<EmployeeDBContext> options)
             : base(options)
         {
+
         }
 
         public virtual DbSet<Employee> employee { get; set; } = null!;
+        public virtual DbSet<Skills> skill { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>(entity =>
             {
 
-                entity.Property(e => e.name)
+                entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.email_address)
+                entity.Property(e => e.EmailAddress)
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
                 //  entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-                entity.Property(e => e.task_name)
+                entity.Property(e => e.TaskName)
                       .HasMaxLength(250)
                       .IsUnicode(false);
-                entity.Property(e => e.start)
+                entity.Property(e => e.Start)
                     .HasMaxLength(250)
                     .IsUnicode(false);
-                entity.Property(e => e.finish)
+                entity.Property(e => e.Finish)
                     .HasMaxLength(250)
                     .IsUnicode(false);
             });
@@ -44,5 +46,10 @@ namespace ResourceManagerAPI.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public static implicit operator List<object>(EmployeeDBContext v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

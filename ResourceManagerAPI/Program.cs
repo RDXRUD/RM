@@ -1,16 +1,29 @@
 using ResourceManagerAPI.Models;
+using ResourceManagerAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ResourceManagerAPI.IRepository;
+using ResourceManagerAPI.Repository;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 
+builder.Services.AddCors(options =>   //Enabling cors policy
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost4200")
+                                                  .AllowAnyHeader()
+                                                  .AllowAnyMethod();
+                      });
+});
 var connectionString = builder.Configuration.GetConnectionString("EmployeeDB");
+builder.Services.AddDbContextPool<PGDBContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Ef_Postgres_Db")));
 //builder.Services.AddDbContextPool<EmployeeDBContext>(option =>
-//option.UsePostgreSqlServer(connectionString)
-builder.Services.AddDbContextPool<EmployeeDBContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Ef_Postgres_Db")));
-
 // Add services to the container.
-
+builder.Services.AddTransient<IAccount, Account>();
+builder.Services.AddTransient<IFileUpload, FileUpload>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,6 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 

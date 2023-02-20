@@ -2,125 +2,73 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
-using loggerservice;
+using ResourceManagerAPI.DBContext;
+using ResourceManagerAPI;
+using System;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.AspNetCore.Http;
+
 namespace ResourceManagerAPI.Controllers
 {
 
     [Route("api/[controller]")]
-    //[Route("api/[controller]/[action]")]
+    // [Route("api/[controller]/[action]")]
     [ApiController]
     public class FiltersController : Controller
     {
-        private readonly EmployeeDBContext _context;
-        public FiltersController(EmployeeDBContext context)
+
+        private readonly PGDBContext _dbContext;
+
+        public FiltersController(PGDBContext empContext)
         {
-            _context = context;
+            _dbContext = empContext;
         }
 
-       
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        [HttpPost, Route("GetFilteredEmployees")]
+        public List<EmployeeManager> GetFilteredEmployees(FilterViewModel filter)
         {
-            var employees = await _context.employee.FindAsync(id);
+            var tempemployee = from e in _dbContext.employees
+                               join et in _dbContext.employeetasks
+                           on e.EmpID equals et.EmpID
+                               select new EmployeeManager
+                               {
+                                   EmpID = e.EmpID,
+                                   ResourceName = e.ResourceName,
+                                   EmailID = e.EmailID,
+                                   TaskName = et.TaskName,
+                                   Start = et.Start,
+                                   Finish = et.Finish
+                               };
 
-            if (employees == null)
-            {
-                return NotFound();
-            }
-            return employees;
+
+            var tempskill = from s in _dbContext.skills
+                            join es in _dbContext.employeeskills
+                         on s.ID equals es.ID
+                            select new SkillManager
+                            {
+                                ID = s.ID,
+                                SkillID = s.SkillID,
+                                EmailID = es.EmailID,
+                                SkillGroup = s.SkillGroup,
+                                Skill = s.Skill
+                            };
+
+
+            var employee = tempemployee.Where(e => tempskill.Any(s => (s.EmailID == e.EmailID)  &&
+    ((filter.Skill != "" && s.Skill == filter.Skill) || (filter.Skill == "")) &&
+    ((filter.SkillGroup != "" && s.SkillGroup == filter.SkillGroup) || (filter.SkillGroup == "")) &&
+    ((filter.EmpID != 0 && e.EmpID == filter.EmpID) || (filter.EmpID == 0))) &&
+    ((filter.Name != "" && e.ResourceName == filter.Name) || (filter.Name == "")) &&
+    ((filter.EmailAddress != "" && e.EmailID == filter.EmailAddress) || (filter.EmailAddress == "")) &&
+    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) &&
+    (((filter.AssignedFrom.ToString() != "" && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || filter.AssignedFrom.ToString() == "")) &&
+    (((filter.AvailableFrom.ToString() != "" && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || filter.AvailableFrom.ToString() == ""))
+    ).ToList();
+
+            return employee;
         }
-
-
-        [HttpGet, Route("GetEmployeeByname")]
-        public List<Employee> GetEmployeeByname(string name)
-        {
-            var employees = (from e in _context.employee
-                             where e.name.ToLower() == name.ToLower()
-                             select e).ToList();
-
-
-
-            return employees;
-        }
-
-        [HttpGet, Route("GetEmployeeByEmail")]
-        public List<Employee> GetEmployeeByEmail(string email)
-        {
-            var employees = (from e in _context.employee
-                             where e.email_address.ToLower() == email.ToLower()
-                             select e).ToList();
-
-
-
-            return employees;
-        }
-
-        [HttpGet, Route("GetEmployeeByTaskName")]
-        public List<Employee> GetEmployeeByTaskName(string task)
-        {
-            var employees = (from e in _context.employee
-                             where e.task_name.ToLower() == task.ToLower()
-                             select e).ToList();
-
-
-
-            return employees;
-        }
-
-        [HttpGet, Route("GetEmployeeByStartDate")]
-        public List<Employee> GetEmployeeByStartDate(string Start)
-        {
-            var employees = (from e in _context.employee
-                             where e.start.ToLower() == Start.ToLower()
-                             select e).ToList();
-
-
-
-            return employees;
-        }
-
-        [HttpGet, Route("GetEmployeeByFinishDate")]
-        public List<Employee> GetEmployeeByFinishDate(string Finish)
-        {
-            var employees = (from e in _context.employee
-                             where e.finish.ToLower() == Finish.ToLower()
-                             select e).ToList();
-
-
-
-            return employees;
-        }
-        private readonly SkillDBContext __context;
-        //public FiltersController(SkillDBContext context)
-        //{
-        //    __context = context;
-        //}
-
-        [HttpGet, Route("GetEmployeeBySkillGroup")]
-        public List<Skill> GetEmployeeBySkillGroup(string SkillGroup)
-        {
-            var employees = (from m in __context.skill
-                             where m.skill_group.ToLower() == SkillGroup.ToLower()
-                             select m).ToList();
-
-
-
-            return employees;
-        }
-
-        [HttpGet, Route("GetEmployeeBySkillName")]
-        public List<Skill> GetEmployeeBySkillName(string SkillName)
-        {
-            var employees = (from m in __context.skill
-                             where m.skill.ToLower() == SkillName.ToLower()
-                             select m).ToList();
-
-
-
-            return employees;
-        }
-
 
     }
 }
+
+
