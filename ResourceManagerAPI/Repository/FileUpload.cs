@@ -32,7 +32,7 @@ namespace ResourceManagerAPI.Repository
 
         public void GetData(IFormFile file,string UserName)
         {
-            NpgsqlConnection con = new NpgsqlConnection(@"Server=localhost;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
+            NpgsqlConnection con = new NpgsqlConnection(@"Server=3.109.133.225;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
             MPPReader reader = new MPPReader();
             
             string fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_{Path.GetRandomFileName()}";
@@ -148,7 +148,7 @@ namespace ResourceManagerAPI.Repository
         }
         private static NpgsqlConnection GetConnection()
         {
-            return new NpgsqlConnection(@"Server=localhost;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
+            return new NpgsqlConnection(@"Server=3.109.133.225;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
         }
         private static IEnumerable<Assignment> ToEnumerable(object value)
         {
