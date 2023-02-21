@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ResourceManagerAPI.Models
 {
-    //[Table("skill")]
     public partial class Skills
     {
         [Key]
@@ -15,8 +12,6 @@ namespace ResourceManagerAPI.Models
         public string Skill { get; set; }
 
     }
-
-
     public partial class EmployeeSkills
     {
         [Key]
@@ -33,7 +28,6 @@ namespace ResourceManagerAPI.Models
         public string SkillGroup { get; set; }
         public string Skill { get; set; }
         
-
     }
     public partial class SkillSet
     {

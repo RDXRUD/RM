@@ -1,40 +1,33 @@
-﻿using java.io;
-using java.nio.file;
-using java.util;
-using Microsoft.AspNetCore.Http;
+﻿using java.util;
 using net.sf.mpxj;
 using net.sf.mpxj.mpp;
-using net.sf.mpxj.reader;
-using net.sf.mpxj.writer;
 using Npgsql;
-using org.apache.poi.util;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
-using System;
 using Assignment = net.sf.mpxj.ResourceAssignment;
 using Path = System.IO.Path;
 using Task = net.sf.mpxj.Task;
-using ResourceManagerAPI.Models;
-using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
-using NpgsqlTypes;
 
 namespace ResourceManagerAPI.Repository
 {
     public class FileUpload : IFileUpload
     {
         private readonly PGDBContext _dbContext;
+        private IConfiguration Configuration;
 
-        public FileUpload(PGDBContext connection)
+
+        public FileUpload(PGDBContext connection, IConfiguration configuration)
         {
             _dbContext = connection;
+            Configuration = configuration;
         }
 
 
-        public void GetData(IFormFile file,string UserName)
+        public void GetData(IFormFile file, string UserName)
         {
-            NpgsqlConnection con = new NpgsqlConnection(@"Server=3.109.133.225;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
+            NpgsqlConnection con = new NpgsqlConnection(this.Configuration.GetSection("ConnectionStrings")["Ef_Postgres_Db"]);
             MPPReader reader = new MPPReader();
-            
+
             string fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_{Path.GetRandomFileName()}";
             string fileExtension = Path.GetExtension(file.FileName);
             string filePath = Path.Combine("FileHolder", fileName + fileExtension);
@@ -45,7 +38,7 @@ namespace ResourceManagerAPI.Repository
             ProjectFile projectObj = reader.read(filePath);
             string FileNameDB = fileName + fileExtension;
             AddUploadRecordToDb(UserName, FileNameDB, con);
-            
+
             using (var cmdd = new NpgsqlCommand("delete from employees", con))
             {
                 con.Open();
@@ -60,7 +53,7 @@ namespace ResourceManagerAPI.Repository
                 cmdd.ExecuteNonQuery();
                 con.Close();
             }
-            
+
             List<ProjectData> tempResourceList = new List<ProjectData>();
             var id = 0;
             foreach (Task task in ToEnumerable(projectObj.getTasks()))
@@ -107,7 +100,8 @@ namespace ResourceManagerAPI.Repository
                             }
                         }
 
-                        using (var cmd = new NpgsqlCommand("insert into employeetasks(EmpID, TaskName, Start, Finish)Values(" + (empId != 0 ? empId : "null") + ", " + (!string.IsNullOrEmpty(taskName) ? ("'" + taskName + "'") : "null") + ", " + (start is not null ? ("'" + start + "'") : "null") + ", " + (finish is not null ? ("'" + finish + "'") : "null") + " ) ", con))
+
+                        using (var cmd = new NpgsqlCommand("insert into employeetasks(\"EmpID\", \"TaskName\", \"Start\", \"Finish\")Values(" + (empId != 0 ? empId : "null") + ", " + (!string.IsNullOrEmpty(taskName) ? ("'" + taskName + "'") : "null") + ", " + (start is not null ? ("'" + start + "'") : "null") + ", " + (finish is not null ? ("'" + finish + "'") : "null") + " ) ", con))
                         {
                             con.Open();
 
@@ -119,14 +113,14 @@ namespace ResourceManagerAPI.Repository
                     }
                 }
             }
-            
+
 
         }
 
 
         private static void AddEmployeeToDb(ProjectData projectData, NpgsqlConnection con)
         {
-            using (var cmd = new NpgsqlCommand("insert into employees(EmpID,ResourceName, EmailID)Values(" + (projectData.Id != 0 ? ("'" + projectData.Id + "'") : "null") + ", " + (projectData.Name != "" ? ("'" + projectData.Name + "'") : "null") + ", " + (projectData.Email != "" ? ("'" + projectData.Email + "'") : "null") + " ) ", con))
+            using (var cmd = new NpgsqlCommand("insert into employees(\"EmpID\",\"ResourceName\", \"EmailID\")Values(" + (projectData.Id != 0 ? ("" + projectData.Id + "") : "null") + ", " + (projectData.Name != "" ? ("'" + projectData.Name + "'") : "null") + ", " + (projectData.Email != "" ? ("'" + projectData.Email + "'") : "null") + " ) ", con))
             {
                 con.Open();
 
@@ -135,24 +129,16 @@ namespace ResourceManagerAPI.Repository
 
             }
         }
-        public void AddUploadRecordToDb(string UserName,string FileNameDB, NpgsqlConnection con)
+        public void AddUploadRecordToDb(string UserName, string FileNameDB, NpgsqlConnection con)
         {
-            using (var cmd = new NpgsqlCommand("insert into uploadrecord(UserName,FileName)Values(" + (UserName != "" ? ("'" + UserName + "'") : "null") + ", " + (FileNameDB != "" ? ("'" + FileNameDB + "'") : "null") + " ) ", con))
+            using (var cmd = new NpgsqlCommand("insert into uploadrecord(\"UserName\",\"FileName\")Values(" + (UserName != "" ? ("'" + UserName + "'") : "null") + ", " + (FileNameDB != "" ? ("'" + FileNameDB + "'") : "null") + " ) ", con))
             {
                 con.Open();
-                
+
                 cmd.ExecuteNonQuery();
                 con.Close();
 
             }
-        }
-        private static NpgsqlConnection GetConnection()
-        {
-            return new NpgsqlConnection(@"Server=3.109.133.225;Port=5432;User Id=postgres;Password=748096;Database=postgres;");
-        }
-        private static IEnumerable<Assignment> ToEnumerable(object value)
-        {
-            throw new NotImplementedException();
         }
 
         private static EnumerableCollection ToEnumerable(Collection javaCollection)

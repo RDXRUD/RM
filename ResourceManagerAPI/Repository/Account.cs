@@ -87,16 +87,6 @@ namespace ResourceManagerAPI.Repository
             return cipherText;
         }
 
-        //void GetData(IFormFile files)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public string GetData(IFormFile files)
-        //{
-        //    return "Data Updated Successfully";
-        //}
-       
     }
 
 }

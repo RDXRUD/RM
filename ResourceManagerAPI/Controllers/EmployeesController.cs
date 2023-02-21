@@ -16,7 +16,6 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-
         [HttpGet]
         public async Task<IEnumerable<Employee>> Get()
         {

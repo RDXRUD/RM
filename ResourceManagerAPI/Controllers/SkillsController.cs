@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
-using jdk.nashorn.tools;
-
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -45,7 +42,6 @@ namespace ResourceManagerAPI.Controllers
 
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Put(SkillManager skill)
         {
@@ -63,7 +59,6 @@ namespace ResourceManagerAPI.Controllers
                               SkillGroup = e.SkillGroup,
                               Skill = e.Skill
                           }
-
                             ).ToList();
             _dbContext.Add(skill);
             await _dbContext.SaveChangesAsync();
@@ -71,46 +66,27 @@ namespace ResourceManagerAPI.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Post(Skills skill)
-        //{
-        //    _dbContext.Add(skill);
-        //    await _dbContext.SaveChangesAsync();
-        //    return Ok();
-        //}
-        //[HttpPut]
-        //public async Task<IActionResult> Put(Skills skillData)
-        //{
-        //    if (skillData == null || skillData.EmpID == 0)
-        //        return BadRequest();
+        [HttpGet, Route("GetSkill")]
+        public List<SkillManager> GetEmployeesSkill()
+        {
 
-        //    var skill = await _dbContext.Skills.FindAsync(skillData.ID);
-        //    if (skill == null)
-        //        return NotFound();
-        //    skill.ResourceName = skillData.ResourceName;
-        //    skill.EmailID = skillData.EmailID;
-        //    skill.SkillGroup = skillData.SkillGroup;
-        //    skill.Skill = skillData.Skill;
-        //    skill.MasterResourceUID = skillData.MasterResourceUID;
-        //    skill.SkillSetUID = skillData.SkillSetUID;
-        //    await _dbContext.SaveChangesAsync();
-        //    return Ok();
-        //}
+            var allskill = from s in _dbContext.skills
+                            join es in _dbContext.employeeskills
+                         on s.ID equals es.ID
+                            select new SkillManager
+                            {
+                                ID = s.ID,
+                                SkillID = s.SkillID,
+                                EmailID = es.EmailID,
+                                SkillGroup = s.SkillGroup,
+                                Skill = s.Skill
+                            };
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    if (id < 1)
-        //        return BadRequest();
-        //    var skill = await _context.skills.FindAsync(id);
-        //    if (skill == null)
-        //        return NotFound();
-        //    _context.skills.Remove(skill);
-        //    await _context.SaveChangesAsync();
-        //    return Ok();
+            var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID)) 
+            ).ToList();
 
-        //}
-
+            return employee;
+        }
 
     }
 }

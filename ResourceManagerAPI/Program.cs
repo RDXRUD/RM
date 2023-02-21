@@ -1,4 +1,3 @@
-using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.IRepository;
@@ -21,7 +20,6 @@ builder.Services.AddCors(options =>   //Enabling cors policy
 });
 var connectionString = builder.Configuration.GetConnectionString("EmployeeDB");
 builder.Services.AddDbContextPool<PGDBContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Ef_Postgres_Db")));
-//builder.Services.AddDbContextPool<EmployeeDBContext>(option =>
 // Add services to the container.
 builder.Services.AddTransient<IAccount, Account>();
 builder.Services.AddTransient<IFileUpload, FileUpload>();
@@ -31,7 +29,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

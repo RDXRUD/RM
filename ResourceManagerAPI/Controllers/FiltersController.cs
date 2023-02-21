@@ -1,18 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
-using ResourceManagerAPI;
-using System;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.AspNetCore.Http;
 
 namespace ResourceManagerAPI.Controllers
 {
 
     [Route("api/[controller]")]
-    // [Route("api/[controller]/[action]")]
     [ApiController]
     public class FiltersController : Controller
     {
@@ -56,13 +50,12 @@ namespace ResourceManagerAPI.Controllers
 
             var employee = tempemployee.Where(e => tempskill.Any(s => (s.EmailID == e.EmailID)  &&
     ((filter.Skill != "" && s.Skill == filter.Skill) || (filter.Skill == "")) &&
-    ((filter.SkillGroup != "" && s.SkillGroup == filter.SkillGroup) || (filter.SkillGroup == "")) &&
     ((filter.EmpID != 0 && e.EmpID == filter.EmpID) || (filter.EmpID == 0))) &&
     ((filter.Name != "" && e.ResourceName == filter.Name) || (filter.Name == "")) &&
     ((filter.EmailAddress != "" && e.EmailID == filter.EmailAddress) || (filter.EmailAddress == "")) &&
-    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) &&
-    (((filter.AssignedFrom.ToString() != "" && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || filter.AssignedFrom.ToString() == "")) &&
-    (((filter.AvailableFrom.ToString() != "" && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || filter.AvailableFrom.ToString() == ""))
+    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) //&&
+    //((filter.AssignedFrom !=null && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
+    //((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
     ).ToList();
 
             return employee;

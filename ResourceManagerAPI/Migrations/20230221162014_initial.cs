@@ -71,6 +71,20 @@ namespace ResourceManagerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "skillset",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SkillGroup = table.Column<string>(type: "text", nullable: false),
+                    Skill = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skillset", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -99,6 +113,9 @@ namespace ResourceManagerAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "skills");
+
+            migrationBuilder.DropTable(
+                name: "skillset");
 
             migrationBuilder.DropTable(
                 name: "users");

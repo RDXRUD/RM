@@ -12,7 +12,7 @@ using ResourceManagerAPI.DBContext;
 namespace ResourceManagerAPI.Migrations
 {
     [DbContext(typeof(PGDBContext))]
-    [Migration("20230215094819_initial")]
+    [Migration("20230221162014_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -87,6 +87,27 @@ namespace ResourceManagerAPI.Migrations
                     b.HasKey("EmpID");
 
                     b.ToTable("employeetasks");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.SkillSet", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Skill")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SkillGroup")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("skillset");
                 });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.Skills", b =>
