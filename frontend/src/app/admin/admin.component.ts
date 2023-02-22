@@ -16,15 +16,14 @@ export class AdminComponent implements OnInit{
     this.employee_Service.getData().subscribe( data =>{
       console.warn(data)
          this.data=data
-    })}
-    getRecord(){
+    })
     this.employee_Service.getDetails().subscribe( datas =>{
       console.warn(datas)
       this.datas=datas
     })
   }
    
-  //  getRecord(name:any){
-  //   alert(name);
-  //  }
+ getRecord(name:any){
+    alert(name);
   }
+}
