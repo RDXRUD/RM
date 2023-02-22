@@ -3,7 +3,6 @@ namespace ResourceManagerAPI.Models
 {
     public class FilterViewModel
     {
-        public int? EmpID { get; set; }
         public string? Name { get; set; }
         public string? EmailID { get; set; }
         public string? TaskName { get; set; }

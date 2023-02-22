@@ -34,7 +34,6 @@ namespace ResourceManagerAPI.Controllers
                                    Finish = et.Finish
                                };
 
-
             var tempskill = from s in _dbContext.skills
                             join es in _dbContext.employeeskills
                          on s.ID equals es.ID
@@ -48,11 +47,10 @@ namespace ResourceManagerAPI.Controllers
                             };
 
             var employee = tempemployee.Where(e => tempskill.Any(s => (s.EmailID == e.EmailID)  &&
-    ((filter.Skill != "" && s.Skill == filter.Skill) || (filter.Skill == "")) &&
-    ((filter.EmpID != 0 && e.EmpID == filter.EmpID) || (filter.EmpID == 0))) &&
-    ((filter.Name != "" && e.ResourceName == filter.Name) || (filter.Name == "")) &&
-    ((filter.EmailID != "" && e.EmailID == filter.EmailID) || (filter.EmailID == "")) &&
-    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) &&
+    ((filter.Skill != null && s.Skill == filter.Skill) || (filter.Skill == null))) &&
+    ((filter.Name != null && e.ResourceName == filter.Name) || (filter.Name == null)) &&
+    ((filter.EmailID != null && e.EmailID == filter.EmailID) || (filter.EmailID == null)) &&
+    ((filter.TaskName != null && e.TaskName == filter.TaskName) || (filter.TaskName == null)) &&
     ((filter.AssignedFrom !=null && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
     ((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
     ).ToList();
