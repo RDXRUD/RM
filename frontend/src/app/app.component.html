@@ -1,14 +1,13 @@
-<html >
-  <body >
-<mat-toolbar color="primary">
-  <span>TEAM TRACKER</span>
-<nav class="navigation">
-    <a routerLink="Home"><mat-icon>home</mat-icon></a>
-    <a routerLink="Admin"><mat-icon>settings</mat-icon> </a>
-</nav>
-</mat-toolbar>
-<router-outlet>
-</router-outlet>
-</body>
-</html>
+<div class="app-container">
+  <mat-toolbar color="primary">
+    <span>Resource Tracker</span>
+    <span class="example-spacer"></span>
+    <nav class="navigation">
+      <button mat-icon-button routerLink="Home"><mat-icon>home</mat-icon></button>
+      <button mat-icon-button routerLink="Admin"><mat-icon>settings</mat-icon></button>
+    </nav>
+  </mat-toolbar>
+  <router-outlet>
+  </router-outlet>
+</div>
 
