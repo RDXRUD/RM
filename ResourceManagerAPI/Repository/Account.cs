@@ -40,7 +40,6 @@ namespace ResourceManagerAPI.Repository
             _conn.SaveChanges();
             return "Record Deleted Successfully";
         }
-
         private string Encrypt(string clearText)
         {
             string encryptionKey = "MAKV2SPBNI99212";

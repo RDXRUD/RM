@@ -47,15 +47,14 @@ namespace ResourceManagerAPI.Controllers
                                 Skill = s.Skill
                             };
 
-
             var employee = tempemployee.Where(e => tempskill.Any(s => (s.EmailID == e.EmailID)  &&
     ((filter.Skill != "" && s.Skill == filter.Skill) || (filter.Skill == "")) &&
     ((filter.EmpID != 0 && e.EmpID == filter.EmpID) || (filter.EmpID == 0))) &&
     ((filter.Name != "" && e.ResourceName == filter.Name) || (filter.Name == "")) &&
     ((filter.EmailAddress != "" && e.EmailID == filter.EmailAddress) || (filter.EmailAddress == "")) &&
-    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) //&&
-    //((filter.AssignedFrom !=null && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
-    //((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
+    ((filter.TaskName != "" && e.TaskName == filter.TaskName) || (filter.TaskName == "")) &&
+    ((filter.AssignedFrom !=null && e.Start>=filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
+    ((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
     ).ToList();
 
             return employee;

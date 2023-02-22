@@ -15,13 +15,11 @@ namespace ResourceManagerAPI.Repository
         private readonly PGDBContext _dbContext;
         private IConfiguration Configuration;
 
-
         public FileUpload(PGDBContext connection, IConfiguration configuration)
         {
             _dbContext = connection;
             Configuration = configuration;
         }
-
 
         public void GetData(IFormFile file, string UserName)
         {
@@ -116,7 +114,6 @@ namespace ResourceManagerAPI.Repository
 
 
         }
-
 
         private static void AddEmployeeToDb(ProjectData projectData, NpgsqlConnection con)
         {
