@@ -7,7 +7,7 @@ namespace ResourceManagerAPI.DBContext
     {
         public PGDBContext(DbContextOptions<PGDBContext> options) : base(options)
         {
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
         public virtual DbSet<EmployeeTasks> employeetasks { get; set; } = null!;
         public virtual DbSet<Employee> employees { get; set; } = null!;

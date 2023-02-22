@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
-using Npgsql;
-using System.IO;
-using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
 using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using System.Security.Cryptography;
