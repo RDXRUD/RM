@@ -1,0 +1,18 @@
+
+  .employeeTable{
+    display:block;
+    height:800px;
+    overflow-y:auto;
+  }
+  // .form-group{
+  //   mat-form-field + mat-form-field +mat-form-field +mat-form-field +mat-form-field +mat-form-field +mat-form-field +mat-form-field  {
+  //     margin-left: 8px;
+  //   }
+  .mat-mdc-form-field-infix {
+    flex: auto;
+    min-width: 0;
+    width: 100px;
+    position: relative;
+    box-sizing: border-box;
+    height: 45px;
+}
