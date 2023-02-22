@@ -18,7 +18,7 @@
         </ng-container>
         <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> DETAILS </th>
-        <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="getRecord()">Get Details</button> </td>
+        <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="getRecord(element.name)">Get Details</button> </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
