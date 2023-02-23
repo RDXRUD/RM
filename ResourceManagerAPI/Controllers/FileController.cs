@@ -16,7 +16,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost]
-        [Route("GetFilIFileUpload")]
+        [Route("GetFileData")]
         public IActionResult GetData(IFormFile file, string UserName)
         {
             _fileupload.GetData(file, UserName);
