@@ -48,12 +48,12 @@ namespace ResourceManagerAPI.Controllers
 
             if (String.IsNullOrEmpty(filter.Skill))
             {
-                var employee = tempemployee.Where(e => tempskill.Any(s => (s.EmailID == e.EmailID || s.EmailID != e.EmailID) &&
-        ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper() == filter.Name.ToUpper()) || String.IsNullOrEmpty(filter.Name))) &&
+                var employee = tempemployee.Where(e =>
+        ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper() == filter.Name.ToUpper()) || String.IsNullOrEmpty(filter.Name)) &&
         ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper() == filter.EmailID.ToUpper()) || (String.IsNullOrEmpty(filter.EmailID))) &&
         ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper() == filter.TaskName.ToUpper()) || (String.IsNullOrEmpty(filter.TaskName))) &&
-        ((filter.AssignedFrom != null && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
-        ((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
+        ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+        ((filter.AvailableFrom.HasValue && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (!filter.AvailableFrom.HasValue && !filter.AvailableTo.HasValue))
         ).ToList();
                 return employee;
             }
@@ -64,8 +64,8 @@ namespace ResourceManagerAPI.Controllers
               ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper() == filter.Name.ToUpper()) || (String.IsNullOrEmpty(filter.Name))) &&
               ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper() == filter.EmailID.ToUpper()) || (String.IsNullOrEmpty(filter.EmailID))) &&
               ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper() == filter.TaskName.ToUpper()) || (String.IsNullOrEmpty(filter.TaskName))) &&
-              ((filter.AssignedFrom != null && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (filter.AssignedFrom == null && filter.AssignedTo == null)) &&
-              ((filter.AvailableFrom != null && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (filter.AvailableFrom == null && filter.AvailableTo == null))
+              ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+              ((filter.AvailableFrom.HasValue && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (!filter.AvailableFrom.HasValue && !filter.AvailableTo.HasValue))
               ).ToList();
                 return employees;
             }

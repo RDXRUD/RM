@@ -66,7 +66,7 @@ namespace ResourceManagerAPI.Controllers
 
         }
 
-        [HttpGet, Route("GetSkill")]
+        [HttpGet, Route("GetSkillDetails")]
         public List<SkillManager> GetEmployeesSkill()
         {
 

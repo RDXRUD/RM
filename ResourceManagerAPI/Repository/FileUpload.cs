@@ -112,7 +112,6 @@ namespace ResourceManagerAPI.Repository
                 }
             }
 
-
         }
 
         private static void AddEmployeeToDb(ProjectData projectData, NpgsqlConnection con)
@@ -137,7 +136,6 @@ namespace ResourceManagerAPI.Repository
 
             }
         }
-
         private static EnumerableCollection ToEnumerable(Collection javaCollection)
         {
             return new EnumerableCollection(javaCollection);
