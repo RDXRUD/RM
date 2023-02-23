@@ -11,12 +11,10 @@ namespace ResourceManagerAPI.Repository
     public class Account : IAccount
     {
         private readonly PGDBContext _conn;
-
         public Account(PGDBContext connection)
         {
             _conn = connection;
         }
-
         public string AddUser(string username, string password)
         {
             Users objUser = new Users();
@@ -54,10 +52,8 @@ namespace ResourceManagerAPI.Repository
                     clearText = Convert.ToBase64String(ms.ToArray());
                 }
             }
-
             return clearText;
         }
-
         private string Decrypt(string cipherText)
         {
             string encryptionKey = "MAKV2SPBNI99212";
@@ -77,10 +73,7 @@ namespace ResourceManagerAPI.Repository
                     cipherText = Encoding.Unicode.GetString(ms.ToArray());
                 }
             }
-
             return cipherText;
         }
-
     }
-
 }

@@ -11,7 +11,5 @@ namespace ResourceManagerAPI.Models
         public DateTime? AvailableFrom { get; set; }
         public DateTime? AvailableTo { get; set; }
         public string? Skill { get; set; }
- 
     }
-
 }

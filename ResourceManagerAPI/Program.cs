@@ -4,9 +4,7 @@ using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Repository;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
 var builder = WebApplication.CreateBuilder(args); 
-
 builder.Services.AddCors(options =>   //Enabling cors policy
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -40,9 +38,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(MyAllowSpecificOrigins);
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

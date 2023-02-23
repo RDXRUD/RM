@@ -15,8 +15,7 @@ namespace ResourceManagerAPI.Models
         public int EmpID { get; set; }
         public string TaskName { get; set; }
         public DateTime Start { get; set; }
-        public DateTime Finish { get; set; }
-        
+        public DateTime Finish { get; set; }   
     }
     public partial class EmployeeManager
     {
@@ -26,7 +25,5 @@ namespace ResourceManagerAPI.Models
         public string TaskName { get; set; }
         public DateTime Start { get; set; }
         public DateTime Finish { get; set; }
-
     }
-
 }

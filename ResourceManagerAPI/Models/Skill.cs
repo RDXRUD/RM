@@ -10,7 +10,6 @@ namespace ResourceManagerAPI.Models
         public int SkillID { get; set; }
         public string SkillGroup { get; set; }
         public string Skill { get; set; }
-
     }
     public partial class EmployeeSkills
     {
@@ -18,7 +17,6 @@ namespace ResourceManagerAPI.Models
         public int ID { get; set; }
         public string EmailID { get; set; }
         public int SkillID { get; set; }
-
     }
     public partial class SkillManager
     {
@@ -26,15 +24,12 @@ namespace ResourceManagerAPI.Models
         public int SkillID { get; set; }
         public string EmailID { get; set; }
         public string SkillGroup { get; set; }
-        public string Skill { get; set; }
-        
+        public string Skill { get; set; } 
     }
     public partial class SkillSet
     {
         public int ID { get; set; }
         public string SkillGroup { get; set; }
         public string Skill { get; set; }
-
     }
-
 }

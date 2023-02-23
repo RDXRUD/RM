@@ -27,6 +27,5 @@ namespace ResourceManagerAPI.Controllers
         {
             return Ok(_account.DeleteUser(username, password));
         }
-
     }
 }

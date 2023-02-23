@@ -16,7 +16,6 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -36,10 +35,7 @@ namespace ResourceManagerAPI.Controllers
                             }
 
                             ).ToList();
-
-
             return Ok(skills);
-
         }
 
         [HttpPost]
@@ -63,7 +59,6 @@ namespace ResourceManagerAPI.Controllers
             _dbContext.Add(skill);
             await _dbContext.SaveChangesAsync();
             return Ok();
-
         }
 
         [HttpGet, Route("GetSkillDetails")]
@@ -84,9 +79,7 @@ namespace ResourceManagerAPI.Controllers
 
             var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID)) 
             ).ToList();
-
             return employee;
         }
-
     }
 }

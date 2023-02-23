@@ -5,14 +5,11 @@ using ResourceManagerAPI.DBContext;
 
 namespace ResourceManagerAPI.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class FiltersController : Controller
     {
-
         private readonly PGDBContext _dbContext;
-
         public FiltersController(PGDBContext empContext)
         {
             _dbContext = empContext;
@@ -69,9 +66,7 @@ namespace ResourceManagerAPI.Controllers
               ).ToList();
                 return employees;
             }
-  
         }
-
     }
 }
 
