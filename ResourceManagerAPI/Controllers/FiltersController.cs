@@ -31,12 +31,13 @@ namespace ResourceManagerAPI.Controllers
                                    Finish = et.Finish
                                };
 
-            var tempskill = from s in _dbContext.skills
-                            join es in _dbContext.employeeskills
-                         on s.ID equals es.ID
+            var tempskill = from es in _dbContext.employeeskills
+                            join s in _dbContext.skills
+                         on es.ResourceID equals s.ResourceID
                             select new SkillManager
                             {
                                 ID = s.ID,
+                                ResourceID= es.ResourceID,
                                 SkillID = s.SkillID,
                                 EmailID = es.EmailID,
                                 SkillGroup = s.SkillGroup,
