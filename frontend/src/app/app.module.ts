@@ -22,6 +22,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTabsModule} from '@angular/material/tabs';
 import { FlexLayoutModule } from "@angular/flex-layout";
+import {MatDialogModule} from '@angular/material/dialog';
+import { NgxMatFileInputModule } from '@angular-material-components/file-input';
 
 // import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
@@ -49,7 +51,9 @@ import { FlexLayoutModule } from "@angular/flex-layout";
    MatToolbarModule,
    MatExpansionModule,
    MatTabsModule,
-   FlexLayoutModule
+   FlexLayoutModule,
+   MatDialogModule,
+   NgxMatFileInputModule
   ],
   providers: [UsersService],
   bootstrap: [AppComponent]

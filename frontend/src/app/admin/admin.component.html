@@ -18,16 +18,15 @@
         </ng-container>
         <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> DETAILS </th>
-        <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="getRecord(element.name)">Get Details</button> </td>
+        <td mat-cell *matCellDef="let element">
+           <button mat-raised-button color="primary" (click)="getSkills()">Get Details</button> </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
       </table>
     </mat-tab>
       <mat-tab label="Add  Skills"> 
-        <h1>
-          ADD SKILLS
-        </h1>
+        
         <table mat-table [dataSource]="datas" class="SkillsTable"> 
           <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>  ID </th>
@@ -41,19 +40,43 @@
           <th mat-header-cell *matHeaderCellDef> SKILL </th>
           <td mat-cell *matCellDef="let user"> {{user.skill}} </td>
          </ng-container>
+         <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef> EDIT </th>
+          <td mat-cell *matCellDef="let element">
+             <button mat-raised-button color="primary" (click)="Edit()">EDIT</button> </td>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef> DELETE </th>
+            <td mat-cell *matCellDef="let element">
+               <button mat-raised-button color="primary" (click)="Delete()">DELETE</button> </td>
+            </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
          </table>
         </mat-tab>
         <mat-tab label="File Uploading"> 
-          <div class="fileUpload">
-                    <h1>UPLOAD THE FILE </h1>
-             User Name:
-              <input type="text">
-              <br>
-              <br>
-              File Upload:
-              <input type="file">
+          <div class="container">
+            <form [formGroup]="forms" (ngSubmit)="OnFile()">
+              <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+                <mat-form-field fxFlex="20">
+                  <mat-label>User Name:-</mat-label>
+                  <input formControlName="UserName" matInput>
+                </mat-form-field>
+                <mat-form-field fxFlex="20">
+                  <ngx-mat-file-input formControlName="file" matInput >
+                  </ngx-mat-file-input>
+                  <mat-icon></mat-icon>
+               </mat-form-field>
+                  <!-- <mat-label>file:-</mat-label>
+                 <input  formControlName="file" placeholder="Choose File" matInput> 
+                </mat-form-field> -->
+                <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnFile">Submit</button>
+                </div>
+                
+                <!-- </div> -->
+                </div>
+              </form>
             </div>
         </mat-tab>
         </mat-tab-group>
