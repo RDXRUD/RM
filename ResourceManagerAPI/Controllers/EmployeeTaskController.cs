@@ -35,10 +35,7 @@ namespace ResourceManagerAPI.Controllers
                             }
 
                             ).ToList();
-
-
             return Ok(employee);
-
         }
     }
 }

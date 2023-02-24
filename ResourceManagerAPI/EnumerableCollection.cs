@@ -9,7 +9,6 @@ namespace ResourceManagerAPI
         {
             m_collection = collection;
         }
-
         public IEnumerator GetEnumerator()
         {
             return new Enumerator(m_collection);
@@ -17,7 +16,6 @@ namespace ResourceManagerAPI
 
         private Collection m_collection;
     }
-
     public class Enumerator : IEnumerator
     {
         public Enumerator(Collection collection)
@@ -25,7 +23,6 @@ namespace ResourceManagerAPI
             m_collection = collection;
             m_iterator = m_collection.iterator();
         }
-
         public object Current
         {
             get
@@ -33,17 +30,14 @@ namespace ResourceManagerAPI
                 return m_iterator.next();
             }
         }
-
         public bool MoveNext()
         {
             return m_iterator.hasNext();
         }
-
         public void Reset()
         {
             m_iterator = m_collection.iterator();
         }
-
         private Collection m_collection;
         private Iterator m_iterator;
     }

@@ -7,7 +7,5 @@ namespace ResourceManagerAPI.IRepository
     {
         string AddUser(string username, string password);
         string DeleteUser(string username, string password);
-
     }
-
 }

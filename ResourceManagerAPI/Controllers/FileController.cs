@@ -22,6 +22,5 @@ namespace ResourceManagerAPI.Controllers
             _fileupload.GetData(file, UserName);
             return Ok();
         }
-
     }
 }

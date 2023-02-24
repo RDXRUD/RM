@@ -45,20 +45,17 @@ namespace ResourceManagerAPI.Migrations
 
             modelBuilder.Entity("ResourceManagerAPI.Models.EmployeeSkills", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("ResourceID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ResourceID"));
 
                     b.Property<string>("EmailID")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SkillID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ID");
+                    b.HasKey("ResourceID");
 
                     b.ToTable("employeeskills");
                 });
@@ -72,10 +69,10 @@ namespace ResourceManagerAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmpID"));
 
                     b.Property<DateTime>("Finish")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("Start")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
@@ -114,6 +111,9 @@ namespace ResourceManagerAPI.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ResourceID")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Skill")
                         .IsRequired()

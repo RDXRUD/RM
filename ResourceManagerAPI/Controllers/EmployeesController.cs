@@ -21,6 +21,5 @@ namespace ResourceManagerAPI.Controllers
         {
             return await _dbContext.employees.ToListAsync();
         }
-
     }
 }
