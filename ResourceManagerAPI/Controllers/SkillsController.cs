@@ -20,27 +20,6 @@ namespace ResourceManagerAPI.Controllers
         public async Task<IActionResult> Get()
         {
             var skills = (from e in _dbContext.employeeskills
-                            join s in _dbContext.skills
-                            on e.ResourceID equals s.ResourceID
-                            into detail
-                            from m in detail.DefaultIfEmpty()
-                            select new SkillManager
-                            {
-                                ID = m.ID,
-                                ResourceID = e.ResourceID,
-                                SkillID = m.SkillID,
-                                EmailID = e.EmailID,
-                                SkillGroup = m.SkillGroup,
-                                Skill = m.Skill
-                            }
-                            ).ToList();
-            return Ok(skills);
-        }
-
-        [HttpPost]
-        public List<SkillManager> Post(SkillManager skill)
-        {
-            var skills = (from e in _dbContext.employeeskills
                           join s in _dbContext.skills
                           on e.ResourceID equals s.ResourceID
                           into detail
@@ -55,7 +34,31 @@ namespace ResourceManagerAPI.Controllers
                               Skill = m.Skill
                           }
                             ).ToList();
-            return skills;
+            return Ok(skills);
+        }
+
+        [HttpPost]
+        public List<SkillManager> Post(SkillManager skill)
+        {
+            var skills = from e in _dbContext.employeeskills
+                         join s in _dbContext.skills
+                         on e.ResourceID equals s.ResourceID
+                         into detail
+                         from m in detail.DefaultIfEmpty()
+                         select new SkillManager
+                         {
+                             ID = m.ID,
+                             ResourceID = e.ResourceID,
+                             SkillID = m.SkillID,
+                             EmailID = e.EmailID,
+                             SkillGroup = m.SkillGroup,
+                             Skill = m.Skill
+                         };
+
+            var employeeskills = skills.Where(e =>
+    ((!String.IsNullOrEmpty(skill.EmailID) && e.EmailID.ToUpper() == skill.EmailID.ToUpper()) || String.IsNullOrEmpty(skill.EmailID))
+    ).ToList();
+            return employeeskills;
         }
 
         [HttpGet, Route("GetSkillDetails")]
@@ -63,18 +66,18 @@ namespace ResourceManagerAPI.Controllers
         {
 
             var allskill = from es in _dbContext.employeeskills
-                            join s in _dbContext.skills
-                         on es.ResourceID equals s.ResourceID
-                            select new SkillManager
-                            {
-                                ID = s.ID,
-                                ResourceID = es.ResourceID,
-                                SkillID = s.SkillID,
-                                EmailID = es.EmailID,
-                                SkillGroup = s.SkillGroup,
-                                Skill = s.Skill
-                            };
-            var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID)) 
+                           join s in _dbContext.skills
+                        on es.ResourceID equals s.ResourceID
+                           select new SkillManager
+                           {
+                               ID = s.ID,
+                               ResourceID = es.ResourceID,
+                               SkillID = s.SkillID,
+                               EmailID = es.EmailID,
+                               SkillGroup = s.SkillGroup,
+                               Skill = s.Skill
+                           };
+            var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID))
             ).ToList();
             return employee;
         }
