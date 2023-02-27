@@ -36,7 +36,6 @@ namespace ResourceManagerAPI.Controllers
                          on es.ResourceID equals s.ResourceID
                             select new SkillManager
                             {
-                                ID = s.ID,
                                 ResourceID= es.ResourceID,
                                 SkillID = s.SkillID,
                                 EmailID = es.EmailID,
