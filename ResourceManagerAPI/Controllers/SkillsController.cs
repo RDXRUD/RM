@@ -38,7 +38,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Put(SkillManager skill)
+        public List<SkillManager> Post(SkillManager skill)
         {
             var skills = (from e in _dbContext.employeeskills
                           join s in _dbContext.skills
@@ -55,9 +55,7 @@ namespace ResourceManagerAPI.Controllers
                               Skill = m.Skill
                           }
                             ).ToList();
-            _dbContext.Add(skill);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            return skills;
         }
 
         [HttpGet, Route("GetSkillDetails")]
@@ -79,6 +77,29 @@ namespace ResourceManagerAPI.Controllers
             var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID)) 
             ).ToList();
             return employee;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(SkillManager skill)
+        {
+            var skills = (from e in _dbContext.employeeskills
+                          join s in _dbContext.skills
+                          on e.ResourceID equals s.ResourceID
+                          into detail
+                          from m in detail.DefaultIfEmpty()
+                          select new SkillManager
+                          {
+                              ID = m.ID,
+                              ResourceID = e.ResourceID,
+                              SkillID = m.SkillID,
+                              EmailID = e.EmailID,
+                              SkillGroup = m.SkillGroup,
+                              Skill = m.Skill
+                          }
+                            ).ToList();
+            _dbContext.Add(skill);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
         }
     }
 }

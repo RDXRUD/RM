@@ -4,7 +4,9 @@ using net.sf.mpxj.mpp;
 using Npgsql;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
+using ResourceManagerAPI.Models;
 using Assignment = net.sf.mpxj.ResourceAssignment;
+using File = ResourceManagerAPI.Models.File;
 using Path = System.IO.Path;
 using Task = net.sf.mpxj.Task;
 
@@ -20,21 +22,21 @@ namespace ResourceManagerAPI.Repository
             _dbContext = connection;
             Configuration = configuration;
         }
-        public void GetData(IFormFile file, string UserName)
+        public void GetData(File getfileinfo)
         {
             NpgsqlConnection con = new NpgsqlConnection(this.Configuration.GetSection("ConnectionStrings")["Ef_Postgres_Db"]);
             MPPReader reader = new MPPReader();
 
             string fileName = $"{DateTime.Now.ToString("yyyyMMMdd")}_{Path.GetRandomFileName()}";
-            string fileExtension = Path.GetExtension(file.FileName);
+            string fileExtension = Path.GetExtension(getfileinfo.file.FileName);
             string filePath = Path.Combine("FileHolder", fileName + fileExtension);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                file.CopyTo(stream);
+                getfileinfo.file.CopyTo(stream);
             }
             ProjectFile projectObj = reader.read(filePath);
             string FileNameDB = fileName + fileExtension;
-            AddUploadRecordToDb(UserName, FileNameDB, con);
+            AddUploadRecordToDb(getfileinfo, FileNameDB, con);
 
             using (var cmdd = new NpgsqlCommand("delete from employees", con))
             {
@@ -117,9 +119,9 @@ namespace ResourceManagerAPI.Repository
                 con.Close();
             }
         }
-        public void AddUploadRecordToDb(string UserName, string FileNameDB, NpgsqlConnection con)
+        public void AddUploadRecordToDb(File getfileinfo,string FileNameDB, NpgsqlConnection con)
         {
-            using (var cmd = new NpgsqlCommand("insert into uploadrecord(\"UserName\",\"FileName\")Values(" + (UserName != "" ? ("'" + UserName + "'") : "null") + ", " + (FileNameDB != "" ? ("'" + FileNameDB + "'") : "null") + " ) ", con))
+            using (var cmd = new NpgsqlCommand("insert into uploadrecord(\"UserName\",\"FileName\")Values(" + (getfileinfo.UserName != "" ? ("'" + getfileinfo.UserName + "'") : "null") + ", " + (FileNameDB != "" ? ("'" + FileNameDB + "'") : "null") + " ) ", con))
             {
                 con.Open();
 

@@ -37,5 +37,19 @@ namespace ResourceManagerAPI.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id < 1)
+                return BadRequest();
+            var skill = await _dbContext.skillset.FindAsync(id);
+            if (skill == null)
+                return NotFound();
+            _dbContext.skillset.Remove(skill);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+
+        }
     }
 }
