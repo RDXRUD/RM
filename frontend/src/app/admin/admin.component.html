@@ -1,9 +1,8 @@
-    <html>
-    <body>
-    <mat-tab-group>
+   <mat-tab-group>
     <mat-tab label="Resource Skills"> 
-      <h1>RESOURCE SKILLS</h1>
-      <table mat-table [dataSource]="data" class="UsersTable"> 
+      <div class="mat-elevation-z8 list-table">
+      <div class="UsersTable">
+      <table mat-table [dataSource]="data" > 
         <ng-container matColumnDef="empID">
         <th mat-header-cell *matHeaderCellDef> EMP ID </th>
         <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
@@ -19,11 +18,16 @@
         <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> DETAILS </th>
         <td mat-cell *matCellDef="let element">
-           <button mat-raised-button color="primary" (click)="getSkills()">Get Details</button> </td>
+          <mat-dialog-actions>
+            
+           <button mat-raised-button color="primary" (click)="getSkills(element.emailID)">Get Details</button> 
+          </mat-dialog-actions></td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
       </table>
+      </div>
+      </div>
     </mat-tab>
       <mat-tab label="Add  Skills"> 
         
@@ -60,10 +64,10 @@
               <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
                 <mat-form-field fxFlex="20">
                   <mat-label>User Name:-</mat-label>
-                  <input formControlName="UserName" matInput>
+                  <input formControlName="userName" matInput>
                 </mat-form-field>
                 <mat-form-field fxFlex="20">
-                  <ngx-mat-file-input formControlName="file" matInput >
+                  <ngx-mat-file-input formControlName="planFile" matInput >
                   </ngx-mat-file-input>
                   <mat-icon></mat-icon>
                </mat-form-field>
@@ -78,7 +82,5 @@
                 </div>
               </form>
             </div>
-        </mat-tab>
+         </mat-tab>
         </mat-tab-group>
-     </body>
-     </html>

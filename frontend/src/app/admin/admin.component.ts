@@ -1,7 +1,9 @@
 import { Component,OnInit } from '@angular/core';
 import { EmployeeService } from './employee.service';
-import {FormGroup,FormControl,FormBuilder,NgForm} from '@angular/forms';
+import {FormGroup,FormControl,FormBuilder} from '@angular/forms';
 import { file } from './file';
+import { DialogComponent } from '../dialog/dialog.component';
+import { MatDialog,MAT_DIALOG_DATA,MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin',
@@ -14,18 +16,20 @@ export class AdminComponent implements OnInit{
   
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    data:any;
+  //  user:any;
    datas:any;
    displayedColumnss: string[]= ['id','skillGroup','skill','edit','delete'];
-   constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder){
+   constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder,private dialog:MatDialog){
     this.forms=frmbuilder.group({
-      UserName:new FormControl(),
-      file:new FormControl(),
+      userName:new FormControl(),
+      planFile:new FormControl(),
    })
   }
   ngOnInit(){
     this.employee_Service.getData().subscribe( data =>{
       console.warn(data)
          this.data=data
+
     })
     this.employee_Service.getDetails().subscribe( datas =>{
       console.warn(datas)
@@ -37,15 +41,20 @@ export class AdminComponent implements OnInit{
     console.warn(this.formdata);
     this.employee_Service.OnFile(this.formdata).subscribe(datas=>{
       console.warn(datas)
+      alert("File Loaded Successfully")
       // this.data=datas
     })
    }
    
- getSkills(){
-    alert()
+ getSkills(emailID:string){
+  // console.warn(emailID);
+  const dialogRef= this.dialog.open(DialogComponent,{
+      data:{emailID}
+    });
   }
   Edit(){
-    alert()
+    alert(
+    )
   }
   Delete(){
     alert()

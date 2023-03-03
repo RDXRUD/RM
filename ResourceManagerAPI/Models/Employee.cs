@@ -6,7 +6,7 @@ namespace ResourceManagerAPI.Models
     {
         [Key]
         public int EmpID { get; set; }
-        public string ResourceName { get; set; }
-        public string EmailID { get; set; }
+        public string? ResourceName { get; set; }
+        public string? EmailID { get; set; }
     }
 }

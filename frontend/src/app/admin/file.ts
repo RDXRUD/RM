@@ -1,4 +1,4 @@
 export interface file{ 
-    UserName:string;
-    file:File;
+    userName:string;
+    planFile:File;
     }
