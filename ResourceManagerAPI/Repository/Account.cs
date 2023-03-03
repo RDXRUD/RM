@@ -5,32 +5,33 @@ using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using System.Security.Cryptography;
 using System.Text;
+using static com.sun.tools.javac.tree.DCTree;
 
 namespace ResourceManagerAPI.Repository
 {
     public class Account : IAccount
     {
-        private readonly PGDBContext _conn;
+        private readonly PGDBContext _dbContext;
         public Account(PGDBContext connection)
         {
-            _conn = connection;
+            _dbContext = connection;
         }
-        public string AddUser(string username, string password)
+        public string AddUser(Users user)
         {
             Users objUser = new Users();
-            objUser.UserName = username;
-            objUser.Password = Encrypt(password);
-            _conn.users.Add(objUser);
-            _conn.SaveChanges();
+            objUser.UserName = user.UserName;
+            objUser.FullName = user.FullName;
+            _dbContext.users.Add(objUser);
+            _dbContext.SaveChanges();
             return "Record Save Successfully";
         }
-        public string DeleteUser(string username, string password)
+        public string DeleteUser(Users user)
         {
             Users objUser = new Users();
-            objUser.UserName = username;
-            objUser.Password = Decrypt(password);
-            _conn.users.Remove(objUser);
-            _conn.SaveChanges();
+            objUser.UserName = user.UserName;
+            objUser.FullName = user.FullName;
+            _dbContext.users.RemoveRange(objUser);
+            _dbContext.SaveChanges();
             return "Record Deleted Successfully";
         }
         private string Encrypt(string clearText)

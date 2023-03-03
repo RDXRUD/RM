@@ -1,6 +1,7 @@
 ﻿using ResourceManagerAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using ResourceManagerAPI.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -14,8 +15,8 @@ namespace ResourceManagerAPI.Controllers
         {
             _dbContext = context;
         }
-
-        [HttpGet]
+        [HttpGet, Authorize]
+        [Route("GetEmployeesTask")]
         public async Task<IActionResult> Get()
         {
             var employee = (from e in _dbContext.employeetasks
@@ -23,7 +24,6 @@ namespace ResourceManagerAPI.Controllers
                             on e.EmpID equals s.EmpID
                             into detail
                             from m in detail.DefaultIfEmpty()
-
                             select new EmployeeManager
                             {
                                 EmpID = m.EmpID,
@@ -33,7 +33,6 @@ namespace ResourceManagerAPI.Controllers
                                 Start = e.Start,
                                 Finish = e.Finish
                             }
-
                             ).ToList();
             return Ok(employee);
         }

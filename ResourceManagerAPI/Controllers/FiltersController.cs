@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -15,7 +16,8 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = empContext;
         }
 
-        [HttpPost, Route("GetFilteredEmployees")]
+        [HttpPost, Authorize]
+        [Route("FilterEmployees")]
         public List<EmployeeManager> GetFilteredEmployees(FilterViewModel filter)
         {
             var tempemployee = from e in _dbContext.employees

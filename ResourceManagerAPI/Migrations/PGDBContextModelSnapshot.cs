@@ -17,7 +17,7 @@ namespace ResourceManagerAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -31,11 +31,9 @@ namespace ResourceManagerAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmpID"));
 
                     b.Property<string>("EmailID")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ResourceName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("EmpID");
@@ -52,7 +50,6 @@ namespace ResourceManagerAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ResourceID"));
 
                     b.Property<string>("EmailID")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("ResourceID");
@@ -62,25 +59,46 @@ namespace ResourceManagerAPI.Migrations
 
             modelBuilder.Entity("ResourceManagerAPI.Models.EmployeeTasks", b =>
                 {
-                    b.Property<int>("EmpID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmpID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<DateTime>("Finish")
+                    b.Property<int>("EmpID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("Finish")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("Start")
+                    b.Property<DateTime?>("Start")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("TaskName")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("EmpID");
+                    b.HasKey("ID");
 
                     b.ToTable("employeetasks");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.PlanUploadRecord", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserID"));
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("uploadrecord");
                 });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.SkillSet", b =>
@@ -92,11 +110,9 @@ namespace ResourceManagerAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Skill")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SkillGroup")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("ID");
@@ -116,11 +132,9 @@ namespace ResourceManagerAPI.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Skill")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SkillGroup")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("SkillID")
@@ -139,12 +153,10 @@ namespace ResourceManagerAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserID"));
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("FullName")
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("UserID");

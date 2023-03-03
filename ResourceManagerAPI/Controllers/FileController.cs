@@ -3,6 +3,7 @@ using ResourceManagerAPI.Models;
 using Microsoft.AspNetCore.Http;
 using ResourceManagerAPI.IRepository;
 using File = ResourceManagerAPI.Models.File;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -16,11 +17,11 @@ namespace ResourceManagerAPI.Controllers
             _fileupload = fileupload;
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route("LoadFileData")]
-        public IActionResult GetData([FromForm] File fileinfo)
+        public IActionResult GetData([FromForm] File PlanFileInfo)
         {
-            _fileupload.GetData(fileinfo);
+            _fileupload.GetData(PlanFileInfo);
             return Ok();
         }
     }

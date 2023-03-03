@@ -5,7 +5,7 @@ namespace ResourceManagerAPI.IRepository
 {
     public interface IAccount
     {
-        string AddUser(string username, string password);
-        string DeleteUser(string username, string password);
+        string AddUser(Users user);
+        string DeleteUser(Users user);
     }
 }

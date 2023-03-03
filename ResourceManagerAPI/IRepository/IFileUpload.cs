@@ -4,6 +4,6 @@ namespace ResourceManagerAPI.IRepository
 {
     public interface IFileUpload
     {
-        void GetData(File fileinfo);
+        void GetData(File PlanFileInfo);
     }
 }

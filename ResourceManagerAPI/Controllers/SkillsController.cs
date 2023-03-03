@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -15,8 +16,7 @@ namespace ResourceManagerAPI.Controllers
         {
             _dbContext = context;
         }
-
-        [HttpGet]
+        [HttpGet, Authorize]
         [Route("GetSkill")]
         public async Task<IActionResult> Get()
         {
@@ -37,8 +37,8 @@ namespace ResourceManagerAPI.Controllers
             return Ok(skills);
         }
 
-        [HttpPost]
-        [Route("GetSkillByEmail")]
+        [HttpPost, Authorize]
+        [Route("SkillByEmail")]
         public List<SkillManager> Post(EmployeeSkills skill)
         {
             var skills = from e in _dbContext.employeeskills
@@ -60,8 +60,8 @@ namespace ResourceManagerAPI.Controllers
             ).ToList();
             return employeeskills;
         }
-
-        [HttpGet]
+        [NonAction]
+        [HttpGet, Authorize]
         public List<SkillManager> GetEmployeesSkill()
         {
 
@@ -81,7 +81,7 @@ namespace ResourceManagerAPI.Controllers
             return employee;
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         [Route("AddNewSkill")]
         public async Task<IActionResult> Put(SkillManager skill)
         {
@@ -100,6 +100,29 @@ namespace ResourceManagerAPI.Controllers
                           }
                             ).ToList();
             _dbContext.Add(skill);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete, Authorize]
+        [Route("DeleteSkill")]
+        public async Task<IActionResult> Delete(SkillManager skill)
+        {
+            var skills = (from e in _dbContext.employeeskills
+                          join s in _dbContext.skills
+                          on e.ResourceID equals s.ResourceID
+                          into detail
+                          from m in detail.DefaultIfEmpty()
+                          select new SkillManager
+                          {
+                              ResourceID = e.ResourceID,
+                              SkillID = m.SkillID,
+                              EmailID = e.EmailID,
+                              SkillGroup = m.SkillGroup,
+                              Skill = m.Skill
+                          }
+                            ).ToList();
+            _dbContext.Remove(skill);
             await _dbContext.SaveChangesAsync();
             return Ok();
         }

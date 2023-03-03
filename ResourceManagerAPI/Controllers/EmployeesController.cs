@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -15,8 +16,8 @@ namespace ResourceManagerAPI.Controllers
         {
             _dbContext = context;
         }
-
-        [HttpGet]
+        [HttpGet, Authorize]
+        [Route("GetEmployees")]
         public async Task<IEnumerable<Employee>> Get()
         {
             return await _dbContext.employees.ToListAsync();

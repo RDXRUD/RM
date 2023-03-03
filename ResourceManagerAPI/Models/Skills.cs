@@ -8,8 +8,8 @@ namespace ResourceManagerAPI.Models
         [Key]
         public int ID { get; set; }
         public int ResourceID { get; set; }
-        public string SkillGroup { get; set; }
-        public string Skill { get; set; }
+        public string? SkillGroup { get; set; }
+        public string? Skill { get; set; }
         public int SkillID { get; set; }
     }
 }
