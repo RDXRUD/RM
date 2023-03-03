@@ -1,6 +1,6 @@
 import { Component,OnInit } from '@angular/core';
 import { UsersService } from './users.service';
-import {FormGroup,FormControl,FormBuilder,NgForm} from '@angular/forms';
+import {FormGroup,FormControl,FormBuilder} from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import * as _moment from 'moment';
@@ -79,5 +79,7 @@ export class HomeComponent implements OnInit{
       console.warn(datas)
       this.data=datas
     })
+   }
+   OnReset(){
    }
   }

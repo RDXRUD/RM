@@ -12,7 +12,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatFormFieldModule, MAT_FORM_FIELD, MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule } from '@angular/material/core';
@@ -24,6 +24,9 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import {MatDialogModule} from '@angular/material/dialog';
 import { NgxMatFileInputModule } from '@angular-material-components/file-input';
+import { DialogComponent } from './dialog/dialog.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+
 
 // import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
@@ -31,6 +34,7 @@ import { NgxMatFileInputModule } from '@angular-material-components/file-input';
     AppComponent,
     HomeComponent,
     AdminComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,9 +57,10 @@ import { NgxMatFileInputModule } from '@angular-material-components/file-input';
    MatTabsModule,
    FlexLayoutModule,
    MatDialogModule,
-   NgxMatFileInputModule
+   NgxMatFileInputModule,
+   MatTooltipModule
   ],
-  providers: [UsersService],
+  providers: [UsersService,{provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,useValue:{appearance:'fill'}}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

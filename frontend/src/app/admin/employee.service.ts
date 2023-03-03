@@ -4,7 +4,7 @@ import{Observable} from 'rxjs';
 import { skill } from './skill';
 import { skillgroup } from './skillgroup';
 import { file } from './file';
-import { HttpHeaders } from '@angular/common/http';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +23,10 @@ export class EmployeeService {
     //  let headers=new HttpHeaders();
     //  headers=headers.append('Content-Type','multipart/form-data');
     //  headers=headers.append('enctype','multipart/form-data');
-     let url="https://localhost:7271/api/File/GetFileData";
-    return this.http.post<file[]>(url,formdata,{headers:{'Content-Type':'multipart/form-data'},});//, {headers: myheader)});
+    const formValues = new FormData();
+    formValues.append('userName', formdata.userName);
+    formValues.append('planFile', formdata.planFile);
+     let url="https://localhost:7271/api/File/LoadFileData";
+    return this.http.post<any>(url,formValues,{headers:{'Content-Disposition':'multipart/form-data'},});//, {headers: myheader)});
   }
  }
