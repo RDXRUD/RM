@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net;
+using sun.security.krb5.@internal.crypto.dk;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -19,10 +20,10 @@ namespace ResourceManagerAPI.Controllers
     [ApiController]
     public class JwtToken
     {
-        public string Token { get; set; }
-        public string UserName { get; internal set; }
         public int UserID { get; internal set; }
+        public string UserName { get; internal set; }
         public string FullName { get; internal set; }
+        public string Token { get; set; }
     }
     public class UserController : Controller
     {
@@ -35,26 +36,50 @@ namespace ResourceManagerAPI.Controllers
             _configuration = config;
             _dbContext = context;
         }
+
+        [HttpGet, Authorize]
+        [Route("AllUser")]
+        public async Task<IEnumerable<Users>> Get()
+        {
+            return await _dbContext.users.ToListAsync();
+        }
+
         [HttpPost, Authorize]
         [Route("AddUser")]
-        public IActionResult AddUser(Users user)
+        public IActionResult AddUser([FromBody] Users user)
         {
             return Ok(_account.AddUser(user));
         }
+        [NonAction]
         [HttpDelete, Authorize]
         [Route("DeleteUser")]
-        public IActionResult DeleteUser(Users user)
+        public IActionResult DeleteUser([FromBody] Users user)
         {
             return Ok(_account.DeleteUser(user));
         }
 
-        [HttpPost("Login")]
-        public async Task<IActionResult> Post([FromForm] Users _userData)
+        [HttpDelete, Authorize]
+        [Route("DeleteUser")]
+        public async Task<IActionResult> Delete([FromBody] int id)
         {
-            if (_userData != null && _userData.UserID!=null && _userData.UserName != null && _userData.FullName != null)
-            {
-                var user = await GetUser(_userData.UserID, _userData.UserName, _userData.FullName);
+            if (id < 1)
+                return BadRequest();
+            var user = await _dbContext.users.FindAsync(id);
+            if (user == null)
+                return NotFound();
+            _dbContext.users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return Ok("Record Deleted Successfully");
+        }
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Post([FromBody] Users _userData)
+        {
+            if (_userData != null && _userData.UserName != null && _userData.Password != null)
+            {
+                //var user = await GetUser(_userData.UserName, _userData.Password);
+                var users = await _dbContext.users.ToListAsync();
+                var user = users.FirstOrDefault(u => u.UserName == _userData.UserName && Decrypt(u.Password) == _userData.Password);
                 if (user != null)
                 {
                     var claims = new[] {
@@ -80,7 +105,6 @@ namespace ResourceManagerAPI.Controllers
                         FullName = user.FullName,
                         Token = new JwtSecurityTokenHandler().WriteToken(token)
                     };
-                    //var tokenObject = new { token = jwtToken.Token};
                     var jsonResponse = JsonSerializer.Serialize(jwtToken);
                     return Content(jsonResponse, "application/json");
                 }
@@ -91,12 +115,32 @@ namespace ResourceManagerAPI.Controllers
             }
             else
             {
-                return BadRequest();
+                return BadRequest("Username Or Password Missing");
             }
         }
-        private async Task<Users> GetUser(int userid ,string username,string fullname)
+        //private async Task<Users> GetUser(string username,string password)
+        //{
+        //    return await _dbContext.users.FirstOrDefaultAsync(u => u.UserName == username && Decrypt(u.Password) == password);
+        //}
+        private string Decrypt(string cipherText)
         {
-            return await _dbContext.users.FirstOrDefaultAsync(u => u.UserID == userid && u.UserName == username && u.FullName == fullname);
+            string encryptionKey = "MAKV2SPBNI99212";
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    }
+                    byte[] decryptedBytes = ms.ToArray();
+                    return Encoding.Unicode.GetString(decryptedBytes);
+                }
+            }
         }
     }
 }
