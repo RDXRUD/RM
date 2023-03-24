@@ -77,9 +77,8 @@ namespace ResourceManagerAPI.Controllers
                     {
                         Token = new JwtSecurityTokenHandler().WriteToken(token)
                     };
-                    var tokenObject = new { token = jwtToken.Token.Replace("\\", "") };
+                    var tokenObject = new { token = jwtToken.Token};
                     var jsonResponse = JsonSerializer.Serialize(tokenObject);
-
                     return Content(jsonResponse, "application/json");
                 }
                 else
