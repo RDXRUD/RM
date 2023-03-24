@@ -9,10 +9,19 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Net;
+
 namespace ResourceManagerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    public class JwtToken
+    {
+       // [JsonProperty("token")]
+        public string Token { get; set; }
+    }
     public class UserController : Controller
     {
         private readonly IAccount _account;
@@ -38,6 +47,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost("Login")]
+        //[Produces("application/json")]
         public async Task<IActionResult> Post(Users _userData)
         {
             if (_userData != null && _userData.UserID!=null && _userData.UserName != null && _userData.FullName != null)
@@ -63,8 +73,14 @@ namespace ResourceManagerAPI.Controllers
                         claims,
                         expires: DateTime.UtcNow.AddMinutes(10),
                         signingCredentials: signIn);
+                    var jwtToken = new JwtToken
+                    {
+                        Token = new JwtSecurityTokenHandler().WriteToken(token)
+                    };
+                    var tokenObject = new { token = jwtToken.Token.Replace("\\", "") };
+                    var jsonResponse = JsonSerializer.Serialize(tokenObject);
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    return Content(jsonResponse, "application/json");
                 }
                 else
                 {
