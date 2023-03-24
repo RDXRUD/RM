@@ -19,8 +19,10 @@ namespace ResourceManagerAPI.Controllers
     [ApiController]
     public class JwtToken
     {
-       // [JsonProperty("token")]
         public string Token { get; set; }
+        public string UserName { get; internal set; }
+        public int UserID { get; internal set; }
+        public string FullName { get; internal set; }
     }
     public class UserController : Controller
     {
@@ -47,8 +49,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost("Login")]
-        //[Produces("application/json")]
-        public async Task<IActionResult> Post(Users _userData)
+        public async Task<IActionResult> Post([FromForm] Users _userData)
         {
             if (_userData != null && _userData.UserID!=null && _userData.UserName != null && _userData.FullName != null)
             {
@@ -56,14 +57,13 @@ namespace ResourceManagerAPI.Controllers
 
                 if (user != null)
                 {
-                    //create claims details based on the user information
                     var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("UserID",user.UserID.ToString()),
-                        new Claim("UserName", user.UserName.ToString()),
-                        new Claim("FullName", user.FullName.ToString())
+                        new Claim("UserName", user.UserName),
+                        new Claim("FullName", user.FullName)
                     };
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -75,10 +75,13 @@ namespace ResourceManagerAPI.Controllers
                         signingCredentials: signIn);
                     var jwtToken = new JwtToken
                     {
+                        UserID = user.UserID,
+                        UserName = user.UserName,
+                        FullName = user.FullName,
                         Token = new JwtSecurityTokenHandler().WriteToken(token)
                     };
-                    var tokenObject = new { token = jwtToken.Token};
-                    var jsonResponse = JsonSerializer.Serialize(tokenObject);
+                    //var tokenObject = new { token = jwtToken.Token};
+                    var jsonResponse = JsonSerializer.Serialize(jwtToken);
                     return Content(jsonResponse, "application/json");
                 }
                 else
