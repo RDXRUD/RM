@@ -9,7 +9,7 @@ export class SkillsService {
 
   constructor(private http:HttpClient) {}
   getSkill(emailID:any):Observable<skillset[]>{
-    let url='https://localhost:7271/api/Skills/GetSkillByEmail';
+    let url='https://localhost:7271/api/Skills/SkillByEmail';
     return this.http.post<skillset[]>(url,emailID);
   }
 }

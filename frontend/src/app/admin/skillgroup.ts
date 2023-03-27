@@ -1,5 +1,7 @@
 export interface skillgroup{ 
-    id:string;
+     id:number;
     skillGroup:string;
      skill:string;
+    edit:string;
+    delete:string;
     }

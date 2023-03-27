@@ -2,7 +2,7 @@ import { Component,Inject,OnInit,ViewChild } from '@angular/core';
 import { skillset } from './skillset';
 import { SkillsService } from './skills.service';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormControl, FormGroup,FormArray,AbstractControl} from '@angular/forms';
+import { FormBuilder,FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
@@ -11,7 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./dialog.component.scss']
 })
 export class DialogComponent implements OnInit {
-  displayedColumns: string[] = [ 'emailID','skillGroup','skill',];
+  displayedColumns: string[] = ['emailID','skillGroup','skill','edit','delete'];
   dataSource=new MatTableDataSource<any>();
   data:any;
   emailID!:skillset;
@@ -70,4 +70,6 @@ ngOnInit(){
 //               isNewRow: new FormControl(true),
 //   });
 // }
+Edit(){};
+Delete(){};
 }

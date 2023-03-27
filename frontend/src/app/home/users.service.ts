@@ -10,14 +10,14 @@ export class UsersService {
 
   constructor(private http:HttpClient) { }
   getData():Observable<employee[]>{
-    let url="https://localhost:7271/api/EmployeeTask";
+    let url="https://localhost:7271/api/EmployeeTask/GetEmployeesTask";
     return this.http.get<employee[]>(url);
   }
   // OnSubmit():Observable<employeefilters[]>{
   //    let url=this.signupForm.value("")
   // }
    OnSubmit(formdata:employeefilters):Observable<employeefilters[]>{
-    let url="https://localhost:7271/api/Filters/GetFilteredEmployees";
+    let url="https://localhost:7271/api/Filters/FilterEmployees";
     return this.http.post<employeefilters[]>(url,formdata);
    }
 }
