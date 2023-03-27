@@ -30,9 +30,7 @@ namespace ResourceManagerAPI.Repository
         public string DeleteUser(Users user)
         {
             Users objUser = new Users();
-            objUser.UserName = user.UserName;
-            objUser.FullName = user.FullName;
-            objUser.Password = user.Password;
+            objUser.UserID = user.UserID;
             _dbContext.users.RemoveRange(objUser);
             _dbContext.SaveChanges();
             return "Record Deleted Successfully";

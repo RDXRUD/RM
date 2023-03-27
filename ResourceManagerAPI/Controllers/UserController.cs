@@ -50,14 +50,14 @@ namespace ResourceManagerAPI.Controllers
         {
             return Ok(_account.AddUser(user));
         }
-        [NonAction]
+        
         [HttpDelete, Authorize]
         [Route("DeleteUser")]
         public IActionResult DeleteUser([FromBody] Users user)
         {
             return Ok(_account.DeleteUser(user));
         }
-
+        [NonAction]
         [HttpDelete, Authorize]
         [Route("DeleteUser")]
         public async Task<IActionResult> Delete([FromBody] int id)
