@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.Models;
+using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
+
 namespace ResourceManagerAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -23,34 +25,28 @@ namespace ResourceManagerAPI.Controllers
             return await _dbContext.skillset.ToListAsync();
         }
 
-        [HttpPut, Authorize]
+        [HttpPost, Authorize]
         [Route("AddSkillSet")]
         public async Task<IActionResult> Put(SkillSet skill)
         {
-            if (skill == null || skill.ID == 0)
-                return BadRequest();
-            var skillset = await _dbContext.skillset.FindAsync(skill.ID);
-            if (skillset == null)
-                return NotFound();
-            skillset.ID = skill.ID;
-            skillset.SkillGroup = skill.SkillGroup;
-            skillset.Skill = skill.Skill;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            SkillSet skillSet = new SkillSet();
+            skillSet.ID = skill.ID;
+            skillSet.SkillGroup = skill.SkillGroup;
+            skillSet.Skill = skill.Skill;
+            _dbContext.skillset.Add(skillSet);
+            _dbContext.SaveChanges();
+            return Ok("Record Added Successfully");
         }
 
         [HttpDelete, Authorize]
         [Route("DeleteSkillSet")]
         public async Task<IActionResult> Delete(SkillSet skillset)
         {
-            if (skillset.ID < 1)
-                return BadRequest();
-            var skill = await _dbContext.skillset.FindAsync(skillset.ID);
-            if (skill == null)
-                return NotFound();
-            _dbContext.skillset.Remove(skill);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            SkillSet skillSet = new SkillSet();
+            skillSet.ID = skillset.ID;
+            _dbContext.skillset.RemoveRange(skillSet);
+            _dbContext.SaveChanges();
+            return Ok("Record Deleted Successfully");
         }
     }
 }
