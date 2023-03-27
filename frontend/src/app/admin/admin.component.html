@@ -30,7 +30,6 @@
       </div>
     </mat-tab>
       <mat-tab label="Add  Skills"> 
-        
         <table mat-table [dataSource]="datas" class="SkillsTable"> 
           <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>  ID </th>
@@ -49,13 +48,13 @@
           <td mat-cell *matCellDef="let element">
              <button mat-raised-button color="primary" (click)="Edit()">EDIT</button> </td>
           </ng-container>
-          <ng-container matColumnDef="delete">
+           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef> DELETE </th>
             <td mat-cell *matCellDef="let element">
                <button mat-raised-button color="primary" (click)="Delete()">DELETE</button> </td>
-            </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
+            </ng-container> 
+        <tr mat-header-row *matHeaderRowDef="dsp"></tr>
+        <tr mat-row *matRowDef="let row; columns: dsp;"></tr> 
          </table>
         </mat-tab>
         <mat-tab label="File Uploading"> 
@@ -71,16 +70,33 @@
                   </ngx-mat-file-input>
                   <mat-icon></mat-icon>
                </mat-form-field>
-                  <!-- <mat-label>file:-</mat-label>
-                 <input  formControlName="file" placeholder="Choose File" matInput> 
-                </mat-form-field> -->
                 <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
                   <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnFile">Submit</button>
                 </div>
-                
-                <!-- </div> -->
                 </div>
               </form>
             </div>
          </mat-tab>
+         <mat-tab label="Users">
+          <table mat-table [dataSource]="user" class="UserTable"> 
+            <ng-container matColumnDef="userID">
+            <th mat-header-cell *matHeaderCellDef>USER ID </th>
+            <td mat-cell *matCellDef="let user"> {{user.userID}} </td>
+           </ng-container>
+            <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef> USER NAME</th>
+            <td mat-cell *matCellDef="let user"> {{user.userName}} </td>
+           </ng-container>  
+           <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef> FULLNAME </th>
+            <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
+           </ng-container>
+           <ng-container matColumnDef="password">
+            <th mat-header-cell *matHeaderCellDef> PASSWORD </th>
+            <td mat-cell *matCellDef="let user">{{user.password}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
+             </table>
+          </mat-tab> 
         </mat-tab-group>

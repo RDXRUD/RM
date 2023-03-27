@@ -5,8 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
-import { HttpClientModule } from '@angular/common/http';
-import {ReactiveFormsModule} from '@angular/forms';
+import { HttpClientModule,HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 import {MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
@@ -26,6 +26,10 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { NgxMatFileInputModule } from '@angular-material-components/file-input';
 import { DialogComponent } from './dialog/dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthInterceptor } from './login/AuthInterceptor';
+import { LoginComponent } from './login/login.component';
+// import { AuthGuard } from './login/AuthGuard';
 
 
 // import {MatPaginatorModule} from '@angular/material/paginator';
@@ -35,6 +39,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     HomeComponent,
     AdminComponent,
     DialogComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,9 +63,22 @@ import {MatTooltipModule} from '@angular/material/tooltip';
    FlexLayoutModule,
    MatDialogModule,
    NgxMatFileInputModule,
-   MatTooltipModule
-  ],
-  providers: [UsersService,{provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,useValue:{appearance:'fill'}}],
+   MatTooltipModule,
+   JwtModule.forRoot({
+    config: {
+      tokenGetter: () => {
+        return localStorage.getItem('access_token');
+      }/*,
+      allowedDomains: ['localhost:3000'],
+      disallowedRoutes: ['http://localhost:3000/auth/login'], */
+    },
+  }),
+],
+  providers: [UsersService,{provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,useValue:{appearance:'fill'}} ,{
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,5 +1,5 @@
 export interface employee{ 
-    empId:string;
+    empId:number;
    emailID:string;
    resourceName:string;
     taskName:string;

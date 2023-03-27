@@ -1,5 +1,5 @@
 export interface skill{ 
-  empID:string;
+  empID:number;
   resourceName:string;
    emailID:string;
    details:string;
