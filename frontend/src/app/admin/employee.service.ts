@@ -5,6 +5,8 @@ import { skill } from './skill';
 import { skillgroup } from './skillgroup';
 import { file } from './file';
 import { user } from './user';
+import { userform } from './userform';
+import { addskills } from './addskills';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +32,18 @@ export class EmployeeService {
     formValues.append('planFile', formdata.planFile);
      let url="https://localhost:7271/api/File/LoadFileData";
     return this.http.post<any>(url,formValues,{headers:{'Content-Disposition':'multipart/form-data'},});
+  }
+  OnUser(formdatas:userform):Observable<userform[]>{
+    let url="https://localhost:7271/AddUser";
+    return this.http.post<userform[]>(url,formdatas);
+  }
+  AddSkill(skilldata:addskills):Observable<addskills[]>{
+    let url="https://localhost:7271/api/SkillSet/AddSkillSet";
+    return this.http.post<addskills[]>(url,skilldata);
+  }
+  del(UserID:number){
+    console.warn(UserID);
+    let url="https://localhost:7271/DeleteUser";
+    return this.http.post(url,UserID);
   }
  }

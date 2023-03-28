@@ -29,6 +29,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './login/AuthInterceptor';
 import { LoginComponent } from './login/login.component';
+import { DialogboxComponent } from './dialogbox/dialogbox.component';
 // import { AuthGuard } from './login/AuthGuard';
 
 
@@ -40,6 +41,7 @@ import { LoginComponent } from './login/login.component';
     AdminComponent,
     DialogComponent,
     LoginComponent,
+    DialogboxComponent,
   ],
   imports: [
     BrowserModule,
