@@ -38,12 +38,33 @@ namespace ResourceManagerAPI.Controllers
             return Ok("Record Added Successfully");
         }
 
+        [HttpPut, Authorize]
+        [Route("UpdateSkillSet")]
+        public async Task<IActionResult> Update(SkillSet skill)
+        {
+            var existingSkillSet = await _dbContext.skillset.FindAsync(skill.ID);
+
+            if (existingSkillSet == null)
+            {
+                return NotFound();
+            }
+
+            existingSkillSet.SkillGroup = skill.SkillGroup;
+            existingSkillSet.Skill = skill.Skill;
+
+            _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Record Updated Successfully");
+        }
+
+
         [HttpDelete, Authorize]
         [Route("DeleteSkillSet")]
-        public async Task<IActionResult> Delete(SkillSet skillset)
+        public async Task<IActionResult> Delete(SkillSet skill)
         {
             SkillSet skillSet = new SkillSet();
-            skillSet.ID = skillset.ID;
+            skillSet.ID = skill.ID;
             _dbContext.skillset.RemoveRange(skillSet);
             _dbContext.SaveChanges();
             return Ok("Record Deleted Successfully");
