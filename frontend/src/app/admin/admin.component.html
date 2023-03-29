@@ -30,6 +30,33 @@
       </div>
     </mat-tab>
       <mat-tab label="Add  Skills"> 
+        <div class="contain">
+          <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
+            <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+              <!-- <mat-form-field fxFlex="20">
+                <mat-label>UserID:-</mat-label>
+                <input formControlName="userID" matInput>
+              </mat-form-field> -->
+              <mat-form-field fxFlex="20">
+                <mat-label>ID:-</mat-label>
+                <input formControlName="id" matInput >
+             </mat-form-field>
+
+             <mat-form-field fxFlex="20">
+              <mat-label>SkillGroup:-</mat-label>
+              <input formControlName="skillGroup" matInput >
+           </mat-form-field>
+           <mat-form-field fxFlex="20">
+            <mat-label>Skill:-</mat-label>
+            <input formControlName="skill" matInput >
+           
+         </mat-form-field>
+              <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkill">Add</button>
+              </div>
+              </div>
+            </form>
+          </div>
         <table mat-table [dataSource]="datas" class="SkillsTable"> 
           <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>  ID </th>
@@ -78,6 +105,33 @@
             </div>
          </mat-tab>
          <mat-tab label="Users">
+          <div class="containers">
+            <form [formGroup]="userForm" (ngSubmit)="OnUser()">
+              <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+                <!-- <mat-form-field fxFlex="20">
+                  <mat-label>UserID:-</mat-label>
+                  <input formControlName="userID" matInput>
+                </mat-form-field> -->
+                <mat-form-field fxFlex="20">
+                  <mat-label>UserName:-</mat-label>
+                  <input formControlName="userName" matInput >
+               </mat-form-field>
+
+               <mat-form-field fxFlex="20">
+                <mat-label>FullName:-</mat-label>
+                <input formControlName="fullName" matInput >
+             </mat-form-field>
+             <mat-form-field fxFlex="20">
+              <mat-label>Password</mat-label>
+              <input formControlName="password" matInput >
+             
+           </mat-form-field>
+                <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUser">Add</button>
+                </div>
+                </div>
+              </form>
+            </div>
           <table mat-table [dataSource]="user" class="UserTable"> 
             <ng-container matColumnDef="userID">
             <th mat-header-cell *matHeaderCellDef>USER ID </th>
@@ -91,10 +145,15 @@
             <th mat-header-cell *matHeaderCellDef> FULLNAME </th>
             <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
            </ng-container>
-           <ng-container matColumnDef="password">
-            <th mat-header-cell *matHeaderCellDef> PASSWORD </th>
+           <!-- <ng-container matColumnDef="password">
+            <th mat-header-cell *matHeaderCellDef> PASSWORD </th> 
             <td mat-cell *matCellDef="let user">{{user.password}} </td>
-            </ng-container>
+            </ng-container> -->
+            <ng-container matColumnDef="delete">
+              <th mat-header-cell *matHeaderCellDef> DELETE </th>
+              <td mat-cell *matCellDef="let element">
+                 <button mat-raised-button color="primary" (click)="del(element.userID)">DELETE</button> </td>
+              </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
              </table>
