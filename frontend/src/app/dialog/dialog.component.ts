@@ -1,9 +1,11 @@
 import { Component,Inject,OnInit,ViewChild } from '@angular/core';
 import { skillset } from './skillset';
 import { SkillsService } from './skills.service';
-import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog,MAT_DIALOG_DATA,MatDialogRef} from '@angular/material/dialog';
 import { FormBuilder,FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { InnerdialogComponent } from '../innerdialog/innerdialog.component';
+import { updateskill } from '../innerdialog/updateskill';
 
 @Component({
   selector: 'app-dialog',
@@ -14,12 +16,13 @@ export class DialogComponent implements OnInit {
   displayedColumns: string[] = ['emailID','skillGroup','skill','edit','delete'];
   dataSource=new MatTableDataSource<any>();
   data:any;
+  deletedata:any;
   emailID!:skillset;
   // isLoading=true;
   // VOForm!:FormGroup;
   // isEditableNew:boolean=true;
-  constructor(private skills_service:SkillsService ,public dialogRef:MatDialogRef<DialogComponent>,@Inject(MAT_DIALOG_DATA) public datadialog:any,  private fb: FormBuilder,
-  private _formBuilder: FormBuilder){
+  constructor(private skills_service:SkillsService ,public dialogRef:MatDialogRef<DialogComponent>,public dialogRefs:MatDialogRef<InnerdialogComponent>,@Inject(MAT_DIALOG_DATA) public datadialog:any,  private fb: FormBuilder,
+  private dialog:MatDialog,private _formBuilder: FormBuilder){
 }
 ngOnInit(){
   console.log(this.datadialog);
@@ -70,6 +73,16 @@ ngOnInit(){
 //               isNewRow: new FormControl(true),
 //   });
 // }
-Edit(){};
-Delete(){};
+Edit(resourceID:number) 
+{ const dialogRefs=this.dialog.open(InnerdialogComponent,{
+  data:{resourceID}
+});
+};
+
+Delete(resourceID:number){
+  console.warn(resourceID);
+  this.skills_service.Delete(resourceID).subscribe(deletedata=>{
+    console.warn(deletedata);
+  })
+};
 }

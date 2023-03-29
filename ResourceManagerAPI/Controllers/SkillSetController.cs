@@ -41,7 +41,7 @@ namespace ResourceManagerAPI.Controllers
         [HttpDelete, Authorize]
         [Route("DeleteSkillSet")]
         public async Task<IActionResult> Delete(SkillSet skillset)
-        {
+        {   
             SkillSet skillSet = new SkillSet();
             skillSet.ID = skillset.ID;
             _dbContext.skillset.RemoveRange(skillSet);

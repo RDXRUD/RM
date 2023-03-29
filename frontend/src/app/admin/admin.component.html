@@ -19,7 +19,6 @@
         <th mat-header-cell *matHeaderCellDef> DETAILS </th>
         <td mat-cell *matCellDef="let element">
           <mat-dialog-actions>
-            
            <button mat-raised-button color="primary" (click)="getSkills(element.emailID)">Get Details</button> 
           </mat-dialog-actions></td>
         </ng-container>
@@ -73,12 +72,14 @@
          <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef> EDIT </th>
           <td mat-cell *matCellDef="let element">
-             <button mat-raised-button color="primary" (click)="Edit()">EDIT</button> </td>
+            <mat-dialog-actions>
+             <button mat-raised-button color="primary" (click)="Edit(element.id)">Edit</button> 
+            </mat-dialog-actions></td>
           </ng-container>
            <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef> DELETE </th>
             <td mat-cell *matCellDef="let element">
-               <button mat-raised-button color="primary" (click)="Delete()">DELETE</button> </td>
+               <button mat-raised-button color="primary" (click)="Delete(element.id)">DELETE</button> </td>
             </ng-container> 
         <tr mat-header-row *matHeaderRowDef="dsp"></tr>
         <tr mat-row *matRowDef="let row; columns: dsp;"></tr> 
@@ -114,16 +115,16 @@
                 </mat-form-field> -->
                 <mat-form-field fxFlex="20">
                   <mat-label>UserName:-</mat-label>
-                  <input formControlName="userName" matInput >
+                  <input type="text" formControlName="userName" matInput >
                </mat-form-field>
 
                <mat-form-field fxFlex="20">
                 <mat-label>FullName:-</mat-label>
-                <input formControlName="fullName" matInput >
+                <input type="text" formControlName="fullName" matInput >
              </mat-form-field>
              <mat-form-field fxFlex="20">
               <mat-label>Password</mat-label>
-              <input formControlName="password" matInput >
+              <input type="password" formControlName="password" matInput >
              
            </mat-form-field>
                 <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">

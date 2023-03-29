@@ -44,6 +44,12 @@ export class EmployeeService {
   del(UserID:number){
     console.warn(UserID);
     let url="https://localhost:7271/DeleteUser";
-    return this.http.post(url,UserID);
+    return this.http.delete(url, {body: {userId: UserID}});
+  }
+  Delete(id:number){
+  console.warn(id);
+  let url="https://localhost:7271/api/SkillSet/DeleteSkillSet";
+  return this.http.delete(url,{body:{id:id}});
   }
  }
+

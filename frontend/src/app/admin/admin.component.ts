@@ -26,7 +26,8 @@ export class AdminComponent implements OnInit{
   dsp: string[]= ['id','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
-   displayedColumnss: string[]= ['userID','userName','fullName','delete'];
+   deleteuser:any;
+   displayedColumnss: string[]= ['userName','fullName','delete'];
 
    constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder,private dialog:MatDialog){
     this.forms=frmbuilder.group({
@@ -93,8 +94,11 @@ export class AdminComponent implements OnInit{
       data:{id}
     });
     }
-  Delete(){
-    alert()
+  Delete(id:number){
+    console.warn(id);
+    this.employee_Service.Delete(id).subscribe(deleteuser=>{
+      console.warn(deleteuser)
+    })
   }
   del(userID:number){
     console.warn(userID);
