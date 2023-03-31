@@ -56,6 +56,19 @@ namespace ResourceManagerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "skillgroup",
+                columns: table => new
+                {
+                    SkillGroupID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SkillGroup = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skillgroup", x => x.SkillGroupID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "skills",
                 columns: table => new
                 {
@@ -77,7 +90,7 @@ namespace ResourceManagerAPI.Migrations
                 {
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SkillGroup = table.Column<string>(type: "text", nullable: true),
+                    SkillGroupID = table.Column<int>(type: "integer", nullable: false),
                     Skill = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -106,7 +119,8 @@ namespace ResourceManagerAPI.Migrations
                     UserID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserName = table.Column<string>(type: "text", nullable: true),
-                    FullName = table.Column<string>(type: "text", nullable: true)
+                    FullName = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,6 +139,9 @@ namespace ResourceManagerAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "employeetasks");
+
+            migrationBuilder.DropTable(
+                name: "skillgroup");
 
             migrationBuilder.DropTable(
                 name: "skills");

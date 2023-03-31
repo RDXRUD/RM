@@ -27,7 +27,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpPost, Authorize]
         [Route("AddSkillGroup")]
-        public async Task<IActionResult> Put(SkillGroups skill)
+        public async Task<IActionResult> AddSkillGroup(SkillGroups skill)
         {
             SkillGroups skillGroup = new SkillGroups();
             skillGroup.SkillGroupID = skill.SkillGroupID;
@@ -39,7 +39,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpPut, Authorize]
         [Route("UpdateSkillGroup")]
-        public async Task<IActionResult> Update(SkillGroups skill)
+        public async Task<IActionResult> UpdateSkillGroup(SkillGroups skill)
         {
             var existingSkillGroup = await _dbContext.skillgroup.FindAsync(skill.SkillGroupID);
 
@@ -52,7 +52,6 @@ namespace ResourceManagerAPI.Controllers
 
             _dbContext.Entry(existingSkillGroup).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
-
             return Ok("Record Updated Successfully");
         }
 
@@ -86,9 +85,16 @@ namespace ResourceManagerAPI.Controllers
             return Ok(employee);
         }
 
+        [HttpGet, Authorize]
+        [Route("GetSkill")]
+        public async Task<IEnumerable<SkillSet>> GetSkill()
+        {
+            return await _dbContext.skillset.ToListAsync();
+        }
+
         [HttpPost, Authorize]
         [Route("AddSkill")]
-        public async Task<IActionResult> Put(SkillSet skill)
+        public async Task<IActionResult> AddSkill(SkillSet skill)
         {
             SkillSet skillSet = new SkillSet();
             skillSet.SkillGroupID = skill.SkillGroupID;
@@ -100,7 +106,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpPut, Authorize]
         [Route("UpdateSkill")]
-        public async Task<IActionResult> Update(SkillSet skill)
+        public async Task<IActionResult> UpdateSkill(SkillSet skill)
         {
             var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillGroupID);
 
@@ -113,7 +119,6 @@ namespace ResourceManagerAPI.Controllers
 
             _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
-
             return Ok("Record Updated Successfully");
         }
 

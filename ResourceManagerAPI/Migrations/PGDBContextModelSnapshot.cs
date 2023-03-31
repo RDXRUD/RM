@@ -101,6 +101,22 @@ namespace ResourceManagerAPI.Migrations
                     b.ToTable("uploadrecord");
                 });
 
+            modelBuilder.Entity("ResourceManagerAPI.Models.SkillGroups", b =>
+                {
+                    b.Property<int>("SkillGroupID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillGroupID"));
+
+                    b.Property<string>("SkillGroup")
+                        .HasColumnType("text");
+
+                    b.HasKey("SkillGroupID");
+
+                    b.ToTable("skillgroup");
+                });
+
             modelBuilder.Entity("ResourceManagerAPI.Models.SkillSet", b =>
                 {
                     b.Property<int>("ID")
@@ -112,8 +128,8 @@ namespace ResourceManagerAPI.Migrations
                     b.Property<string>("Skill")
                         .HasColumnType("text");
 
-                    b.Property<string>("SkillGroup")
-                        .HasColumnType("text");
+                    b.Property<int>("SkillGroupID")
+                        .HasColumnType("integer");
 
                     b.HasKey("ID");
 
@@ -154,6 +170,10 @@ namespace ResourceManagerAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserID"));
 
                     b.Property<string>("FullName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
