@@ -19,8 +19,15 @@ namespace ResourceManagerAPI.Controllers
             }
 
         [HttpGet, Authorize]
+        [Route("GetSkillGroup")]
+        public async Task<IEnumerable<SkillGroups>> GetSkillGroup()
+        {
+            return await _dbContext.skillgroup.ToListAsync();
+        }
+
+        [HttpGet, Authorize]
         [Route("GetSkillSet")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetSkillSet()
         {
             var employee = (from sg in _dbContext.skillgroup
                             join ss in _dbContext.skillset
