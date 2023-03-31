@@ -23,7 +23,7 @@ export class AdminComponent implements OnInit{
   data:any;
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    datas:any;
-  dsp: string[]= ['id','skillGroup','skill','edit','delete'];
+  dsp: string[]= ['skillGroupID','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
    deleteuser:any;
