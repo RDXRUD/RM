@@ -12,8 +12,8 @@ import { skillsets } from './skillsets';
 })
 export class DialogboxComponent {
   skill:FormGroup;
-  formdata!:skillsets;
-  userdata:any;
+  formdatas!:skillsets;
+  userdatas:any;
   constructor(private skillsSet_Services:SkillsetService,private frmbuilder:FormBuilder){
     this.skill=frmbuilder.group({
       skillGroup:new FormControl(),
@@ -21,12 +21,11 @@ export class DialogboxComponent {
    })
   }
   UpdateSkills(){
-    this.formdata=this.skill.value;
-    console.warn(this.formdata);
-    this.skillsSet_Services.UpdateSkills(this.formdata).subscribe(userdata=>{
-      console.warn(userdata)
+    this.formdatas=this.skill.value;
+    console.warn(this.formdatas);
+    this.skillsSet_Services.UpdateSkills(this.formdatas).subscribe(userdatas=>{
+      console.warn(userdatas)
     })
    }
 }
 
-}

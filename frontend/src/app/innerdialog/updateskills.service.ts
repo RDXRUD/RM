@@ -7,7 +7,6 @@ import { updateskill } from './updateskill';
   providedIn: 'root'
 })
 export class UpdateskillsService {
-
   constructor(private http:HttpClient) { }
   UpdateSkill(formdata:updateskill):Observable<updateskill[]>{
     let url="https://localhost:7271/api/Skills/AddNewSkill";
