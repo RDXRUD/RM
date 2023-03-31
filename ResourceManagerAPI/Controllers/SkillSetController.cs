@@ -25,6 +25,48 @@ namespace ResourceManagerAPI.Controllers
             return await _dbContext.skillgroup.ToListAsync();
         }
 
+        [HttpPost, Authorize]
+        [Route("AddSkillGroup")]
+        public async Task<IActionResult> Put(SkillGroups skill)
+        {
+            SkillGroups skillGroup = new SkillGroups();
+            skillGroup.SkillGroupID = skill.SkillGroupID;
+            skillGroup.SkillGroup = skill.SkillGroup;
+            _dbContext.skillgroup.Add(skillGroup);
+            _dbContext.SaveChanges();
+            return Ok("Record Added Successfully");
+        }
+
+        [HttpPut, Authorize]
+        [Route("UpdateSkillGroup")]
+        public async Task<IActionResult> Update(SkillGroups skill)
+        {
+            var existingSkillGroup = await _dbContext.skillgroup.FindAsync(skill.SkillGroupID);
+
+            if (existingSkillGroup == null)
+            {
+                return NotFound();
+            }
+
+            existingSkillGroup.SkillGroup = skill.SkillGroup;
+
+            _dbContext.Entry(existingSkillGroup).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Record Updated Successfully");
+        }
+
+        [HttpDelete, Authorize]
+        [Route("DeleteSkillGroup")]
+        public async Task<IActionResult> DeleteSkillGroup(SkillGroups skill)
+        {
+            SkillGroups skillGroup = new SkillGroups();
+            skillGroup.SkillGroupID = skill.SkillGroupID;
+            _dbContext.skillgroup.RemoveRange(skillGroup);
+            _dbContext.SaveChanges();
+            return Ok("Record Deleted Successfully");
+        }
+
         [HttpGet, Authorize]
         [Route("GetSkillSet")]
         public async Task<IActionResult> GetSkillSet()
@@ -44,45 +86,43 @@ namespace ResourceManagerAPI.Controllers
             return Ok(employee);
         }
 
-        //[HttpPost, Authorize]
-        //[Route("AddSkillSet")]
-        //public async Task<IActionResult> Put(SkillSet skill)
-        //{
-        //    SkillSet skillSet = new SkillSet();
-        //    skillSet.ID = skill.ID;
-        //    skillSet.SkillGroup = skill.SkillGroup;
-        //    skillSet.Skill = skill.Skill;
-        //    _dbContext.skillset.Add(skillSet);
-        //    _dbContext.SaveChanges();
-        //    return Ok("Record Added Successfully");
-        //}
+        [HttpPost, Authorize]
+        [Route("AddSkillSet")]
+        public async Task<IActionResult> Put(SkillSet skill)
+        {
+            SkillSet skillSet = new SkillSet();
+            skillSet.SkillGroupID = skill.SkillGroupID;
+            skillSet.Skill = skill.Skill;
+            _dbContext.skillset.Add(skillSet);
+            _dbContext.SaveChanges();
+            return Ok("Record Added Successfully");
+        }
 
-        //[HttpPut, Authorize]
-        //[Route("UpdateSkillSet")]
-        //public async Task<IActionResult> Update(SkillSet skill)
-        //{
-        //    var existingSkillSet = await _dbContext.skillset.FindAsync(skill.ID);
+        [HttpPut, Authorize]
+        [Route("UpdateSkillSet")]
+        public async Task<IActionResult> Update(SkillSet skill)
+        {
+            var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillGroupID);
 
-        //    if (existingSkillSet == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (existingSkillSet == null)
+            {
+                return NotFound();
+            }
 
-        //    existingSkillSet.SkillGroup = skill.SkillGroup;
-        //    existingSkillSet.Skill = skill.Skill;
+            existingSkillSet.Skill = skill.Skill;
 
-        //    _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
-        //    await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
 
-        //    return Ok("Record Updated Successfully");
-        //}
+            return Ok("Record Updated Successfully");
+        }
 
         [HttpDelete, Authorize]
         [Route("DeleteSkillSet")]
-        public async Task<IActionResult> Delete(SkillSet skill)
+        public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
         {
             SkillSet skillSet = new SkillSet();
-            skillSet.ID = skill.ID;
+            skillSet.SkillGroupID = skill.SkillGroupID;
             _dbContext.skillset.RemoveRange(skillSet);
             _dbContext.SaveChanges();
             return Ok("Record Deleted Successfully");
