@@ -60,8 +60,9 @@ namespace ResourceManagerAPI.Controllers
         [NonAction]
         [HttpDelete, Authorize]
         [Route("DeleteUser")]
-        public async Task<IActionResult> Delete([FromBody] int id)
+        public async Task<IActionResult> Delete([FromBody] Users userToDelete)
         {
+            var id = userToDelete.UserID;
             if (id < 1)
                 return BadRequest();
             var user = await _dbContext.users.FindAsync(id);
@@ -69,7 +70,7 @@ namespace ResourceManagerAPI.Controllers
                 return NotFound();
             _dbContext.users.Remove(user);
             await _dbContext.SaveChangesAsync();
-            return Ok("Record Deleted Successfully");
+            return Ok();
         }
 
         [HttpPost("Login")]

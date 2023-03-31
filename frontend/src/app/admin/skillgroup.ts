@@ -1,5 +1,5 @@
 export interface skillgroup{ 
-     id:number;
+     skillGroupID:number;
     skillGroup:string;
      skill:string;
     edit:string;

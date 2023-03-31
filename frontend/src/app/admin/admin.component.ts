@@ -23,11 +23,16 @@ export class AdminComponent implements OnInit{
   data:any;
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    datas:any;
-  dsp: string[]= ['id','skillGroup','skill','edit','delete'];
+  dsp: string[]= ['skillGroupID','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
-   displayedColumnss: string[]= ['userID','userName','fullName','delete'];
+   users:any;
+   deleteuser:any;
+   deleteskillgroup:any;
 
+   displayedColumnss: string[]= ['userName','fullName','delete'];
+   displayedColumnsto:string[]=['skillGroupID','skillGroup','delete'];
+   
    constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder,private dialog:MatDialog){
     this.forms=frmbuilder.group({
       userName:new FormControl(),
@@ -57,6 +62,10 @@ export class AdminComponent implements OnInit{
     this.employee_Service.getUsers().subscribe(user =>{
       console.warn(user)
       this.user=user
+    })
+    this.employee_Service.getSkillGroup().subscribe(users =>{
+      console.warn(users)
+      this.users=users;
     })
   }
   OnFile(){
@@ -93,8 +102,11 @@ export class AdminComponent implements OnInit{
       data:{id}
     });
     }
-  Delete(){
-    alert()
+  Delete(id:number){
+    console.warn(id);
+    this.employee_Service.Delete(id).subscribe(deleteuser=>{
+      console.warn(deleteuser)
+    })
   }
   del(userID:number){
     console.warn(userID);
@@ -102,4 +114,10 @@ export class AdminComponent implements OnInit{
       console.warn(deletedata);
     })
   };
+  DeleteSkillGroup(skillGroupID:number){
+    console.warn(skillGroupID);
+    this.employee_Service.DeleteSkillGroup(skillGroupID).subscribe(deleteskillgroup=>{
+      console.warn(deleteskillgroup);
+    })
+  }
 }

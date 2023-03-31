@@ -30,6 +30,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './login/AuthInterceptor';
 import { LoginComponent } from './login/login.component';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
+import { InnerdialogComponent } from './innerdialog/innerdialog.component';
 // import { AuthGuard } from './login/AuthGuard';
 
 
@@ -42,6 +43,7 @@ import { DialogboxComponent } from './dialogbox/dialogbox.component';
     DialogComponent,
     LoginComponent,
     DialogboxComponent,
+    InnerdialogComponent,
   ],
   imports: [
     BrowserModule,

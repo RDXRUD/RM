@@ -7,6 +7,7 @@ import { file } from './file';
 import { user } from './user';
 import { userform } from './userform';
 import { addskills } from './addskills';
+import { users } from './users';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,11 @@ export class EmployeeService {
     let url="https://localhost:7271/AllUser";
     return this.http.get<user[]>(url);
   }
+  getSkillGroup():Observable<users[]>{
+    let url="https://localhost:7271/api/SkillSet/GetSkillGroup";
+    return this.http.get<users[]>(url);
+
+  }
   OnFile(formdata:file):Observable<file[]>{
     const formValues = new FormData();
     formValues.append('userName', formdata.userName);
@@ -44,6 +50,17 @@ export class EmployeeService {
   del(UserID:number){
     console.warn(UserID);
     let url="https://localhost:7271/DeleteUser";
-    return this.http.post(url,UserID);
+    return this.http.delete(url, {body: {userId: UserID}});
+  }
+  Delete(id:number){
+  console.warn(id);
+  let url="https://localhost:7271/api/SkillSet/DeleteSkillSet";
+  return this.http.delete(url,{body:{id:id}});
+  }
+  DeleteSkillGroup(skillGroupID:number){
+    console.warn(skillGroupID);
+    let url="";
+    return this.http.delete(url,{body:{skillGroupID:skillGroupID}});
   }
  }
+

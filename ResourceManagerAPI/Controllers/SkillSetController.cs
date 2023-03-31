@@ -8,15 +8,15 @@ using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 namespace ResourceManagerAPI.Controllers
 {
     [Route("api/[controller]")]
-        [ApiController]
-        public class SkillSetController : Controller
-        {
-            private readonly PGDBContext _dbContext;
+    [ApiController]
+    public class SkillSetController : Controller
+    {
+        private readonly PGDBContext _dbContext;
 
-            public SkillSetController(PGDBContext context)
-            {
-                _dbContext = context;
-            }
+        public SkillSetController(PGDBContext context)
+        {
+            _dbContext = context;
+        }
 
         [HttpGet, Authorize]
         [Route("GetSkillGroup")]
