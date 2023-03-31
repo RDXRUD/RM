@@ -26,9 +26,13 @@ export class AdminComponent implements OnInit{
   dsp: string[]= ['skillGroupID','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
+   users:any;
    deleteuser:any;
-   displayedColumnss: string[]= ['userName','fullName','delete'];
+   deleteskillgroup:any;
 
+   displayedColumnss: string[]= ['userName','fullName','delete'];
+   displayedColumnsto:string[]=['skillGroupID','skillGroup','delete'];
+   
    constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder,private dialog:MatDialog){
     this.forms=frmbuilder.group({
       userName:new FormControl(),
@@ -58,6 +62,10 @@ export class AdminComponent implements OnInit{
     this.employee_Service.getUsers().subscribe(user =>{
       console.warn(user)
       this.user=user
+    })
+    this.employee_Service.getSkillGroup().subscribe(users =>{
+      console.warn(users)
+      this.users=users;
     })
   }
   OnFile(){
@@ -106,4 +114,10 @@ export class AdminComponent implements OnInit{
       console.warn(deletedata);
     })
   };
+  DeleteSkillGroup(skillGroupID:number){
+    console.warn(skillGroupID);
+    this.employee_Service.DeleteSkillGroup(skillGroupID).subscribe(deleteskillgroup=>{
+      console.warn(deleteskillgroup);
+    })
+  }
 }
