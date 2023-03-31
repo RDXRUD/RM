@@ -15,6 +15,7 @@ namespace ResourceManagerAPI.DBContext
         public virtual DbSet<EmployeeSkills> employeeskills { get; set; }
         public virtual DbSet<Users> users { get; set; }
         public virtual DbSet<SkillSet> skillset { get; set; }
+        public virtual DbSet<SkillGroups> skillgroup { get; set; }
         public virtual DbSet<PlanUploadRecord> uploadrecord { get; set; }
     }
 }

@@ -18,7 +18,6 @@
 		<PackageReference Include="Dapper" Version="2.0.123" />
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
 		<PackageReference Include="loggerservice" Version="1.0.1" />
-		<PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
@@ -28,7 +27,6 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.3" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.14" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.3" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.12" />

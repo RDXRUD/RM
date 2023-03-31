@@ -15,6 +15,7 @@ namespace ResourceManagerAPI.Controllers
         {
             _dbContext = context;
         }
+
         [HttpGet, Authorize]
         [Route("GetEmployeesTask")]
         public async Task<IActionResult> Get()

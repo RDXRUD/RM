@@ -16,6 +16,7 @@ namespace ResourceManagerAPI.Controllers
         {
             _dbContext = context;
         }
+
         [HttpGet, Authorize]
         [Route("GetSkill")]
         public async Task<IActionResult> Get()
@@ -60,6 +61,7 @@ namespace ResourceManagerAPI.Controllers
             ).ToList();
             return employeeskills;
         }
+
         [NonAction]
         [HttpGet, Authorize]
         public List<SkillManager> GetEmployeesSkill()
