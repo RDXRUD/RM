@@ -87,7 +87,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost, Authorize]
-        [Route("AddSkillSet")]
+        [Route("AddSkill")]
         public async Task<IActionResult> Put(SkillSet skill)
         {
             SkillSet skillSet = new SkillSet();
@@ -99,7 +99,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPut, Authorize]
-        [Route("UpdateSkillSet")]
+        [Route("UpdateSkill")]
         public async Task<IActionResult> Update(SkillSet skill)
         {
             var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillGroupID);
@@ -118,7 +118,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpDelete, Authorize]
-        [Route("DeleteSkillSet")]
+        [Route("DeleteSkill")]
         public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
         {
             SkillSet skillSet = new SkillSet();
