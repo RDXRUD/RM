@@ -77,6 +77,7 @@ namespace ResourceManagerAPI.Controllers
                             from m in detail.DefaultIfEmpty()
                             select new SkillSetManager
                             {
+                                ID=m.ID,
                                 SkillGroupID = sg.SkillGroupID,
                                 SkillGroup = sg.SkillGroup,
                                 Skill = m.Skill
