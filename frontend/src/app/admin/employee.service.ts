@@ -8,6 +8,7 @@ import { user } from './user';
 import { userform } from './userform';
 import { addskills } from './addskills';
 import { users } from './users';
+import { addskillgroups } from './addskillgroups';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,11 @@ export class EmployeeService {
     let url="https://localhost:7271/api/SkillSet/AddSkillSet";
     return this.http.post<addskills[]>(url,skilldata);
   }
+  AddSkillGroup(skillgroupdata:addskillgroups):Observable<addskillgroups[]>{
+    let url="https://localhost:7271/api/SkillSet/AddSkillGroup";
+    return this.http.post<addskillgroups[]>(url,skillgroupdata);
+    
+  }
   del(UserID:number){
     console.warn(UserID);
     let url="https://localhost:7271/DeleteUser";
@@ -59,7 +65,7 @@ export class EmployeeService {
   }
   DeleteSkillGroup(skillGroupID:number){
     console.warn(skillGroupID);
-    let url="";
+    let url="https://localhost:7271/api/SkillSet/DeleteSkillGroup";
     return this.http.delete(url,{body:{skillGroupID:skillGroupID}});
   }
  }

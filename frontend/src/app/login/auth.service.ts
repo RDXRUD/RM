@@ -1,33 +1,33 @@
-// import { Injectable } from '@angular/core';
-// import { JwtHelperService } from '@auth0/angular-jwt';
-// import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
 
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthService {
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private readonly TOKEN_KEY = 'auth_token';
 
-//   constructor(public jwtHelper: JwtHelperService) { }
+  constructor() { }
 
-//   public isAuthenticated(): boolean {
-//     const token = localStorage.getItem('token');
-//     return !this.jwtHelper.isTokenExpired(token);
-//   }
+  public login(username: string, password: string): boolean {
+    if (username === 'admin' && password === 'password') {
+      const token = 'dummy_jwt_token'; // Replace this with your actual JWT token
+      localStorage.setItem(this.TOKEN_KEY, token);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-//   public getToken(): any{
-//     return localStorage.getItem('token');
-//   }
+  public logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+  }
 
-//   public getUser(): any {
-//     const token = this.getToken();
-//     if (token) {
-//       return this.jwtHelper.decodeToken(token);
-//     } else {
-//       return null;
-//     }
-//   }
+  public isAuthenticated(): boolean {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    return token !== null && token !== undefined;
+  }
 
-//   public logout(): void {
-//     localStorage.removeItem('token');
-//   }
-// }
+  public getToken(): string | null {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+}

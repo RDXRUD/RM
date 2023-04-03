@@ -9,9 +9,11 @@ import { skillsets } from './skillsets';
 })
 export class SkillsetService {
 
-  constructor(private http:HttpClient) {}
+  constructor(private http:HttpClient) { }
+  
   UpdateSkills(formdatas:skillsets):Observable<skillsets[]>{
       let url="https://localhost:7271/api/SkillSet/UpdateSkillSet";
-      return this.http.put<skillset[]>(url,formdatas);
+      return this.http.put<skillsets[]>(url,formdatas);
     }
+
   }

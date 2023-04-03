@@ -36,13 +36,13 @@
           <mat-datepicker #two></mat-datepicker>
         </mat-form-field>
         <mat-form-field fxFlex="20">
-          <mat-label>Available To</mat-label>
-          <input formControlName="availableFrom" matInput [matDatepicker]="three">
+          <mat-label>Available From</mat-label>
+          <input type formControlName="availableFrom" matInput [matDatepicker]="three">
           <mat-datepicker-toggle matIconSuffix [for]="three"></mat-datepicker-toggle>
           <mat-datepicker #three></mat-datepicker>
         </mat-form-field>
         <mat-form-field fxFlex="20">
-          <mat-label>Assigned To</mat-label>
+          <mat-label>Available To</mat-label>
           <input formControlName="availableTo" matInput [matDatepicker]="four">
           <mat-datepicker-toggle matIconSuffix [for]="four"></mat-datepicker-toggle>
           <mat-datepicker #four></mat-datepicker>
@@ -51,7 +51,7 @@
           <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnSubmit">Submit</button>
         </div>
         <div fxFlex="20" fxFlexFill>
-          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnReset"> Reset</button>
+          <button fxFlex fxLayoutAlign="center center"  mat-raised-button color="primary" (click)="resetForm()">Reset</button>
         </div>
       </div>
     </form>

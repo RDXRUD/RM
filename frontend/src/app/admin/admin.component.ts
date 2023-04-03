@@ -7,20 +7,27 @@ import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { MatDialog,MAT_DIALOG_DATA,MatDialogRef} from '@angular/material/dialog';
 import { userform } from './userform';
 import { addskills } from './addskills';
+import { addskillgroups } from './addskillgroups';
+import { SGService } from './sg.service';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit{
+  skillGroup = new FormControl('');
+  apiData!:any[];
   forms:FormGroup;
   formdata!:file;
   userForm:FormGroup;
   formdatas!:userform;
   addskill:FormGroup;
+  addskillgroup:FormGroup;
   skilldata!:addskills;
+  skillgroupdata!:addskillgroups;
   deletedata:any;
   data:any;
+  sg:any;
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    datas:any;
   dsp: string[]= ['skillGroupID','skillGroup','skill','edit','delete'];
@@ -33,7 +40,7 @@ export class AdminComponent implements OnInit{
    displayedColumnss: string[]= ['userName','fullName','delete'];
    displayedColumnsto:string[]=['skillGroupID','skillGroup','delete'];
    
-   constructor(private employee_Service:EmployeeService,private frmbuilder:FormBuilder,private dialog:MatDialog){
+   constructor(private employee_Service:EmployeeService,private skillgroup:SGService,private frmbuilder:FormBuilder,private dialog:MatDialog){
     this.forms=frmbuilder.group({
       userName:new FormControl(),
       planFile:new FormControl(),
@@ -49,11 +56,19 @@ export class AdminComponent implements OnInit{
       skillGroup:new FormControl(),
       skill:new FormControl(),
     })
+    this.addskillgroup=frmbuilder.group({
+      skillGroupID:new FormControl(),
+      skillGroup:new FormControl,
+    })
   }
   ngOnInit(){
     this.employee_Service.getData().subscribe( data =>{
       console.warn(data)
          this.data=data
+    })
+    this.skillgroup.getData().subscribe(sg =>{
+      console.warn(sg)
+         this.apiData=sg;
     })
     this.employee_Service.getDetails().subscribe( datas =>{
       console.warn(datas)
@@ -91,15 +106,22 @@ export class AdminComponent implements OnInit{
       console.warn(skilldata)
     })
    }
+   AddSkillGroup(){
+    this.skillgroupdata=this.addskillgroup.value;
+    console.warn(this.skillgroupdata);
+    this.employee_Service.AddSkillGroup(this.skillgroupdata).subscribe(skillgroupdata=>{
+      console.warn(skillgroupdata)
+    })
+   }
  getSkills(emailID:string){
   // console.warn(emailID);
   const dialogRef= this.dialog.open(DialogComponent,{
       data:{emailID}
     });
   }
-  Edit(id:number){
+  Edit(skillGroupID:number){
     const dialogRef=this.dialog.open(DialogboxComponent,{
-      data:{id}
+      data:{skillGroupID}
     });
     }
   Delete(id:number){

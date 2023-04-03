@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import{Observable} from 'rxjs';
-import { updateskill } from './updateskill';
+import { update } from './update';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UpdateskillsService {
   constructor(private http:HttpClient) { }
-  UpdateSkill(formdata:updateskill):Observable<updateskill[]>{
+  UpdateSkill(formdata:update):Observable<update[]>{
     let url="https://localhost:7271/api/Skills/AddNewSkill";
-    return this.http.put<updateskill[]>(url,formdata);
+    return this.http.put<update[]>(url,formdata);
   }
   }

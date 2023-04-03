@@ -1,19 +1,20 @@
-// import { Injectable } from '@angular/core';
-// import { CanActivate, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { TokenService } from './token.service';
 
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthGuard implements CanActivate {
-//   constructor(private router: Router) { }
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
 
-//   canActivate(): boolean {
-//     const token = window.localStorage.getItem('token');
-//     if (token) {
-//       return true;
-//     } else {
-//       this.router.navigate(['/login']);
-//       return false;
-//     }
-//   }
-// }
+  constructor(private token_service: TokenService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (this.token_service.isAuthenticated()) {
+      return true;
+    } else {
+      this.router.navigate(['/Login']);
+      return false;
+    }
+  }
+}
