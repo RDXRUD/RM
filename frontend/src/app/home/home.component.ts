@@ -80,6 +80,7 @@ export class HomeComponent implements OnInit{
       this.data=datas
     })
    }
-   OnReset(){
+   resetForm(){
+    this.signupForm.reset();
    }
   }
