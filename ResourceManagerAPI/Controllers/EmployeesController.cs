@@ -21,7 +21,14 @@ namespace ResourceManagerAPI.Controllers
         [Route("GetEmployees")]
         public async Task<IEnumerable<Employee>> Get()
         {
-            return await _dbContext.employees.ToListAsync();
+            try
+            {
+                return await _dbContext.employees.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return (IEnumerable<Employee>)StatusCode(500, ex.Message);
+            }
         }
     }
 }

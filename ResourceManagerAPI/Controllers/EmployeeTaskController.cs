@@ -18,24 +18,31 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpGet, Authorize]
         [Route("GetEmployeesTask")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetEmployeeTasks()
         {
-            var employee = (from e in _dbContext.employeetasks
-                            join s in _dbContext.employees
-                            on e.EmpID equals s.EmpID
-                            into detail
-                            from m in detail.DefaultIfEmpty()
-                            select new EmployeeManager
-                            {
-                                EmpID = m.EmpID,
-                                ResourceName = m.ResourceName,
-                                EmailID = m.EmailID,
-                                TaskName = e.TaskName,
-                                Start = e.Start,
-                                Finish = e.Finish
-                            }
-                            ).ToList();
-            return Ok(employee);
+            try
+            {
+                var employee = (from e in _dbContext.employeetasks
+                                join s in _dbContext.employees
+                                on e.EmpID equals s.EmpID
+                                into detail
+                                from m in detail.DefaultIfEmpty()
+                                select new EmployeeManager
+                                {
+                                    EmpID = m.EmpID,
+                                    ResourceName = m.ResourceName,
+                                    EmailID = m.EmailID,
+                                    TaskName = e.TaskName,
+                                    Start = e.Start,
+                                    Finish = e.Finish
+                                }
+                                ).ToList();
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

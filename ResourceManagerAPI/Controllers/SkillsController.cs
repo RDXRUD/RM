@@ -21,45 +21,53 @@ namespace ResourceManagerAPI.Controllers
         [Route("GetSkill")]
         public async Task<IActionResult> Get()
         {
-            var skills = (from e in _dbContext.employeeskills
-                          join s in _dbContext.skills
-                          on e.ResourceID equals s.ResourceID
-                          into detail
-                          from m in detail.DefaultIfEmpty()
-                          select new SkillManager
-                          {
-                              ResourceID = e.ResourceID,
-                              SkillID = m.SkillID,
-                              EmailID = e.EmailID,
-                              SkillGroup = m.SkillGroup,
-                              Skill = m.Skill
-                          }
-                            ).ToList();
-            return Ok(skills);
+            try
+            {
+                var skills = (from e in _dbContext.employeeskills
+                              join s in _dbContext.skills
+                              on e.ResourceID equals s.ResourceID
+                              into detail
+                              from m in detail.DefaultIfEmpty()
+                              select new SkillManager
+                              {
+                                  ResourceID = e.ResourceID,
+                                  SkillID = m.SkillID,
+                                  EmailID = e.EmailID,
+                                  SkillGroup = m.SkillGroup,
+                                  Skill = m.Skill
+                              }
+                                ).ToList();
+                return Ok(skills);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost, Authorize]
         [Route("SkillByEmail")]
-        public List<SkillManager> Post(EmployeeSkills skill)
+        public List<SkillManager> GetSkillByEmail(EmployeeSkills skill)
         {
-            var skills = from e in _dbContext.employeeskills
-                         join s in _dbContext.skills
-                         on e.ResourceID equals s.ResourceID
-                         into detail
-                         from m in detail.DefaultIfEmpty()
-                         select new SkillManager
-                         {
-                             ResourceID = e.ResourceID,
-                             SkillID = m.SkillID,
-                             EmailID = e.EmailID,
-                             SkillGroup = m.SkillGroup,
-                             Skill = m.Skill
-                         };
+                var skills = from e in _dbContext.employeeskills
+                             join s in _dbContext.skills
+                             on e.ResourceID equals s.ResourceID
+                             into detail
+                             from m in detail.DefaultIfEmpty()
+                             select new SkillManager
+                             {
+                                 ResourceID = e.ResourceID,
+                                 SkillID = m.SkillID,
+                                 EmailID = e.EmailID,
+                                 SkillGroup = m.SkillGroup,
+                                 Skill = m.Skill
+                             };
 
-            var employeeskills = skills.Where(s =>
-            !String.IsNullOrEmpty(skill.EmailID) && s.EmailID.ToUpper() == skill.EmailID.ToUpper()
-            ).ToList();
-            return employeeskills;
+                var employeeskills = skills.Where(s =>
+                !String.IsNullOrEmpty(skill.EmailID) && s.EmailID.ToUpper() == skill.EmailID.ToUpper()
+                ).ToList();
+                return employeeskills;
+
         }
 
         [NonAction]
@@ -83,50 +91,93 @@ namespace ResourceManagerAPI.Controllers
             return employee;
         }
 
-        [HttpPut, Authorize]
+        [HttpPost, Authorize]
         [Route("AddNewSkill")]
-        public async Task<IActionResult> Put(SkillManager skill)
+        public async Task<IActionResult> AddNewSkill(SkillManager skill)
         {
-            var skills = (from e in _dbContext.employeeskills
-                          join s in _dbContext.skills
-                          on e.ResourceID equals s.ResourceID
-                          into detail
-                          from m in detail.DefaultIfEmpty()
-                          select new SkillManager
-                          {
-                              ResourceID = e.ResourceID,
-                              SkillID = m.SkillID,
-                              EmailID = e.EmailID,
-                              SkillGroup = m.SkillGroup,
-                              Skill = m.Skill
-                          }
-                            ).ToList();
-            _dbContext.Add(skill);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            try
+            {
+                var newSkill = new Skills
+                {
+                    Skill = skill.Skill,
+                    SkillGroup = skill.SkillGroup,
+                    SkillID = skill.SkillID
+                };
+                _dbContext.skills.Add(newSkill);
+                await _dbContext.SaveChangesAsync();
+
+                var employeeSkill = new EmployeeSkills
+                {
+                    ResourceID = skill.ResourceID,
+                    EmailID= skill.EmailID
+                   
+                };
+                _dbContext.employeeskills.Add(employeeSkill);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut, Authorize]
+        [Route("UpdateSkill")]
+        public async Task<IActionResult> UpdateSkill([FromBody] SkillManager skill)
+        {
+            try
+            {
+                var existingSkill = await _dbContext.skills.FindAsync(skill.ResourceID);
+                if (existingSkill == null)
+                {
+                    return NotFound();
+                }
+                existingSkill.ResourceID = skill.ResourceID;
+                existingSkill.Skill = skill.Skill;
+                existingSkill.SkillGroup = skill.SkillGroup;
+                existingSkill.SkillID = skill.SkillID;
+
+                var existingEmployeeSkill = await _dbContext.employeeskills.FirstOrDefaultAsync(e => e.ResourceID == skill.ResourceID);
+                if (existingEmployeeSkill == null)
+                {
+                    return NotFound();
+                }
+
+                existingEmployeeSkill.EmailID = skill.EmailID;
+
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpDelete, Authorize]
         [Route("DeleteSkill")]
-        public async Task<IActionResult> Delete(SkillManager skill)
+        public async Task<IActionResult> DeleteSkill([FromBody]SkillManager skill)
         {
-            var skills = (from e in _dbContext.employeeskills
-                          join s in _dbContext.skills
-                          on e.ResourceID equals s.ResourceID
-                          into detail
-                          from m in detail.DefaultIfEmpty()
-                          select new SkillManager
-                          {
-                              ResourceID = e.ResourceID,
-                              SkillID = m.SkillID,
-                              EmailID = e.EmailID,
-                              SkillGroup = m.SkillGroup,
-                              Skill = m.Skill
-                          }
-                            ).ToList();
-            _dbContext.Remove(skill);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            try
+            {
+                var skillToDelete = await _dbContext.skills.FirstOrDefaultAsync(s => s.ResourceID == skill.ResourceID);
+                if (skillToDelete == null)
+                {
+                    return NotFound();
+                }
+                _dbContext.skills.Remove(skillToDelete);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
     }
 }

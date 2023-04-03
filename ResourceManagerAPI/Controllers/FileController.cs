@@ -21,8 +21,15 @@ namespace ResourceManagerAPI.Controllers
         [Route("LoadFileData")]
         public IActionResult GetData([FromForm] File PlanFileInfo)
         {
-            _fileupload.GetData(PlanFileInfo);
-            return Ok();
+            try
+            {
+                _fileupload.GetData(PlanFileInfo);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

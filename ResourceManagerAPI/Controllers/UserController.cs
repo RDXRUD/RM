@@ -41,21 +41,42 @@ namespace ResourceManagerAPI.Controllers
         [Route("AllUser")]
         public async Task<IEnumerable<Users>> Get()
         {
-            return await _dbContext.users.ToListAsync();
+            try
+            {
+                return await _dbContext.users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return (IEnumerable<Users>)StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost, Authorize]
         [Route("AddUser")]
         public IActionResult AddUser([FromBody] Users user)
         {
-            return Ok(_account.AddUser(user));
+            try
+            {
+                return Ok(_account.AddUser(user));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
         
         [HttpDelete, Authorize]
         [Route("DeleteUser")]
         public IActionResult DeleteUser([FromBody] Users user)
         {
-            return Ok(_account.DeleteUser(user));
+            try
+            {
+                return Ok(_account.DeleteUser(user));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
         [NonAction]
         [HttpDelete, Authorize]
