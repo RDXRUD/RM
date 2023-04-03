@@ -160,7 +160,7 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillGroupID);
+                var existingSkillSet = await _dbContext.skillset.FindAsync(skill.ID);
 
                 if (existingSkillSet == null)
                 {

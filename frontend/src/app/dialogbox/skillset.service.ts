@@ -12,7 +12,7 @@ export class SkillsetService {
   constructor(private http:HttpClient) { }
   
   UpdateSkills(formdatas:skillsets):Observable<skillsets[]>{
-      let url="https://localhost:7271/api/SkillSet/UpdateSkillSet";
+      let url="https://localhost:7271/api/Skills/UpdateSkill";
       return this.http.put<skillsets[]>(url,formdatas);
     }
 

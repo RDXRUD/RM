@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { updateskill } from './updateskill';
-import { UpdateskillsService } from './updateskills.service';
 import { updateskillgroup } from './updateskillgroup';
+import { update } from './update';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +17,5 @@ export class SkillgroupService {
   getDatas():Observable<updateskill[]>{
     let url="https://localhost:7271/api/SkillSet/GetSkill";
     return this.http.get<updateskill[]>(url);
-  }
-
+   }
   }

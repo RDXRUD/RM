@@ -30,7 +30,7 @@ export class AdminComponent implements OnInit{
   sg:any;
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    datas:any;
-  dsp: string[]= ['skillGroupID','skillGroup','skill','edit','delete'];
+  dsp: string[]= ['id','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
    users:any;
@@ -119,9 +119,9 @@ export class AdminComponent implements OnInit{
       data:{emailID}
     });
   }
-  Edit(skillGroupID:number){
+  Edit(element:any){
     const dialogRef=this.dialog.open(DialogboxComponent,{
-      data:{skillGroupID}
+      data:{element}
     });
     }
   Delete(id:number){

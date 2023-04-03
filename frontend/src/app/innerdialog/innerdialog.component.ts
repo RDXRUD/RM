@@ -1,6 +1,5 @@
 import { Component,OnInit } from '@angular/core';
 import {FormGroup,FormControl,FormBuilder} from '@angular/forms';
-import { updateskill } from './updateskill';
 import { UpdateskillsService } from './updateskills.service';
 import { SkillgroupService } from './skillgroup.service';
 import { update } from './update';
@@ -10,8 +9,7 @@ import { update } from './update';
   templateUrl: './innerdialog.component.html',
   styleUrls: ['./innerdialog.component.scss']
 })
-export class InnerdialogComponent {
-  // selectedRow: any = null; 
+export class InnerdialogComponent { 
   skillGroup = new FormControl('');
   skill=new FormControl('');
   apiData!:any[];
@@ -36,15 +34,7 @@ export class InnerdialogComponent {
       console.warn(datas)
       this.apiDataa=datas;
     })
-    // this.skillGroup = new FormControl(this.selectedRow?.skillGroup || '');
-    // this.skill = new FormControl(this.selectedRow?.skill || '');
-    // // Set the default value of the skillGroup control based on the selected row
-    // this.skillGroup.setValue(this.selectedRow?.skillGroup || '');
-    // // Create the form group
-    // this.skills = this.fb.group({
-    //   skillGroup: this.skillGroup,
-    //   skill: this.skill
-    // });
+  
    }
   
   UpdateSkill(){

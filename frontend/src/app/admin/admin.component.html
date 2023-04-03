@@ -1,7 +1,7 @@
    <mat-tab-group>
-
-    <mat-tab label="Resource Skills"> 
-      <div class="mat-elevation-z8 list-table">
+    
+     <mat-tab label="Resource Skills"> 
+        <div class="mat-elevation-z8 list-table">
       <div class="UsersTable">
       <table mat-table [dataSource]="data" > 
         <ng-container matColumnDef="empID">
@@ -83,13 +83,14 @@
 
              <mat-form-field fxFlex="30">
               <mat-label>SKILL GROUP:-</mat-label>
-              <mat-select [formControl]="skillGroup" single>
+              <mat-select  [formControl]="skillGroup" single>
                 <mat-select-trigger>
                   {{skillGroup.value}}
                 </mat-select-trigger>
                 <mat-option *ngFor="let select of apiData" [value]="select.skillGroup">{{select.skillGroup}}</mat-option>
               </mat-select>
             </mat-form-field>
+
            <mat-form-field fxFlex="20">
             <mat-label>Skill:-</mat-label>
             <input formControlName="skill" matInput >
@@ -101,9 +102,9 @@
             </form>
           </div>
         <table mat-table [dataSource]="datas" class="SkillsTable"> 
-          <ng-container matColumnDef="skillGroupID">
+          <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>  ID </th>
-          <td mat-cell *matCellDef="let user"> {{user.skillGroupID}} </td>
+          <td mat-cell *matCellDef="let user"> {{user.id}} </td>
          </ng-container>
           <ng-container matColumnDef="skillGroup">
           <th mat-header-cell *matHeaderCellDef> SKILL GROUP</th>
@@ -117,7 +118,7 @@
           <th mat-header-cell *matHeaderCellDef> EDIT </th>
           <td mat-cell *matCellDef="let element">
             <mat-dialog-actions>
-             <button mat-raised-button color="primary" (click)="Edit(element.skillGroupID)">Edit</button> 
+             <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button> 
             </mat-dialog-actions></td>
           </ng-container>
            <ng-container matColumnDef="delete">
