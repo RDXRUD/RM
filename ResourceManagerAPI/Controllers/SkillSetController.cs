@@ -121,6 +121,38 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
+        [HttpPut, Authorize]
+        [Route("UpdateSkillSet")]
+        public async Task<IActionResult> UpdateSkillSet([FromBody] SkillSetManager skill)
+        {
+            try
+            {
+                var existingSkill = await _dbContext.skillgroup.FindAsync(skill.SkillGroupID);
+                if (existingSkill == null)
+                {
+                    return NotFound();
+                }
+                existingSkill.SkillGroupID = skill.SkillGroupID;
+                existingSkill.SkillGroup = skill.SkillGroup;
+
+                var existingEmployeeSkill = await _dbContext.skillset.FirstOrDefaultAsync(e => e.ID == skill.SkillGroupID);
+                if (existingEmployeeSkill == null)
+                {
+                    return NotFound();
+                }
+
+                existingEmployeeSkill.Skill = skill.Skill;
+
+                await _dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet, Authorize]
         [Route("GetSkill")]
         public async Task<IEnumerable<SkillSet>> GetSkill()
