@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { InnerdialogComponent } from '../innerdialog/innerdialog.component';
 import { AddskillService } from './addskill.service';
 import { addskillgroup } from './addskillgroup';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 @Component({
   selector: 'app-dialog',
@@ -29,7 +30,7 @@ export class DialogComponent implements OnInit {
   formdatas!:addskillgroup;
   userdatas:any;
   
-  constructor(private skills_service:SkillsService ,private add_skill:AddskillService,public dialogRef:MatDialogRef<DialogComponent>,public dialogRefs:MatDialogRef<InnerdialogComponent>,@Inject(MAT_DIALOG_DATA) public datadialog:any,  private fb: FormBuilder,
+  constructor(private skills_service:SkillsService ,private add_skill:AddskillService,public dialogRef:MatDialogRef<DialogComponent>,@Inject(MAT_DIALOG_DATA) public datadialog:any,  private fb: FormBuilder,
   private dialog:MatDialog,private _formBuilder: FormBuilder){
     this.skillgroupadd=_formBuilder.group({
       skillGroup:new FormControl(),
@@ -52,11 +53,11 @@ ngOnInit(){
   })
 }
 
-Edit(resourceID:number) 
-{ const dialogRefs=this.dialog.open(InnerdialogComponent,{
-  data:{resourceID}
+Edit(element:any) 
+{  const dialogRef=this.dialog.open(DialogboxComponent,{
+  data:{element}
 });
-console.warn(resourceID);
+// console.warn(element);
 };
 
 Delete(resourceID:number){
