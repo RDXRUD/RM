@@ -9,6 +9,7 @@ import { userform } from './userform';
 import { addskills } from './addskills';
 import { addskillgroups } from './addskillgroups';
 import { SGService } from './sg.service';
+import { InnerdialogComponent } from '../innerdialog/innerdialog.component';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -120,10 +121,10 @@ export class AdminComponent implements OnInit{
     });
   }
   Edit(element:any){
-    const dialogRef=this.dialog.open(DialogboxComponent,{
-      data:{element}
+    const dialogRef=this.dialog.open(InnerdialogComponent,{
+      data: {element}
     });
-    }
+  }
   Delete(id:number){
     console.warn(id);
     this.employee_Service.Delete(id).subscribe(deleteuser=>{

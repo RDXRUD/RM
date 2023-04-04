@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { updateskill } from './updateskill';
 import { updateskillgroup } from './updateskillgroup';
-import { update } from './update';
 @Injectable({
   providedIn: 'root'
 })

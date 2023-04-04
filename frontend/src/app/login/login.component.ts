@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
 
@@ -26,10 +26,7 @@ export class LoginComponent {
         (response:any) => {
           this.tokenService.setToken(response.Token);
           console.warn(response);
-        },
-      // (error) => {
-      //   console.error(error);
-      // },
+        },   
     );
   }
 }

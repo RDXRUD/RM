@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,Inject } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {FormGroup,FormControl,FormBuilder} from '@angular/forms';
 import { SkillsetService } from './skillset.service';
@@ -20,13 +20,16 @@ export class DialogboxComponent {
   userdatas:any;
   apiData!:any[];
   apiDataa!: any[];
-  constructor(private skillsSet_Services:SkillsetService,private skill_edit:SkilleditService,private frmbuilder:FormBuilder,private fb:FormBuilder){
+  constructor(private skillssetServices:SkillsetService,private skill_edit:SkilleditService,private frmbuilder:FormBuilder,private fb:FormBuilder,@Inject(MAT_DIALOG_DATA) public dataOfskills:any){
       this.skillgroupskill=frmbuilder.group({
       skillGroup:new FormControl(),
       skill:new FormControl(),
    })
   }
   ngOnInit(){
+    console.log(this.dataOfskills);
+    this.skillGroup.setValue(this.dataOfskills.element.skillGroup);
+    this.skill.setValue(this.dataOfskills.element.skill);
     this.skill_edit.getData().subscribe( data =>{
       console.warn(data)
          this.apiData=data;
@@ -39,7 +42,7 @@ export class DialogboxComponent {
   UpdateSkills(){
     this.formdatas=this.skillgroupskill.value;
     console.warn(this.formdatas);
-    this.skillsSet_Services.UpdateSkills(this.formdatas).subscribe(userdatas=>{
+    this.skillssetServices.UpdateSkills(this.formdatas).subscribe(userdatas=>{
       console.warn(userdatas)
     })
    }
