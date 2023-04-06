@@ -34,7 +34,7 @@ export const MY_FORMATS = {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit{
-   signupForm:FormGroup;
+  filteringForm:FormGroup;
   //  empID:string="";
   //  resourceName:string="";
   //  emailID:string="";
@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit{
       datas:any;
       formdata!:employeefilters;
    constructor(private users_Service:UsersService,private frmbuilder:FormBuilder ){
-    this.signupForm=frmbuilder.group({
+    this.filteringForm=frmbuilder.group({
       // empID:new FormControl(),
       name:new FormControl(),
       emailID:new FormControl(),
@@ -73,14 +73,15 @@ export class HomeComponent implements OnInit{
     })
    }
    OnSubmit(){
-    this.formdata=this.signupForm.value;
+    this.formdata=this.filteringForm.value;
     console.warn(this.formdata);
     this.users_Service.OnSubmit(this.formdata).subscribe(datas=>{
       console.warn(datas)
       this.data=datas
     })
    }
-   resetForm(){
-    this.signupForm.reset();
-   }
+   OnReset(){
+    this.filteringForm.reset();
   }
+   }
+  

@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import {Router} from '@angular/router'
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
+import { routes } from '../app-routing.module';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private tokenService: TokenService,
+     private tokenService: TokenService,
+     private router:Router
   ) {
     this.loginForm = fb.group({
       UserName: '',
@@ -26,8 +29,17 @@ export class LoginComponent {
         (response:any) => {
           this.tokenService.setToken(response.Token);
           console.warn(response);
+          this.router.navigate(['/Home']);
         },   
     );
+    // canActivate(): boolean {
+    //   if (!this.token_service.isAuthenticated()) {
+    //     this.router.navigate(['Login']);
+    //     return false;
+    //   } 
+    //     return true;
+    //   }
+
   }
 }
 

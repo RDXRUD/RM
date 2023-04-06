@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
+import { update } from './update';
 import { updateskill } from './updateskill';
 import { updateskillgroup } from './updateskillgroup';
+import { skillgroup } from '../admin/skillgroup';
 @Injectable({
   providedIn: 'root'
 })

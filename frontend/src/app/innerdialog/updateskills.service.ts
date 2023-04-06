@@ -9,7 +9,7 @@ import { update } from './update';
 export class UpdateskillsService {
   constructor(private http:HttpClient) { }
   UpdateSkill(formdata:update):Observable<update[]>{
-    let url="https://localhost:7271/api/Skills/AddNewSkill";
+    let url="https://localhost:7271/api/SkillSet/UpdateSkillSet";
     return this.http.put<update[]>(url,formdata);
   }
   }

@@ -3,8 +3,7 @@ import { EmployeeService } from './employee.service';
 import {FormGroup,FormControl,FormBuilder} from '@angular/forms';
 import { file } from './file';
 import { DialogComponent } from '../dialog/dialog.component';
-import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-import { MatDialog,MAT_DIALOG_DATA,MatDialogRef} from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { userform } from './userform';
 import { addskills } from './addskills';
 import { addskillgroups } from './addskillgroups';
@@ -90,7 +89,7 @@ export class AdminComponent implements OnInit{
     this.employee_Service.OnFile(this.formdata).subscribe(datas=>{
       console.warn(datas)
       alert("File Loaded Successfully")
-      // this.data=datas
+    
     })
    }
    OnUser(){
@@ -115,7 +114,6 @@ export class AdminComponent implements OnInit{
     })
    }
  getSkills(emailID:string){
-  // console.warn(emailID);
   const dialogRef= this.dialog.open(DialogComponent,{
       data:{emailID}
     });
