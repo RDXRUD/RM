@@ -33,16 +33,24 @@ namespace ResourceManagerAPI.Controllers
                                    Finish = et.Finish
                                };
 
-            var tempskill = from es in _dbContext.employeeskills
-                            join s in _dbContext.skills
-                         on es.ResourceID equals s.ResourceID
-                            select new SkillManager
+            var tempskill = from r in _dbContext.resources
+                            join rs in _dbContext.resourceskills
+                            on r.ResourceID equals rs.ResourceID
+                            join ss in _dbContext.skillset
+                            on rs.SkillSetID equals ss.SkillSetID
+                            join sg in _dbContext.skillgroup
+                            on ss.SkillGroupID equals sg.SkillGroupID
+                            join s in _dbContext.skill
+                            on ss.SkillID equals s.SkillID
+                            into detail
+                            from m in detail.DefaultIfEmpty()
+                            select new ResourceSkillManager
                             {
-                                ResourceID= es.ResourceID,
-                                SkillID = s.SkillID,
-                                EmailID = es.EmailID,
-                                SkillGroup = s.SkillGroup,
-                                Skill = s.Skill
+                                ResourceID = r.ResourceID,
+                                SkillID = ss.SkillID,
+                                EmailID = r.EmailID,
+                                SkillGroup = sg.SkillGroup,
+                                Skill = m.Skill
                             };
 
             if (String.IsNullOrEmpty(filter.Skill))

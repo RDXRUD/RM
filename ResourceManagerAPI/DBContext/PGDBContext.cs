@@ -11,11 +11,12 @@ namespace ResourceManagerAPI.DBContext
         }
         public virtual DbSet<EmployeeTasks> employeetasks { get; set; }
         public virtual DbSet<Employee> employees { get; set; }
-        public virtual DbSet<Skills> skills { get; set; }
-        public virtual DbSet<EmployeeSkills> employeeskills { get; set; }
+        public virtual DbSet<ResourceSkills> resourceskills { get; set; }
+        public virtual DbSet<Resources> resources { get; set; }
         public virtual DbSet<Users> users { get; set; }
         public virtual DbSet<SkillSet> skillset { get; set; }
         public virtual DbSet<SkillGroups> skillgroup { get; set; }
+        public virtual DbSet<Skills> skill { get; set; }
         public virtual DbSet<PlanUploadRecord> uploadrecord { get; set; }
     }
 }
