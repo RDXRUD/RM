@@ -111,6 +111,7 @@ namespace ResourceManagerAPI.Controllers
                                 {
                                     SkillSetID = ss.SkillSetID,
                                     SkillGroupID = ss.SkillGroupID,
+                                    SkillID=s.SkillID,
                                     SkillGroup = m.SkillGroup,
                                     Skill = s.Skill
                                 }
