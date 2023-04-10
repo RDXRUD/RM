@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
-import { skillgroup } from './skillgroup';
-import { skill } from './skill';
+import { skillsets } from './skillsets';
+import { skillGroupInterface } from './skillGroupInteface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,12 @@ import { skill } from './skill';
 export class SkilleditService {
 
   constructor(private http:HttpClient) { }
-  getData():Observable<skillgroup[]>{
+  getData():Observable<skillGroupInterface[]>{
     let url="https://localhost:7271/api/SkillSet/GetSkillGroup";
-    return this.http.get<skillgroup[]>(url);
+    return this.http.get<skillGroupInterface[]>(url);
   }
-  getDatas():Observable<skill[]>{
-    let url="https://localhost:7271/api/SkillSet/GetSkill";
-    return this.http.get<skill[]>(url);
+  getDatas():Observable<skillsets[]>{
+    let url="https://localhost:7271/api/SkillSet/GetSkillSet";
+    return this.http.get<skillsets[]>(url);
   }
 }

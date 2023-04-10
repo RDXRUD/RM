@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { UsersService } from './home/users.service';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, routes } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
@@ -31,10 +31,8 @@ import { AuthInterceptor } from './login/AuthInterceptor';
 import { LoginComponent } from './login/login.component';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { InnerdialogComponent } from './innerdialog/innerdialog.component';
-// import { AuthGuard } from './login/AuthGuard';
+import { RouterModule, Routes } from '@angular/router';
 
-
-// import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -68,13 +66,13 @@ import { InnerdialogComponent } from './innerdialog/innerdialog.component';
    MatDialogModule,
    NgxMatFileInputModule,
    MatTooltipModule,
+   RouterModule.forRoot(routes),
    JwtModule.forRoot({
     config: {
       tokenGetter: () => {
         return localStorage.getItem('access_token');
-      }/*,
-      allowedDomains: ['localhost:3000'],
-      disallowedRoutes: ['http://localhost:3000/auth/login'], */
+      }
+   
     },
   }),
 ],

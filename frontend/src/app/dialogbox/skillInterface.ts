@@ -1,6 +1,5 @@
-export interface update{
+export interface skillInterface{
     id:number;
     skillGroupID:number;
-    skillGroup:string;
     skill:string;
 }

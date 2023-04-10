@@ -14,7 +14,6 @@ import { addskillgroups } from './addskillgroups';
   providedIn: 'root'
 })
 export class EmployeeService {
-  
   constructor(private http:HttpClient) { }
    getData():Observable<skill[]>{
      let url="https://localhost:7271/api/Employees/GetEmployees";
@@ -31,7 +30,6 @@ export class EmployeeService {
   getSkillGroup():Observable<users[]>{
     let url="https://localhost:7271/api/SkillSet/GetSkillGroup";
     return this.http.get<users[]>(url);
-
   }
   OnFile(formdata:file):Observable<file[]>{
     const formValues = new FormData();

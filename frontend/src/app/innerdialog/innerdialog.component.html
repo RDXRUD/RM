@@ -3,20 +3,16 @@
     <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
       <mat-form-field fxFlex="30">
         <mat-label>SKILL GROUP</mat-label>
-        <mat-select [formControl]="skillGroup" single>
-          <mat-select-trigger>
-            {{skillGroup.value}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let select of apiData" [value]="select.skillGroup">{{select.skillGroup}}</mat-option>
+        <mat-select formControlName="skillGroupID" single>
+       
+          <mat-option *ngFor="let select of apiData" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
         </mat-select>
       </mat-form-field>
      <mat-form-field fxFlex="30">
         <mat-label>SKILL</mat-label>
-        <mat-select [formControl]="skill" single>
-          <mat-select-trigger>
-            {{skill.value}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let select of apiDataa" [value]="select.skill">{{select.skill}}</mat-option>
+        <mat-select formControlName="id" single>
+          
+          <mat-option *ngFor="let select of apiDataa" [value]="select.id">{{select.skill}}</mat-option>
         </mat-select>
       </mat-form-field>
       <div fxFlex="30" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">

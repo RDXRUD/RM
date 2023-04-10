@@ -1,15 +1,27 @@
+<div class="login-container">
+  <div class="login-box">
+    <h2>LOGIN</h2>
 <form [formGroup]="loginForm" (ngSubmit)="OnLogin()">
-    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-      <mat-form-field fxFlex="20">
-          UserName :-
+     <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid"> 
+      <mat-form-field fxFlex="10" >
+          <mat-label>UserName:-</mat-label>
         <input formControlName="UserName" matInput>
       </mat-form-field>
-      <mat-form-field fxFlex="20">
-        Password :-
+      <mat-form-field fxFlex="10">
+        <mat-label>Password:-</mat-label>
         <input type="password" formControlName="Password" matInput>
       </mat-form-field>
-      <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+       </div> 
+        <div class="button-container">
         <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnLogin">Login</button>
-      </div>
-    </div>
-  </form>
+       </div> 
+ 
+</form>
+</div>
+</div>
+
+
+
+
+
+

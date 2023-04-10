@@ -11,10 +11,10 @@ import { SkilleditService } from './skilledit.service';
   styleUrls: ['./dialogbox.component.scss']
 })
 export class DialogboxComponent {
-  skillGroup = new FormControl('');
-  skill=new FormControl('');
-   data:any;
-   datas:any;
+  // skillGroup = new FormControl('');
+  // skill=new FormControl('');
+  data:any;
+  datas:any;
   skillgroupskill:FormGroup;
   formdatas!:skillsets;
   userdatas:any;
@@ -22,14 +22,21 @@ export class DialogboxComponent {
   apiDataa!: any[];
   constructor(private skillssetServices:SkillsetService,private skill_edit:SkilleditService,private frmbuilder:FormBuilder,private fb:FormBuilder,@Inject(MAT_DIALOG_DATA) public dataOfskills:any){
       this.skillgroupskill=frmbuilder.group({
-      skillGroup:new FormControl(),
-      skill:new FormControl(),
+      skillGroup:new FormControl(''),
+      skill:new FormControl(''),
    })
   }
   ngOnInit(){
-    console.log(this.dataOfskills);
-    this.skillGroup.setValue(this.dataOfskills.element.skillGroup);
-    this.skill.setValue(this.dataOfskills.element.skill);
+    console.log(this.dataOfskills.element);
+    this.skillgroupskill.setValue({
+      // skillGroupID:this.dataofskills.element.skillGroupID,
+      // id:this.dataofskills.element.id,
+      skillGroup: this.dataOfskills.element.skillGroup,
+      skill: this.dataOfskills.element.skill,
+     
+    });
+    console.log(this.dataOfskills.element.skillGroup);
+    console.log(this.dataOfskills.element.skill);
     this.skill_edit.getData().subscribe( data =>{
       console.warn(data)
          this.apiData=data;
