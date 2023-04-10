@@ -135,7 +135,7 @@ namespace ResourceManagerAPI.Controllers
                     return NotFound();
                 }
                 //existingSkill.SkillGroupID = skill.SkillGroupID;
-                existingSkill.SkillGroup = skill.SkillGroup;
+                existingSkill.SkillGroupID = skill.SkillGroupID;
 
                 var existingEmployeeSkill = await _dbContext.skill.FirstOrDefaultAsync(e => e.SkillID == skill.SkillID);
                 if (existingEmployeeSkill == null)
@@ -143,7 +143,7 @@ namespace ResourceManagerAPI.Controllers
                     return NotFound();
                 }
 
-                existingEmployeeSkill.Skill = skill.Skill;
+                existingEmployeeSkill.SkillID = skill.SkillID;
 
                 await _dbContext.SaveChangesAsync();
 

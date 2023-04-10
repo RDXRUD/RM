@@ -18,7 +18,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpGet, Authorize]
-        [Route("GetSkill")]
+        [Route("GetSetOfSkill")]
         public async Task<IActionResult> GetSkill()
         {
             try
@@ -112,7 +112,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost, Authorize]
-        [Route("AddNewSkill")]
+        [Route("AddNewSetOfSkill")]
         public async Task<IActionResult> AddNewSkill(ResourceSkillManager skill)
         {
             try
