@@ -38,6 +38,8 @@ namespace ResourceManagerAPI.Controllers
                               {
                                   ResourceID = r.ResourceID,
                                   SkillID = ss.SkillID,
+                                  ResourceSkillID=rs.ResourceSkillID,
+                                  SkillSetID=rs.SkillSetID,
                                   EmailID = r.EmailID,
                                   SkillGroup = sg.SkillGroup,
                                   Skill = m.Skill
@@ -155,23 +157,20 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var existingSkill = await _dbContext.skill.FindAsync(skill.ResourceID);
-                if (existingSkill == null)
+                var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+                if (existingSkillSet == null)
                 {
                     return NotFound();
                 }
-                existingSkill.Skill = skill.Skill;
-                skill.SkillID = skill.SkillID;
+                existingSkillSet.SkillGroupID = skill.SkillGroupID;
 
-                var existingSkillGroup = await _dbContext.skillgroup.FirstOrDefaultAsync(e => e.SkillGroupID == skill.SkillGroupID);
-                if (existingSkillGroup == null)
+                var existingResourceSkill = await _dbContext.resourceskills.FindAsync(skill.ResourceID);
+                if (existingResourceSkill == null)
                 {
                     return NotFound();
                 }
-                skill.SkillGroup = skill.SkillGroup;
-
+                existingResourceSkill.SkillSetID = skill.SkillSetID;
                 await _dbContext.SaveChangesAsync();
-
                 return Ok();
             }
             catch (Exception ex)
