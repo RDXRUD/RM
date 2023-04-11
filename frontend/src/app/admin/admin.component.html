@@ -1,8 +1,10 @@
    <mat-tab-group>
     
      <mat-tab label="Resource Skills"> 
+      <div class="scrollable-table">
         <div class="mat-elevation-z8 list-table">
       <div class="UsersTable">
+       
       <table mat-table [dataSource]="data" > 
         <ng-container matColumnDef="empID">
         <th mat-header-cell *matHeaderCellDef> EMP ID </th>
@@ -28,6 +30,7 @@
       </table>
       </div>
       </div>
+      </div>
     </mat-tab>
     <mat-tab label ='Add SkillGroup'>
       <div class="contain">
@@ -47,7 +50,7 @@
             </div>
           </form>
         </div>
-
+        <div class="scrollable-table">
       <table mat-table [dataSource]="users" > 
         <ng-container matColumnDef="skillGroupID">
         <th mat-header-cell *matHeaderCellDef> ID</th>
@@ -65,9 +68,8 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsto"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsto;"></tr> 
        </table>
-
+      </div>
     </mat-tab>
-
       <mat-tab label="Add  Skills"> 
         <div class="contain">
           <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
@@ -75,22 +77,20 @@
             
               <mat-form-field fxFlex="20">
                 <mat-label>ID:-</mat-label>
-                <input formControlName="id" matInput >
+                <input formControlName="skillSetID" matInput >
              </mat-form-field>
-
              <mat-form-field fxFlex="30">
               <mat-label>SKILL GROUP:-</mat-label>
-              <mat-select  [formControl]="skillGroup" single>
-                <mat-select-trigger>
+              <mat-select  formControlName="skillGroupID" single>
+                <!-- <mat-select-trigger>
                   {{skillGroup.value}}
-                </mat-select-trigger>
-                <mat-option *ngFor="let select of apiData" [value]="select.skillGroup">{{select.skillGroup}}</mat-option>
+                </mat-select-trigger> -->
+                <mat-option *ngFor="let select of apiData" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
               </mat-select>
             </mat-form-field>
-
            <mat-form-field fxFlex="20">
             <mat-label>Skill:-</mat-label>
-            <input formControlName="skill" matInput >
+            <input formControlName="skillID" matInput >
          </mat-form-field>
               <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
                 <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkill">Add</button>
@@ -98,10 +98,11 @@
               </div>
             </form>
           </div>
+          <div class="scrollable-table">
         <table mat-table [dataSource]="datas" class="SkillsTable"> 
-          <ng-container matColumnDef="id">
+          <ng-container matColumnDef="skillSetID">
           <th mat-header-cell *matHeaderCellDef>  ID </th>
-          <td mat-cell *matCellDef="let user"> {{user.id}} </td>
+          <td mat-cell *matCellDef="let user"> {{user.skillSetID}} </td>
          </ng-container>
           <ng-container matColumnDef="skillGroup">
           <th mat-header-cell *matHeaderCellDef> SKILL GROUP</th>
@@ -121,15 +122,17 @@
            <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef> DELETE </th>
             <td mat-cell *matCellDef="let element">
-               <button mat-raised-button color="primary" (click)="Delete(element.id)">DELETE</button> </td>
+               <button mat-raised-button color="primary" (click)="Delete(element.skillSetID)">DELETE</button> </td>
             </ng-container> 
         <tr mat-header-row *matHeaderRowDef="dsp"></tr>
         <tr mat-row *matRowDef="let row; columns: dsp;"></tr> 
          </table>
+         </div>
         </mat-tab>
        
-        <mat-tab label="File Uploading"> 
-          <div class="container">
+      <mat-tab label="File Uploading"> 
+        <div class="scrollable-table">
+        <div class="container">
             <div class="box">
               <h2>Upload File</h2>
             <form [formGroup]="forms" (ngSubmit)="OnFile()">
@@ -139,23 +142,22 @@
                   <input formControlName="userName" matInput>
                 </mat-form-field>
                 <mat-form-field fxFlex="10">
-                  
                   <ngx-mat-file-input formControlName="planFile" matInput >
                   </ngx-mat-file-input>
                   <mat-icon></mat-icon>
                </mat-form-field>
                <div class="button-container">
-              
                   <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnFile">Upload</button>
                 </div>
-                </div>
-             
+              </div>
               </form>
             </div>
+          </div>
           </div>
          </mat-tab>
         
          <mat-tab label="Users">
+          <div class="scrollable-table">
           <div class="containers">
             <form [formGroup]="userForm" (ngSubmit)="OnUser()">
               <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
@@ -183,7 +185,7 @@
                 </div>
               </form>
             </div>
-          <table mat-table [dataSource]="user" class="UserTable"> 
+          <table mat-table [dataSource]="user" class="UserTable" > 
             <ng-container matColumnDef="userID">
             <th mat-header-cell *matHeaderCellDef>USER ID </th>
             <td mat-cell *matCellDef="let user"> {{user.userID}} </td>
@@ -205,5 +207,6 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
              </table>
+             </div>
           </mat-tab> 
         </mat-tab-group>

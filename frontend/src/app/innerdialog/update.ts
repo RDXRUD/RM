@@ -1,6 +1,7 @@
 export interface update{
-    id:number;
-    skillGroupID:number;
-    skillGroup:string;
-    skill:string;
+  skillSetID: number,
+  skillGroupID: number,
+  skillID: number,
+  skillGroup: string,
+  skill: string
 }

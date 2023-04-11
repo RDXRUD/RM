@@ -1,6 +1,7 @@
 export interface skillgroup{ 
+     skillsetID:number;
      skillGroupID:number;
-     id:number;
+     skillID:number;
     skillGroup:string;
      skill:string;
     edit:string;

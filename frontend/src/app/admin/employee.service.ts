@@ -49,17 +49,16 @@ export class EmployeeService {
   AddSkillGroup(skillgroupdata:addskillgroups):Observable<addskillgroups[]>{
     let url="https://localhost:7271/api/SkillSet/AddSkillGroup";
     return this.http.post<addskillgroups[]>(url,skillgroupdata);
-    
   }
   del(UserID:number){
     console.warn(UserID);
     let url="https://localhost:7271/DeleteUser";
     return this.http.delete(url, {body: {userId: UserID}});
   }
-  Delete(id:number){
-  console.warn(id);
+  Delete(skillsetID:number){
+  console.warn(skillsetID);
   let url="https://localhost:7271/api/SkillSet/DeleteSkillSet";
-  return this.http.delete(url,{body:{id:id}});
+  return this.http.delete(url,{body:{skillsetID:skillsetID}});
   }
   DeleteSkillGroup(skillGroupID:number){
     console.warn(skillGroupID);

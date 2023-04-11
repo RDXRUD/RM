@@ -27,13 +27,11 @@ export class TokenService {
     const token = localStorage.getItem(this.JWT_TOKEN);
     return token !== null && token !== undefined;
   }
-
-
   constructor(public jwtHelper: JwtHelperService) { }
   getToken(): string | null {
+    this.isLoggedIn.next(true);
     return localStorage.getItem(this.JWT_TOKEN);
   }
-
   setToken(token:string) {
     localStorage.setItem(this.JWT_TOKEN, token);
     this.isLoggedIn.next(true);
@@ -42,10 +40,10 @@ export class TokenService {
     localStorage.removeItem(this.JWT_TOKEN);
     this.isLoggedIn.next(false);
   }
-
   isTokenExpired(): boolean {
+    this.isLoggedIn.next(false);
     const token = this.getToken();
-    return token ? this.jwtHelper.isTokenExpired(token) : true;
+    return token ? this.jwtHelper.isTokenExpired(token):true;
   }
 }
 

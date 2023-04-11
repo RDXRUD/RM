@@ -1,5 +1,4 @@
 export interface updateskill{
-    id:number;
+    skillID:number;
     skill:string;
-    
 }

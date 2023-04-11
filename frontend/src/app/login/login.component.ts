@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import {Router} from '@angular/router'
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
-import { routes } from '../app-routing.module';
 
 @Component({
   selector: 'app-login',
@@ -32,14 +31,6 @@ export class LoginComponent {
           this.router.navigate(['/Home']);
         },   
     );
-    // canActivate(): boolean {
-    //   if (!this.token_service.isAuthenticated()) {
-    //     this.router.navigate(['Login']);
-    //     return false;
-    //   } 
-    //     return true;
-    //   }
-
   }
 }
 

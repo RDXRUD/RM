@@ -9,13 +9,14 @@ import { addskills } from './addskills';
 import { addskillgroups } from './addskillgroups';
 import { SGService } from './sg.service';
 import { InnerdialogComponent } from '../innerdialog/innerdialog.component';
+
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit{
-  skillGroup = new FormControl('');
+  // skillGroup = new FormControl('');
   apiData!:any[];
   forms:FormGroup;
   formdata!:file;
@@ -30,7 +31,7 @@ export class AdminComponent implements OnInit{
   sg:any;
   displayedColumns: string[] = ['empID', 'resourceName','emailID','details'];
    datas:any;
-  dsp: string[]= ['id','skillGroup','skill','edit','delete'];
+  dsp: string[]= ['skillSetID','skillGroup','skill','edit','delete'];
    user:any;
    userdata:any;
    users:any;
@@ -52,9 +53,9 @@ export class AdminComponent implements OnInit{
       password:new FormControl(),
     })
     this.addskill=frmbuilder.group({
-      id:new FormControl(),
-      skillGroup:new FormControl(),
-      skill:new FormControl(),
+      skillsetID:new FormControl(),
+      skillGroupID:new FormControl(),
+      skillID:new FormControl(),
     })
     this.addskillgroup=frmbuilder.group({
       skillGroupID:new FormControl(),
@@ -66,6 +67,7 @@ export class AdminComponent implements OnInit{
       console.warn(data)
          this.data=data
     })
+    
     this.skillgroup.getData().subscribe(sg =>{
       console.warn(sg)
          this.apiData=sg;
@@ -97,6 +99,9 @@ export class AdminComponent implements OnInit{
     console.warn(this.formdatas);
     this.employee_Service.OnUser(this.formdatas).subscribe(userdata=>{
       console.warn(userdata)
+      //this.user.push(userdata);
+      //this.userTable.renderRows();
+  
     })
    }
    AddSkill(){
@@ -123,9 +128,9 @@ export class AdminComponent implements OnInit{
       data: {element}
     });
   }
-  Delete(id:number){
-    console.warn(id);
-    this.employee_Service.Delete(id).subscribe(deleteuser=>{
+  Delete(skillsetID:number){
+    console.warn(skillsetID);
+    this.employee_Service.Delete(skillsetID).subscribe(deleteuser=>{
       console.warn(deleteuser)
     })
   }

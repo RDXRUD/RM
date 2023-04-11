@@ -130,21 +130,28 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var existingSkill = await _dbContext.skillgroup.FindAsync(skill.SkillGroupID);
-                if (existingSkill == null)
+                var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+                if (existingSkillSet == null)
                 {
                     return NotFound();
                 }
+                existingSkillSet.SkillID = skill.SkillID;
+                existingSkillSet.SkillGroupID = skill.SkillGroupID;
+                //var existingSkill = await _dbContext.skillgroup.FindAsync(skill.SkillGroupID);
+                //if (existingSkill == null)
+                //{
+                //    return NotFound();
+                //}
                 //existingSkill.SkillGroupID = skill.SkillGroupID;
-                existingSkill.SkillGroupID = skill.SkillGroupID;
+                //existingSkill.SkillGroupID = skill.SkillGroupID;
 
-                var existingEmployeeSkill = await _dbContext.skill.FirstOrDefaultAsync(e => e.SkillID == skill.SkillID);
-                if (existingEmployeeSkill == null)
-                {
-                    return NotFound();
-                }
+                //var existingEmployeeSkill = await _dbContext.skill.FirstOrDefaultAsync(e => e.SkillID == skill.SkillID);
+                //if (existingEmployeeSkill == null)
+                //{
+                //    return NotFound();
+                //}
 
-                existingEmployeeSkill.SkillID = skill.SkillID;
+                //existingEmployeeSkill.SkillID = skill.SkillID;
 
                 await _dbContext.SaveChangesAsync();
 

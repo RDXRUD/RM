@@ -4,6 +4,7 @@
     align-items: center;
     height: 100vh;
   }
+  
   .box h2 {
     font-size: 24px;
     font-family: 'Montserrat', sans-serif;
@@ -13,6 +14,7 @@
     border-bottom: 1px solid #ccc;
     padding-bottom: 16px;
   }
+  
   .box {
     background-color: #fff;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -23,8 +25,38 @@
     height:100%;
     width: 100%;
   }
+  
   .button-container {
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
   }
+  
+  .scrollable-table {
+    height: 400px;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .scrollable-table .mat-table {
+    table-layout: fixed;
+  }
+  
+  .scrollable-table .mat-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #ffffff;
+  }
+  
+  .mat-table {
+    table-layout: fixed;
+  }
+  
+  .mat-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #ffffff;
+  }
+  
