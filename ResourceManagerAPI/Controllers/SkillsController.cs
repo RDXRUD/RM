@@ -73,7 +73,9 @@ namespace ResourceManagerAPI.Controllers
                              {
                                  ResourceID = r.ResourceID,
                                  SkillID = ss.SkillID,
-                                 SkillGroupID=sg.SkillGroupID,
+                                 ResourceSkillID = rs.ResourceSkillID,
+                                 SkillSetID = rs.SkillSetID,
+                                 SkillGroupID = sg.SkillGroupID,
                                  EmailID = r.EmailID,
                                  SkillGroup = sg.SkillGroup,
                                  Skill = m.Skill
