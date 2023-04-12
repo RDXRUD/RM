@@ -128,26 +128,19 @@ namespace ResourceManagerAPI.Controllers
         [Route("AddSkillSet")]
         public async Task<IActionResult> AddSkillSet(SkillSetManager skill)
         {
-            try
-            {
-                Skills skillForAdd = new Skills();
-                skillForAdd.SkillID = skill.SkillID;
-                skillForAdd.Skill = skill.Skill;
-                _dbContext.skill.Add(skillForAdd);
-                _dbContext.SaveChanges();
+             Skills skillForAdd = new Skills();
+             skillForAdd.SkillID = skill.SkillID;
+             skillForAdd.Skill = skill.Skill;
+             _dbContext.skill.Add(skillForAdd);
+             _dbContext.SaveChanges();
 
-                SkillSet skillSetForAdd = new SkillSet();
-                skillSetForAdd.SkillSetID = skill.SkillID;
-                skillSetForAdd.SkillGroupID = skill.SkillGroupID;
-                skillSetForAdd.SkillID = skill.SkillID;
-                _dbContext.skillset.Add(skillSetForAdd);
-                _dbContext.SaveChanges();
-                return Ok("Record Added Successfully");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+             SkillSet skillSetForAdd = new SkillSet();
+             skillSetForAdd.SkillSetID = skill.SkillID;
+             skillSetForAdd.SkillGroupID = skill.SkillGroupID;
+             skillSetForAdd.SkillID = skill.SkillID;
+             _dbContext.skillset.Add(skillSetForAdd);
+             _dbContext.SaveChanges();
+             return Ok("Record Added Successfully");
         }
 
         [HttpPut, Authorize]
