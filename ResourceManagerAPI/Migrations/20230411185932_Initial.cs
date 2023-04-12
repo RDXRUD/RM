@@ -27,23 +27,10 @@ namespace ResourceManagerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "employeeskills",
-                columns: table => new
-                {
-                    ResourceID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EmailID = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_employeeskills", x => x.ResourceID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "employeetasks",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    EmployeeTaskID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EmpID = table.Column<int>(type: "integer", nullable: false),
                     TaskName = table.Column<string>(type: "text", nullable: true),
@@ -52,7 +39,48 @@ namespace ResourceManagerAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_employeetasks", x => x.ID);
+                    table.PrimaryKey("PK_employeetasks", x => x.EmployeeTaskID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "resources",
+                columns: table => new
+                {
+                    ResourceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EmpID = table.Column<int>(type: "integer", nullable: false),
+                    EmailID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_resources", x => x.ResourceID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "resourceskills",
+                columns: table => new
+                {
+                    ResourceSkillID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ResourceID = table.Column<int>(type: "integer", nullable: false),
+                    SkillSetID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_resourceskills", x => x.ResourceSkillID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "skill",
+                columns: table => new
+                {
+                    SkillID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Skill = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skill", x => x.SkillID);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,33 +97,17 @@ namespace ResourceManagerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "skills",
+                name: "skillset",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "integer", nullable: false)
+                    SkillSetID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ResourceID = table.Column<int>(type: "integer", nullable: false),
-                    SkillGroup = table.Column<string>(type: "text", nullable: true),
-                    Skill = table.Column<string>(type: "text", nullable: true),
+                    SkillGroupID = table.Column<int>(type: "integer", nullable: false),
                     SkillID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_skills", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "skillset",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SkillGroupID = table.Column<int>(type: "integer", nullable: false),
-                    Skill = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_skillset", x => x.ID);
+                    table.PrimaryKey("PK_skillset", x => x.SkillSetID);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,16 +147,19 @@ namespace ResourceManagerAPI.Migrations
                 name: "employees");
 
             migrationBuilder.DropTable(
-                name: "employeeskills");
-
-            migrationBuilder.DropTable(
                 name: "employeetasks");
 
             migrationBuilder.DropTable(
-                name: "skillgroup");
+                name: "resources");
 
             migrationBuilder.DropTable(
-                name: "skills");
+                name: "resourceskills");
+
+            migrationBuilder.DropTable(
+                name: "skill");
+
+            migrationBuilder.DropTable(
+                name: "skillgroup");
 
             migrationBuilder.DropTable(
                 name: "skillset");

@@ -124,6 +124,29 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
+        [HttpPost, Authorize]
+        [Route("AddSkillSet")]
+        public async Task<IActionResult> AddSkillSet(SkillSetManager skill)
+        {
+            try
+            {
+                Skills skillForAdd = new Skills();
+                skillForAdd.Skill = skill.Skill;
+                _dbContext.skill.Add(skillForAdd);
+
+                SkillSet skillSetForAdd = new SkillSet();
+                skillSetForAdd.SkillGroupID = skill.SkillGroupID;
+                skillSetForAdd.SkillID = skill.SkillID;
+                _dbContext.skillset.Add(skillSetForAdd);
+                _dbContext.SaveChanges();
+                return Ok("Record Added Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut, Authorize]
         [Route("UpdateSkillSet")]
         public async Task<IActionResult> UpdateSkillSet([FromBody] SkillSetManager skill)
@@ -138,9 +161,10 @@ namespace ResourceManagerAPI.Controllers
                 existingSkillSet.SkillID = skill.SkillID;
                 existingSkillSet.SkillGroupID = skill.SkillGroupID;
 
+                _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
 
-                return Ok();
+                return Ok("Record Updated Successfully");
             }
             catch (Exception ex)
             {
