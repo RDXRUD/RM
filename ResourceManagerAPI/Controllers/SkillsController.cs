@@ -167,7 +167,7 @@ namespace ResourceManagerAPI.Controllers
                 }
                 existingSkillSet.SkillGroupID = skill.SkillGroupID;
 
-                var existingResourceSkill = await _dbContext.resourceskills.FindAsync(skill.ResourceID);
+                var existingResourceSkill = await _dbContext.resourceskills.FindAsync(skill.ResourceSkillID);
                 if (existingResourceSkill == null)
                 {
                     return NotFound();

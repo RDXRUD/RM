@@ -46,6 +46,7 @@ namespace ResourceManagerAPI.Repository
 
             _dbContext.employees.RemoveRange(_dbContext.employees); //Deletion Of Old DB Data Before Loading The New One
             _dbContext.employeetasks.RemoveRange(_dbContext.employeetasks);
+            //_dbContext.Database.ExecuteSqlRaw("UPDATE resources SET EmpID = NULL");
             _dbContext.SaveChanges();
 
             List < ProjectData > tempResourceList = new List<ProjectData>();
@@ -129,6 +130,15 @@ namespace ResourceManagerAPI.Repository
                 FileName= FileNameDB
             };
             _dbContext.uploadrecord.Add(Upload);
+            _dbContext.SaveChanges();
+        }
+        private void AddEmpIDToResourcesTable(int tempEmpID)
+        {
+            var Emp = new Resources()
+            {
+                EmpID = tempEmpID
+            };
+            _dbContext.resources.Add(Emp);
             _dbContext.SaveChanges();
         }
         private static EnumerableCollection ToEnumerable(Collection javaCollection)
