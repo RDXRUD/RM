@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { skillset } from '../dialog/skillset';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { skillsets } from './skillsets';
@@ -12,7 +11,7 @@ export class SkillsetService {
   constructor(private http:HttpClient) { }
   
   UpdateSkills(formdatas:skillsets):Observable<skillsets[]>{
-      let url="https://localhost:7271/api/Skills/UpdateSkill";
+      let url="https://localhost:7271/api/Skills/UpdateSetOfSkill";
       return this.http.put<skillsets[]>(url,formdatas);
     }
 
