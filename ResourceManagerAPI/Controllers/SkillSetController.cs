@@ -131,10 +131,13 @@ namespace ResourceManagerAPI.Controllers
             try
             {
                 Skills skillForAdd = new Skills();
+                skillForAdd.SkillID = skill.SkillID;
                 skillForAdd.Skill = skill.Skill;
                 _dbContext.skill.Add(skillForAdd);
+                _dbContext.SaveChanges();
 
                 SkillSet skillSetForAdd = new SkillSet();
+                skillSetForAdd.SkillSetID = skill.SkillID;
                 skillSetForAdd.SkillGroupID = skill.SkillGroupID;
                 skillSetForAdd.SkillID = skill.SkillID;
                 _dbContext.skillset.Add(skillSetForAdd);
