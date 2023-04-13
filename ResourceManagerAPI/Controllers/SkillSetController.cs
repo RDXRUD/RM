@@ -126,7 +126,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpPost, Authorize]
         [Route("AddSkillSet")]
-        public async Task<IActionResult> AddSkillSet(SkillSetManager skill)
+        public async Task<IActionResult> AddSkillSet([FromBody] SkillSetManager skill)
         {
              Skills skillForAdd = new Skills();
              skillForAdd.SkillID = skill.SkillID;
@@ -166,6 +166,16 @@ namespace ResourceManagerAPI.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpDelete, Authorize]
+        [Route("DeleteSkillSet")]
+        public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
+        {
+            var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+            _dbContext.skillset.RemoveRange(skillToDelete);
+            _dbContext.SaveChanges();
+             return Ok("Record Deleted Successfully");
         }
 
         [HttpGet, Authorize]
@@ -227,7 +237,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpDelete, Authorize]
         [Route("DeleteSkill")]
-        public async Task<IActionResult> DeleteSkillSet(Skills skill)
+        public async Task<IActionResult> DeleteSkill(Skills skill)
         {
             try
             {

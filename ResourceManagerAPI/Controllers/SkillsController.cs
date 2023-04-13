@@ -85,7 +85,6 @@ namespace ResourceManagerAPI.Controllers
                 !String.IsNullOrEmpty(resource.EmailID) && s.EmailID.ToUpper() == resource.EmailID.ToUpper()
                 ).ToList();
                 return employeeskills;
-
         }
 
         [NonAction]
