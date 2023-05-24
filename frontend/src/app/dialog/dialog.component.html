@@ -1,89 +1,60 @@
 <mat-dialog-content>
-  <form [formGroup]="skillgroupadd" (ngSubmit)="AddSkills()">
-    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="20px grid">
-      <mat-form-field fxFlex="30">
-        <mat-label>SKILL GROUP:-</mat-label>
-        <mat-select [formControl]="skillGroup" single>
-          <mat-select-trigger>
-            {{skillGroup.value}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let select of apiData" [value]="select.skillGroup">{{select.skillGroup}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field fxFlex="30">
-        <mat-label>SKILL</mat-label>
-        <mat-select [formControl]="skill" single>
-          <mat-select-trigger>
-            {{skill.value}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let select  of apiDataa" [value]="select.skill">{{select.skill}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div fxFlex="30" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkills">ADD</button>
-      </div>
-      </div>
-    </form>
-    <table mat-table [dataSource]="data"> 
-        <ng-container matColumnDef="resourceID">
-          <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
-          <td mat-cell *matCellDef="let user"> {{user.resourceID}} </td>
-        </ng-container> 
-        <ng-container matColumnDef="resourceSkillID">
-          <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
-          <td mat-cell *matCellDef="let user"> {{user.resourceSkillID}} </td>
-        </ng-container>
 
-        <ng-container matColumnDef="emailID">
-          <th mat-header-cell *matHeaderCellDef>EMAIL ID</th>
-          <td mat-cell *matCellDef="let user"> {{user.emailID}}  </td>
-        </ng-container>
+  <table mat-table [dataSource]="data">
+    <ng-container matColumnDef="resourceID">
+      <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
+      <td mat-cell *matCellDef="let user"> {{user.resourceID}} </td>
+    </ng-container>
+    <ng-container matColumnDef="resourceSkillID">
+      <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
+      <td mat-cell *matCellDef="let user"> {{user.resourceSkillID}} </td>
+    </ng-container>
 
-        <ng-container matColumnDef="skillGroup">
-          <th mat-header-cell *matHeaderCellDef>SKILL GROUP</th>
-          <td mat-cell *matCellDef="let user"> {{user.skillGroup}} </td>
-       </ng-container>
+    <ng-container matColumnDef="emailID">
+      <th mat-header-cell *matHeaderCellDef>EMAIL ID</th>
+      <td mat-cell *matCellDef="let user"> {{user.emailID}} </td>
+    </ng-container>
 
-          <ng-container matColumnDef="skillGroupID">
-            <th mat-header-cell *matHeaderCellDef>SKILL GROUP</th>
-            <td mat-cell *matCellDef="let user"> {{user.skillGroupID}} 
-            </td>
+    <ng-container matColumnDef="skillGroup">
+      <th mat-header-cell *matHeaderCellDef>SKILL GROUP</th>
+      <td mat-cell *matCellDef="let user"> {{user.skillGroup}} </td>
+    </ng-container>
 
-        </ng-container>
-        <ng-container matColumnDef="skill">
-          <th mat-header-cell *matHeaderCellDef>SKILL</th>
-          <td mat-cell *matCellDef="let user"> {{user.skill}} 
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="skillGroupID">
+      <th mat-header-cell *matHeaderCellDef>SKILL GROUP</th>
+      <td mat-cell *matCellDef="let user"> {{user.skillGroupID}}
+      </td>
 
-        <ng-container matColumnDef="skillID">
-          <th mat-header-cell *matHeaderCellDef>SKILL</th>
-          <td mat-cell *matCellDef="let user"> {{user.skillID}} 
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="skillSetID">
-          <th mat-header-cell *matHeaderCellDef>SKILL</th>
-          <td mat-cell *matCellDef="let user"> {{user.skillSetID}} 
-            </td>
-        </ng-container>
-        
-        <ng-container matColumnDef="edit">
-          <th mat-header-cell *matHeaderCellDef> EDIT </th>
-          <td mat-cell *matCellDef="let element">
-            <mat-dialog-actions>
-             <button mat-raised-button color="primary" (click)="Edit(element)">EDIT</button> 
-            </mat-dialog-actions></td>
-          </ng-container>
+    </ng-container>
+    <ng-container matColumnDef="skill">
+      <th mat-header-cell *matHeaderCellDef>SKILL</th>
+      <td mat-cell *matCellDef="let user"> {{user.skill}}
+      </td>
+    </ng-container>
 
-          <ng-container matColumnDef="delete">
-            <th mat-header-cell *matHeaderCellDef> DELETE </th>
-            <td mat-cell *matCellDef="let element">
-               <button mat-raised-button color="primary" (click)="Delete(element.resourceID)">DELETE</button> </td>
-            </ng-container>
+    <ng-container matColumnDef="skillID">
+      <th mat-header-cell *matHeaderCellDef>SKILL</th>
+      <td mat-cell *matCellDef="let user"> {{user.skillID}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="skillSetID">
+      <th mat-header-cell *matHeaderCellDef>SKILL</th>
+      <td mat-cell *matCellDef="let user"> {{user.skillSetID}}
+      </td>
+    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
-      
-      </table>
-     
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef> EDIT </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-dialog-actions>
+          <button mat-raised-button color="primary" (click)="Edit(element)">EDIT</button>
+        </mat-dialog-actions>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+
 </mat-dialog-content>

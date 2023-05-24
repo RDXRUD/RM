@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { TokenService } from './login/token.service';
 import { Router } from '@angular/router';
 
@@ -10,13 +9,13 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'TeamTracker';
-  isLoggedIn:boolean = false;
-  constructor(public tokenService:TokenService,private router:Router ) {
-    this.tokenService.isLoggedIn.subscribe((loggedIn)=>{
-      this.isLoggedIn=loggedIn;
+  isLoggedIn: boolean = false;
+  constructor(public tokenService: TokenService, private router: Router) {
+    this.tokenService.isLoggedIn.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
     })
   }
-  OnLogout(){
+  OnLogout() {
     this.tokenService.removeToken();
     this.router.navigate(['/Login'])
   }

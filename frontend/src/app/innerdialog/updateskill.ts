@@ -1,4 +1,4 @@
-export interface updateskill{
-    skillID:number;
-    skill:string;
+export interface updateskill {
+    skillID: number;
+    skill: string;
 }

@@ -1,4 +1,4 @@
-export interface update{
+export interface update {
   skillSetID: number,
   skillGroupID: number,
   skillID: number,

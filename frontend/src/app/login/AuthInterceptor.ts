@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenService,
     private jwtHelper: JwtHelperService,
-  ) {}
+  ) { }
 
   intercept(
     request: HttpRequest<any>,

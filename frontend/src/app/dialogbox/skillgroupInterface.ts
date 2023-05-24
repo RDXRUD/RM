@@ -1,4 +1,4 @@
-export interface skillgroupInterface{
-    skillGroupId:number;
-    skillGroup:string;
+export interface skillgroupInterface {
+    skillGroupId: number;
+    skillGroup: string;
 }

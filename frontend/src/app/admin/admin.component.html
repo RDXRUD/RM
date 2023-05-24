@@ -1,212 +1,215 @@
-   <mat-tab-group>
-    
-     <mat-tab label="Resource Skills"> 
-      <div class="scrollable-table">
-        <div class="mat-elevation-z8 list-table">
-      <div class="UsersTable">
-       
-      <table mat-table [dataSource]="data" > 
-        <ng-container matColumnDef="empID">
-        <th mat-header-cell *matHeaderCellDef> EMP ID </th>
-        <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
-        </ng-container>
-        <ng-container matColumnDef="resourceName">
-        <th mat-header-cell *matHeaderCellDef> NAME</th>
-        <td mat-cell *matCellDef="let user"> {{user.resourceName}} </td>
-        </ng-container>  
-        <ng-container matColumnDef="emailID">
-        <th mat-header-cell *matHeaderCellDef> EMAIL ID </th>
-        <td mat-cell *matCellDef="let user"> {{user.emailID}} </td>
-        </ng-container>
-        <ng-container matColumnDef="details">
-        <th mat-header-cell *matHeaderCellDef> DETAILS </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-dialog-actions>
-           <button mat-raised-button color="primary" (click)="getSkills(element.emailID)">Get Details</button> 
-          </mat-dialog-actions></td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
-      </table>
-      </div>
-      </div>
-      </div>
-    </mat-tab>
-    <mat-tab label ='Add SkillGroup'>
-      <div class="contain">
-        <form [formGroup]="addskillgroup" (ngSubmit)="AddSkillGroup()">
-          <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-            <mat-form-field fxFlex="20">
-              <mat-label>ID:-</mat-label>
-              <input formControlName="skillGroupID" matInput >
-           </mat-form-field>
-           <mat-form-field fxFlex="20">
+<mat-tab-group >
+  <mat-tab label='Add SkillGroup'>
+    <div class="contain">
+      <form [formGroup]="addSkillgroup" (ngSubmit)="AddSkillGroup()">
+        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+          <mat-form-field fxFlex="20">
+            <mat-label>ID:-</mat-label>
+            <input formControlName="skillGroupID" matInput>
+          </mat-form-field>
+          <mat-form-field fxFlex="20">
             <mat-label>SkillGroup:-</mat-label>
-            <input formControlName="skillGroup" matInput >
-            </mat-form-field>
-            <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-              <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkillGroup">Add</button>
-            </div>
-            </div>
-          </form>
+            <input formControlName="skillGroup" matInput>
+          </mat-form-field>
+          <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+            <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+              value="AddSkillGroup">Add</button>
+          </div>
         </div>
-        <div class="scrollable-table">
-      <table mat-table [dataSource]="users" > 
+      </form>
+    </div>
+    <div class="scrollable-table">
+      <table mat-table [dataSource]="users">
         <ng-container matColumnDef="skillGroupID">
-        <th mat-header-cell *matHeaderCellDef> ID</th>
-        <td mat-cell *matCellDef="let user"> {{user.skillGroupID}} </td>
+          <th mat-header-cell *matHeaderCellDef> ID</th>
+          <td mat-cell *matCellDef="let user"> {{user.skillGroupID}} </td>
         </ng-container>
         <ng-container matColumnDef="skillGroup">
-        <th mat-header-cell *matHeaderCellDef> SKILL GROUP</th>
-        <td mat-cell *matCellDef="let user"> {{user.skillGroup}} </td>
-        </ng-container>  
+          <th mat-header-cell *matHeaderCellDef> SKILL GROUP</th>
+          <td mat-cell *matCellDef="let user"> {{user.skillGroup}} </td>
+        </ng-container>
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef> DELETE </th>
           <td mat-cell *matCellDef="let element">
-             <button mat-raised-button color="primary" (click)="DeleteSkillGroup(element.skillGroupID)">DELETE</button> </td>
-          </ng-container> 
+            <button mat-raised-button color="primary" (click)="DeleteSkillGroup(element.skillGroupID)">DELETE</button>
+          </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumnsto"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsto;"></tr> 
-       </table>
-      </div>
-    </mat-tab>
-      <mat-tab label="Add  Skills"> 
-        <div class="contain">
-          <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
-            <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-            
-              <mat-form-field fxFlex="20">
-                <mat-label>ID:-</mat-label>
-                <input formControlName="skillSetID" matInput >
-             </mat-form-field>
-             <mat-form-field fxFlex="30">
-              <mat-label>SKILL GROUP:-</mat-label>
-              <mat-select  formControlName="skillGroupID" single>
-                <!-- <mat-select-trigger>
-                  {{skillGroup.value}}
-                </mat-select-trigger> -->
-                <mat-option *ngFor="let select of apiData" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-           <mat-form-field fxFlex="20">
-            <mat-label>Skill:-</mat-label>
-            <input formControlName="skillID" matInput >
-         </mat-form-field>
-              <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkill">Add</button>
-              </div>
-              </div>
-            </form>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsto;"></tr>
+      </table>
+    </div>
+  </mat-tab>
+  <mat-tab label="Add  Skills">
+    <div class="contain">
+      <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
+        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+          <mat-form-field fxFlex="20">
+            <mat-label>SKILL ID:-</mat-label>
+            <input formControlName="skillID" matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30">
+            <mat-label>SKILL GROUP:-</mat-label>
+            <mat-select formControlName="skillGroupID" single>
+              <mat-option *ngFor="let select of apiData"
+                [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="20">
+            <mat-label>SKILL:-</mat-label>
+            <input formControlName="skill" matInput>
+          </mat-form-field>
+
+          <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+            <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkill">Add</button>
           </div>
-          <div class="scrollable-table">
-        <table mat-table [dataSource]="datas" class="SkillsTable"> 
-          <ng-container matColumnDef="skillSetID">
-          <th mat-header-cell *matHeaderCellDef>  ID </th>
+        </div>
+      </form>
+    </div>
+    <div class="scrollable-table">
+      <table mat-table [dataSource]="datas" class="SkillsTable">
+        <ng-container matColumnDef="skillSetID">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
           <td mat-cell *matCellDef="let user"> {{user.skillSetID}} </td>
-         </ng-container>
-          <ng-container matColumnDef="skillGroup">
+        </ng-container>
+        <ng-container matColumnDef="skillGroup">
           <th mat-header-cell *matHeaderCellDef> SKILL GROUP</th>
           <td mat-cell *matCellDef="let user"> {{user.skillGroup}} </td>
-         </ng-container>  
-         <ng-container matColumnDef="skill">
+        </ng-container>
+        <ng-container matColumnDef="skill">
           <th mat-header-cell *matHeaderCellDef> SKILL </th>
           <td mat-cell *matCellDef="let user"> {{user.skill}} </td>
-         </ng-container>
-         <ng-container matColumnDef="edit">
+        </ng-container>
+        <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef> EDIT </th>
           <td mat-cell *matCellDef="let element">
             <mat-dialog-actions>
-             <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button> 
-            </mat-dialog-actions></td>
-          </ng-container>
-           <ng-container matColumnDef="delete">
-            <th mat-header-cell *matHeaderCellDef> DELETE </th>
-            <td mat-cell *matCellDef="let element">
-               <button mat-raised-button color="primary" (click)="Delete(element.skillSetID)">DELETE</button> </td>
-            </ng-container> 
+              <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button>
+            </mat-dialog-actions>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> DELETE </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="primary" (click)="Delete(element.skillSetID)">DELETE</button>
+          </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="dsp"></tr>
-        <tr mat-row *matRowDef="let row; columns: dsp;"></tr> 
-         </table>
-         </div>
-        </mat-tab>
-       
-      <mat-tab label="File Uploading"> 
-        <div class="scrollable-table">
-        <div class="container">
-            <div class="box">
-              <h2>Upload File</h2>
-            <form [formGroup]="forms" (ngSubmit)="OnFile()">
-              <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
-                <mat-form-field fxFlex="10">
-                  <mat-label>UserName:-</mat-label>
-                  <input formControlName="userName" matInput>
-                </mat-form-field>
-                <mat-form-field fxFlex="10">
-                  <ngx-mat-file-input formControlName="planFile" matInput >
-                  </ngx-mat-file-input>
-                  <mat-icon></mat-icon>
-               </mat-form-field>
-               <div class="button-container">
-                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnFile">Upload</button>
-                </div>
-              </div>
-              </form>
-            </div>
-          </div>
-          </div>
-         </mat-tab>
-        
-         <mat-tab label="Users">
-          <div class="scrollable-table">
-          <div class="containers">
-            <form [formGroup]="userForm" (ngSubmit)="OnUser()">
-              <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-               
-                <mat-form-field fxFlex="20">
-                  <mat-label>UserName:-</mat-label>
-                  <input type="text" formControlName="userName" matInput >
-               </mat-form-field>
+        <tr mat-row *matRowDef="let row; columns: dsp;"></tr>
+      </table>
+    </div>
+  </mat-tab>
+  <mat-tab label="Resource Skills">
+    <div class="scrollable-table">
+      <div class="mat-elevation-z8 list-table">
+        <div class="UsersTable">
 
-               <mat-form-field fxFlex="20">
-                <mat-label>FullName:-</mat-label>
-                <input type="text" formControlName="fullName" matInput >
-             </mat-form-field>
-             <mat-form-field fxFlex="20">
-              <mat-label>Password</mat-label>
-              <input type="password" formControlName="password" matInput >
-             
-           </mat-form-field>
-                <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUser">Add</button>
-                </div>
-                <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUser">Change Password</button>
-                </div>
-                </div>
-              </form>
-            </div>
-          <table mat-table [dataSource]="user" class="UserTable" > 
-            <ng-container matColumnDef="userID">
-            <th mat-header-cell *matHeaderCellDef>USER ID </th>
-            <td mat-cell *matCellDef="let user"> {{user.userID}} </td>
-           </ng-container>
-            <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef> USER NAME</th>
-            <td mat-cell *matCellDef="let user"> {{user.userName}} </td>
-           </ng-container>  
-           <ng-container matColumnDef="fullName">
-            <th mat-header-cell *matHeaderCellDef> FULLNAME </th>
-            <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
-           </ng-container>
-       
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef> DELETE </th>
+          <table mat-table [dataSource]="data">
+            <ng-container matColumnDef="empID">
+              <th mat-header-cell *matHeaderCellDef> EMP ID </th>
+              <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
+            </ng-container>
+            <ng-container matColumnDef="resourceName">
+              <th mat-header-cell *matHeaderCellDef> NAME</th>
+              <td mat-cell *matCellDef="let user"> {{user.resourceName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="emailID">
+              <th mat-header-cell *matHeaderCellDef> EMAIL ID </th>
+              <td mat-cell *matCellDef="let user"> {{user.emailID}} </td>
+            </ng-container>
+            <ng-container matColumnDef="details">
+              <th mat-header-cell *matHeaderCellDef> DETAILS </th>
               <td mat-cell *matCellDef="let element">
-                 <button mat-raised-button color="primary" (click)="del(element.userID)">DELETE</button> </td>
-              </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr> 
-             </table>
-             </div>
-          </mat-tab> 
-        </mat-tab-group>
+                <mat-dialog-actions>
+                  <button mat-raised-button color="primary" (click)="getSkills(element.emailID)">Get Details</button>
+                </mat-dialog-actions>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="File Uploading">
+    <div class="scrollable-table">
+      <div class="container">
+        <div class="box">
+          <h2>Upload File</h2>
+          <form [formGroup]="forms" (ngSubmit)="OnFile()">
+            <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
+              <mat-form-field fxFlex="10">
+                <mat-label>UserName:-</mat-label>
+                <input formControlName="userName" matInput>
+              </mat-form-field>
+              <mat-form-field fxFlex="10">
+                <ngx-mat-file-input formControlName="planFile" matInput>
+                </ngx-mat-file-input>
+                <mat-icon></mat-icon>
+              </mat-form-field>
+              <div class="button-container">
+                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                  value="OnFile">Upload</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Users">
+    <div class="scrollable-table">
+      <div class="containers">
+        <form [formGroup]="userForm" (ngSubmit)="OnUser()">
+          <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+
+            <mat-form-field fxFlex="20">
+              <mat-label>UserName:-</mat-label>
+              <input type="text" formControlName="userName" matInput>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="20">
+              <mat-label>FullName:-</mat-label>
+              <input type="text" formControlName="fullName" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="20">
+              <mat-label>Password</mat-label>
+              <input type="password" formControlName="password" matInput>
+
+            </mat-form-field>
+            <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+              <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUser">Add</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <table mat-table [dataSource]="user" class="UserTable">
+        <ng-container matColumnDef="userID">
+          <th mat-header-cell *matHeaderCellDef>USER ID </th>
+          <td mat-cell *matCellDef="let user"> {{user.userID}} </td>
+        </ng-container>
+        <ng-container matColumnDef="userName">
+          <th mat-header-cell *matHeaderCellDef> USER NAME</th>
+          <td mat-cell *matCellDef="let user"> {{user.userName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef> FULLNAME </th>
+          <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> DELETE </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="primary" (click)="deleteUser(element.userID)">DELETE</button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr>
+      </table>
+    </div>
+  </mat-tab>
+</mat-tab-group>
