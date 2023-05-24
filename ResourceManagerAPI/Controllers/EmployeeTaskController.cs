@@ -25,13 +25,11 @@ namespace ResourceManagerAPI.Controllers
                 var employee = (from e in _dbContext.employeetasks
                                 join s in _dbContext.employees
                                 on e.EmpID equals s.EmpID
-                                into detail
-                                from m in detail.DefaultIfEmpty()
                                 select new EmployeeManager
                                 {
-                                    EmpID = m.EmpID,
-                                    ResourceName = m.ResourceName,
-                                    EmailID = m.EmailID,
+                                    EmpID = e.EmpID,
+                                    ResourceName = s.ResourceName,
+                                    EmailID = s.EmailID,
                                     TaskName = e.TaskName,
                                     Start = e.Start,
                                     Finish = e.Finish
@@ -42,6 +40,54 @@ namespace ResourceManagerAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpPost, Authorize]
+        [Route("AddEmployeesTask")]
+        public async Task<IActionResult> AddEmployeeTasks(EmployeeManager employee)
+        {
+            try
+            {
+                EmployeeTasks empTask = new EmployeeTasks();
+                //empTask.EmpID = employee.EmpID;
+                empTask.TaskName = employee.TaskName;
+                empTask.Start = employee.Start;
+                empTask.Finish = employee.Finish;
+                _dbContext.employeetasks.Add(empTask);
+                _dbContext.SaveChanges();
+
+                Employee employees = new Employee();
+                //employees.EmpID = employee.EmpID;
+                employees.ResourceName = employee.ResourceName;
+                employees.EmailID = employee.EmailID;
+                _dbContext.employees.Add(employees);
+                _dbContext.SaveChanges();
+                return Ok("Record Added Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+        [HttpPut, Authorize]
+        [Route("UpdateEmployeeTask")]
+        public async Task<IActionResult> UpdateEmployeesTask(EmployeeManager employee)
+        {
+            try
+            {
+                EmployeeTasks EmpTask = new EmployeeTasks();
+                EmpTask.EmpID = employee.EmpID;
+                EmpTask.TaskName = employee.TaskName;
+                EmpTask.Start = employee.Start;
+                EmpTask.Finish = employee.Finish;
+                _dbContext.employeetasks.Add(EmpTask);
+                _dbContext.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
             }
         }
     }
