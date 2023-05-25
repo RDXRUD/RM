@@ -165,6 +165,8 @@ namespace ResourceManagerAPI.Controllers
                     return NotFound();
                 }
                 existingSkillSet.SkillGroupID = skill.SkillGroupID;
+                _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
 
                 var existingResourceSkill = await _dbContext.resourceskills.FindAsync(skill.ResourceSkillID);
                 if (existingResourceSkill == null)
@@ -172,8 +174,9 @@ namespace ResourceManagerAPI.Controllers
                     return NotFound();
                 }
                 existingResourceSkill.SkillSetID = skill.SkillSetID;
+                _dbContext.Entry(existingResourceSkill).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-                return Ok();
+                return Ok("Record Updated Successfully");
             }
             catch (Exception ex)
             {

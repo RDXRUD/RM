@@ -47,5 +47,53 @@ namespace ResourceManagerAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost, Authorize]
+        [Route("AddEmployeesTask")]
+        public async Task<IActionResult> AddEmployeeTasks(EmployeeManager employee)
+        {
+            try
+            {
+                EmployeeTasks empTask = new EmployeeTasks();
+                //empTask.EmpID = employee.EmpID;
+                empTask.TaskName = employee.TaskName;
+                empTask.Start = employee.Start;
+                empTask.Finish = employee.Finish;
+                _dbContext.employeetasks.Add(empTask);
+                _dbContext.SaveChanges();
+
+                Employee employees = new Employee();
+                //employees.EmpID = employee.EmpID;
+                employees.ResourceName = employee.ResourceName;
+                employees.EmailID = employee.EmailID;
+                _dbContext.employees.Add(employees);
+                _dbContext.SaveChanges();
+                return Ok("Record Added Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+        [HttpPut, Authorize]
+        [Route("UpdateEmployeeTask")]
+        public async Task<IActionResult> UpdateEmployeesTask(EmployeeManager employee)
+        {
+            try
+            {
+                EmployeeTasks EmpTask = new EmployeeTasks();
+                EmpTask.EmpID = employee.EmpID;
+                EmpTask.TaskName = employee.TaskName;
+                EmpTask.Start = employee.Start;
+                EmpTask.Finish = employee.Finish;
+                _dbContext.employeetasks.Add(EmpTask);
+                _dbContext.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
     }
 }

@@ -7,15 +7,16 @@ import { AuthGuard } from './login/AuthGuard';
 import { LogoutComponent } from './logout/logout.component';
 
 export const routes: Routes = [
-   { path: '', component: HomeComponent,canActivate: [AuthGuard]},
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
 
-  { path:'Home',component: HomeComponent,canActivate: [AuthGuard]},
+  { path: 'Home', component: HomeComponent, canActivate: [AuthGuard] },
   {
-    path:'Admin',component:AdminComponent,canActivate: [AuthGuard]
+    path: 'Admin', component: AdminComponent, canActivate: [AuthGuard]
   },
-  {path:'Login',component:LoginComponent
+  {
+    path: 'Login', component: LoginComponent
   },
-  {path:'Logout',component:LogoutComponent,canActivate: [AuthGuard]}
+  { path: 'Logout', component: LogoutComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

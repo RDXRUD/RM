@@ -1,4 +1,4 @@
-export interface file{ 
-    userName:string;
-    planFile:File;
-    }
+export interface file {
+    userName: string;
+    planFile: File;
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import {BehaviorSubject} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,10 +10,10 @@ export class TokenService {
   public login(username: string, password: string): boolean {
     this.isLoggedIn.next(true);
     if (username === '' && password === '') {
-      const token = 'dummy_jwt_token'; 
+      const token = 'dummy_jwt_token';
       localStorage.setItem(this.JWT_TOKEN, token);
       return true;
-      
+
     } else {
       return false;
     }
@@ -32,7 +32,7 @@ export class TokenService {
     this.isLoggedIn.next(true);
     return localStorage.getItem(this.JWT_TOKEN);
   }
-  setToken(token:string) {
+  setToken(token: string) {
     localStorage.setItem(this.JWT_TOKEN, token);
     this.isLoggedIn.next(true);
   }
@@ -43,7 +43,7 @@ export class TokenService {
   isTokenExpired(): boolean {
     this.isLoggedIn.next(false);
     const token = this.getToken();
-    return token ? this.jwtHelper.isTokenExpired(token):true;
+    return token ? this.jwtHelper.isTokenExpired(token) : true;
   }
 }
 
