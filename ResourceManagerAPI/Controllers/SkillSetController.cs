@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.Models;
+using System.Linq;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace ResourceManagerAPI.Controllers
@@ -172,10 +173,41 @@ namespace ResourceManagerAPI.Controllers
         [Route("DeleteSkillSet")]
         public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
         {
-            var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
-            _dbContext.skillset.RemoveRange(skillToDelete);
-            _dbContext.SaveChanges();
-             return Ok("Record Deleted Successfully");
+			var skills = (from r in _dbContext.resources
+						  join rs in _dbContext.resourceskills
+						  on r.ResourceID equals rs.ResourceID
+						  join ss in _dbContext.skillset
+						  on rs.SkillSetID equals ss.SkillSetID
+						  join sg in _dbContext.skillgroup
+						  on ss.SkillGroupID equals sg.SkillGroupID
+						  join s in _dbContext.skill
+						  on ss.SkillID equals s.SkillID
+						  into detail
+						  from m in detail.DefaultIfEmpty()
+						  select new ResourceSkillManager
+						  {
+							  ResourceID = r.ResourceID,
+							  SkillID = ss.SkillID,
+							  ResourceSkillID = rs.ResourceSkillID,
+							  SkillSetID = rs.SkillSetID,
+							  SkillGroupID = sg.SkillGroupID,
+							  EmailID = r.EmailID,
+							  SkillGroup = sg.SkillGroup,
+							  Skill = m.Skill
+						  }
+								).ToList();
+
+            if (!skills.Any(s => s.SkillSetID == skill.SkillSetID))
+            {
+                var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+                _dbContext.skillset.RemoveRange(skillToDelete);
+                _dbContext.SaveChanges();
+                return Ok("Record Deleted Successfully");
+            }
+            else
+            {
+                return Ok("This field is used in another process you cant delete it");
+            }
         }
 
         [HttpGet, Authorize]

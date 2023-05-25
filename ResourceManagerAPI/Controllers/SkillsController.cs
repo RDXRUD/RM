@@ -190,7 +190,7 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var skillToDelete = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == skill.SkillID);
+                var skillToDelete = await _dbContext.skill.FindAsync(skill.SkillID);
                 if (skillToDelete == null)
                 {
                     return NotFound();
