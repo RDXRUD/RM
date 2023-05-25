@@ -111,7 +111,7 @@ namespace ResourceManagerAPI.Controllers
                                 {
                                     SkillSetID = ss.SkillSetID,
                                     SkillGroupID = ss.SkillGroupID,
-                                    SkillID=s.SkillID,
+                                    SkillID = s.SkillID,
                                     SkillGroup = m.SkillGroup,
                                     Skill = s.Skill
                                 }
@@ -128,19 +128,19 @@ namespace ResourceManagerAPI.Controllers
         [Route("AddSkillSet")]
         public async Task<IActionResult> AddSkillSet([FromBody] SkillSetManager skill)
         {
-             Skills skillForAdd = new Skills();
-             skillForAdd.SkillID = skill.SkillID;
-             skillForAdd.Skill = skill.Skill;
-             _dbContext.skill.Add(skillForAdd);
-             _dbContext.SaveChanges();
+            Skills skillForAdd = new Skills();
+            skillForAdd.SkillID = skill.SkillID;
+            skillForAdd.Skill = skill.Skill;
+            _dbContext.skill.Add(skillForAdd);
+            _dbContext.SaveChanges();
 
-             SkillSet skillSetForAdd = new SkillSet();
-             skillSetForAdd.SkillSetID = skill.SkillID;
-             skillSetForAdd.SkillGroupID = skill.SkillGroupID;
-             skillSetForAdd.SkillID = skill.SkillID;
-             _dbContext.skillset.Add(skillSetForAdd);
-             _dbContext.SaveChanges();
-             return Ok("Record Added Successfully");
+            SkillSet skillSetForAdd = new SkillSet();
+            skillSetForAdd.SkillSetID = skill.SkillID;
+            skillSetForAdd.SkillGroupID = skill.SkillGroupID;
+            skillSetForAdd.SkillID = skill.SkillID;
+            _dbContext.skillset.Add(skillSetForAdd);
+            _dbContext.SaveChanges();
+            return Ok("Record Added Successfully");
         }
 
         [HttpPut, Authorize]
@@ -175,7 +175,7 @@ namespace ResourceManagerAPI.Controllers
             var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
             _dbContext.skillset.RemoveRange(skillToDelete);
             _dbContext.SaveChanges();
-             return Ok("Record Deleted Successfully");
+            return Ok("Record Deleted Successfully");
         }
 
         [HttpGet, Authorize]
