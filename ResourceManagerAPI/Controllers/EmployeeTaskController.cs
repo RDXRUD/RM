@@ -18,7 +18,7 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpGet, Authorize]
         [Route("GetEmployeesTask")]
-        public async Task<IActionResult> GetEmployeeTasks()
+        public IActionResult GetEmployeeTasks()
         {
             try
             {
@@ -35,6 +35,11 @@ namespace ResourceManagerAPI.Controllers
                                     Finish = e.Finish
                                 }
                                 ).ToList();
+
+                if (employee == null)
+                {
+                    return NotFound();
+                }
                 return Ok(employee);
             }
             catch (Exception ex)
