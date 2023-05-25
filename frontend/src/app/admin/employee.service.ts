@@ -77,7 +77,7 @@ export class EmployeeService {
   Delete(skillSetID: number) {
     console.warn(skillSetID);
     let url = "https://localhost:7271/api/SkillSet/DeleteSkillSet";
-    this._coreService.openSnackBar('Record Deleted Successfully', 'done')
+    this._coreService.openSnackBar('"This field is used in another process you cant delete it"', 'done')
     return this.http.delete(url, { body: { skillSetID: skillSetID } });
   }
   DeleteSkillGroup(skillGroupID: number) {
