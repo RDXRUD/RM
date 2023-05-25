@@ -49,6 +49,7 @@ namespace ResourceManagerAPI.Controllers
         }
         [HttpPost, Authorize]
         [Route("AddEmployeesTask")]
+        [NonAction]
         public async Task<IActionResult> AddEmployeeTasks(EmployeeManager employee)
         {
             try
@@ -76,6 +77,7 @@ namespace ResourceManagerAPI.Controllers
 
         }
         [HttpPut, Authorize]
+        [NonAction]
         [Route("UpdateEmployeeTask")]
         public async Task<IActionResult> UpdateEmployeesTask(EmployeeManager employee)
         {
