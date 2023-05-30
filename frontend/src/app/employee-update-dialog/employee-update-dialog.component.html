@@ -1,0 +1,29 @@
+<mat-dialog-content>
+  <form [formGroup]="UpdatedForm" (ngSubmit)="OnUpdate(dataOfEmp.dataOfEmployee.resourceName)">
+    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+      <mat-form-field fxFlex="20">
+        <mat-label>Resource Name:-</mat-label>
+        <input type="text" formControlName="resourceName" matInput>
+      </mat-form-field>
+      <mat-form-field fxFlex="20">
+        <mat-label>Task Name:-</mat-label>
+        <input type="text" formControlName="taskName" matInput>
+      </mat-form-field>
+      <mat-form-field fxFlex="20">
+        <mat-label>Start Date:-</mat-label>
+        <input formControlName="start" matInput [matDatepicker]="three">
+        <mat-datepicker-toggle matIconSuffix [for]="three"></mat-datepicker-toggle>
+        <mat-datepicker #three></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field fxFlex="20">
+        <mat-label>End Date:-</mat-label>
+        <input formControlName="end" matInput [matDatepicker]="four">
+        <mat-datepicker-toggle matIconSuffix [for]="four"></mat-datepicker-toggle>
+        <mat-datepicker #four></mat-datepicker>
+      </mat-form-field>
+      <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUpdate">Update</button>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>

@@ -58,7 +58,6 @@ export class HomeComponent implements OnInit {
     })
   }
   ngOnInit() {
-    //this.data.sort=this.sort;
     this.users_Service.getData().subscribe(data => {
       console.warn(data)
       this.dataOfEmp = data

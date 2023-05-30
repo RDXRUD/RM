@@ -165,8 +165,6 @@ export class AdminComponent implements OnInit {
   Delete(skillSetID: number) {
     this.employee_Service.Delete(skillSetID).subscribe(deleteuser => {
       console.warn(deleteuser)
-
-
     })
   }
   deleteUser(userID: number) {
