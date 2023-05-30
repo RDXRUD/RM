@@ -68,19 +68,19 @@ namespace ResourceManagerAPI.Migrations
 
             modelBuilder.Entity("ResourceManagerAPI.Models.PlanUploadRecord", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<int>("UploadRecordId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UploadRecordId"));
 
                     b.Property<string>("FileName")
                         .HasColumnType("text");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
-                    b.HasKey("UserID");
+                    b.HasKey("UploadRecordId");
 
                     b.ToTable("uploadrecord");
                 });

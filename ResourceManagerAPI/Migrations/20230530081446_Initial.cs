@@ -114,14 +114,14 @@ namespace ResourceManagerAPI.Migrations
                 name: "uploadrecord",
                 columns: table => new
                 {
-                    UserID = table.Column<int>(type: "integer", nullable: false)
+                    UploadRecordId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_uploadrecord", x => x.UserID);
+                    table.PrimaryKey("PK_uploadrecord", x => x.UploadRecordId);
                 });
 
             migrationBuilder.CreateTable(

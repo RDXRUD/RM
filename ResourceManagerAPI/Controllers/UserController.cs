@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net;
 using sun.security.krb5.@internal.crypto.dk;
+using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -21,12 +22,14 @@ namespace ResourceManagerAPI.Controllers
     public class JwtToken
     {
         public int UserID { get; internal set; }
-        public string UserName { get; internal set; }
-        public string FullName { get; internal set; }
-        public string Token { get; set; }
+        public string? UserName { get; internal set; }
+        public string? FullName { get; internal set; }
+        public string? Token { get; set; }
     }
     public class UserController : Controller
     {
+        public static int userId;
+
         private readonly IAccount _account;
         public IConfiguration _configuration;
         private readonly PGDBContext _dbContext;
@@ -37,7 +40,7 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-        [HttpGet, Authorize]
+		[HttpGet, Authorize]
         [Route("AllUser")]
         public async Task<IEnumerable<Users>> Get()
         {
@@ -127,7 +130,8 @@ namespace ResourceManagerAPI.Controllers
                         FullName = user.FullName,
                         Token = new JwtSecurityTokenHandler().WriteToken(token)
                     };
-                    var jsonResponse = JsonSerializer.Serialize(jwtToken);
+                    userId = user.UserID;
+					var jsonResponse = JsonSerializer.Serialize(jwtToken);
                     return Content(jsonResponse, "application/json");
                 }
                 else

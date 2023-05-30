@@ -17,6 +17,8 @@ using com.sun.tools.javadoc;
 using com.sun.xml.@internal.bind.v2.runtime.unmarshaller;
 using static com.sun.xml.@internal.xsom.impl.WildcardImpl;
 using java.lang;
+using ResourceManagerAPI.Controllers;
+using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace ResourceManagerAPI.Repository
 {
@@ -24,7 +26,7 @@ namespace ResourceManagerAPI.Repository
     {
         private readonly PGDBContext _dbContext;
         private IConfiguration Configuration;
-        public FileUpload(PGDBContext connection, IConfiguration configuration)
+		public FileUpload(PGDBContext connection, IConfiguration configuration)
         {
             _dbContext = connection;
             Configuration = configuration;
@@ -42,7 +44,8 @@ namespace ResourceManagerAPI.Repository
             }
             ProjectFile projectObj = reader.read(filePath);
             string FileNameDB = fileName + fileExtension;
-            AddUploadRecordToDb(PlanFileInfo.UserName, FileNameDB);
+           
+            AddUploadRecordToDb(UserController.userId, FileNameDB);
 
             _dbContext.employees.RemoveRange(_dbContext.employees); //Deletion Of Old DB Data Before Loading The New One
             _dbContext.employeetasks.RemoveRange(_dbContext.employeetasks);
@@ -122,11 +125,11 @@ namespace ResourceManagerAPI.Repository
             _dbContext.employeetasks.Add(EmpTask);
             _dbContext.SaveChanges();
         }
-        private void AddUploadRecordToDb(string UserName,string FileNameDB)
+        private void AddUploadRecordToDb(int UserId,string FileNameDB)
         {
             var Upload = new PlanUploadRecord()
             {
-                UserName = UserName,
+                UserId = UserId,
                 FileName= FileNameDB
             };
             _dbContext.uploadrecord.Add(Upload);
