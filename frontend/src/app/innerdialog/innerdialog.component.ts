@@ -34,11 +34,9 @@ export class InnerdialogComponent {
     console.log(this.dataofskills.element.skillID);
 
     this.skill_group.getData().subscribe(data => {
-      console.warn(data)
       this.apiData = data;
     })
     this.skill_group.getDatas().subscribe(datas => {
-      console.warn(datas)
       this.apiDataa = datas;
     })
   }
@@ -50,7 +48,8 @@ export class InnerdialogComponent {
     };
     console.warn(this.formdata);
     this.update_skills.UpdateSkill(this.formdata).subscribe(result => {
-      console.warn(result)
+      this.skills.reset();
+      this.ngOnInit();
     })
   }
 }

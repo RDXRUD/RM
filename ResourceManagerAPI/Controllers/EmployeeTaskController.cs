@@ -68,7 +68,7 @@ namespace ResourceManagerAPI.Controllers
                 employees.EmailID = employee.EmailID;
                 _dbContext.employees.Add(employees);
                 _dbContext.SaveChanges();
-                return Ok("Record Added Successfully");
+                return Ok("{\"message\": \"Record Added Successfully\"}");
             }
             catch (Exception ex)
             {

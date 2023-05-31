@@ -1,12 +1,29 @@
 <mat-dialog-content>
-
+  <div class="contain">
+    <form [formGroup]="addEmpskills" (ngSubmit)="AddEmpSkill()">
+      <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+        <mat-form-field fxFlex="30">
+          <mat-label>SkillGroup</mat-label>
+          <input formControlName="skillGroup" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlex="30">
+          <mat-label>Skill</mat-label>
+          <input formControlName="skill" matInput>
+        </mat-form-field>
+        <div fxFlex="30" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+            value="AddEmpSkill">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
   <table mat-table [dataSource]="data">
     <ng-container matColumnDef="resourceID">
       <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
       <td mat-cell *matCellDef="let user"> {{user.resourceID}} </td>
     </ng-container>
     <ng-container matColumnDef="resourceSkillID">
-      <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
+      <th mat-header-cell *matHeaderCellDef>RESOURCE SKILL ID</th>
       <td mat-cell *matCellDef="let user"> {{user.resourceSkillID}} </td>
     </ng-container>
 

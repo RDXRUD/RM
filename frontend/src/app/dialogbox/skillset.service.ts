@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { skillsets } from './skillsets';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoreService } from '../core/core.service';
 
 @Injectable({

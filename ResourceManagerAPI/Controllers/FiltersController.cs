@@ -60,7 +60,7 @@ namespace ResourceManagerAPI.Controllers
                     ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
                     ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
                     ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
-                    ((filter.AvailableFrom.HasValue && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (!filter.AvailableFrom.HasValue && !filter.AvailableTo.HasValue))
+                   ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
                 ).ToList();
                 return employee;
             }
@@ -73,7 +73,7 @@ namespace ResourceManagerAPI.Controllers
                     ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
                     ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
                     ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
-                    ((filter.AvailableFrom.HasValue && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (!filter.AvailableFrom.HasValue && !filter.AvailableTo.HasValue))
+                    ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
                 ).ToList();
                 return employees;
             }

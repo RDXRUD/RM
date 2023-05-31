@@ -31,19 +31,14 @@ export class DialogboxComponent {
   }
 
   ngOnInit() {
-    console.log(this.dataOfskills.element);
     this.skillgroupskill.setValue({
       skillGroupID: this.dataOfskills.element.skillGroupID,
       skillSetID: this.dataOfskills.element.skillSetID,
     });
-    console.log(this.dataOfskills.element.skillGroupID);
-    console.log(this.dataOfskills.element.skillSetID);
     this.skill_edit.getData().subscribe((data) => {
-      console.warn(data);
       this.apiData = data;
     });
     this.skill_edit.getDatas().subscribe((datas) => {
-      console.warn(datas);
       this.apiDataa = datas;
     });
   }
@@ -56,7 +51,8 @@ export class DialogboxComponent {
     };
     console.warn(this.formdatas);
     this.skillssetServices.UpdateSkills(this.formdatas).subscribe((res) => {
-      console.warn(res);
+      this.skillgroupskill.reset();
+      this.ngOnInit();
     });
   }
 }
