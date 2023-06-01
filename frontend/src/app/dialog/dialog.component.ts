@@ -24,8 +24,8 @@ export class DialogComponent implements OnInit {
   datas: any;
   deletedata: any;
   emailID!: skillset;
-  apiData!: any[];
-  apiDataa!: any[];
+  DataofSkillGroup!: any[];
+  DataofSkill!: any[];
   skillgroupadd: FormGroup;
   addEmpskills: FormGroup;
   formdatas!: addskillgroup;
@@ -45,19 +45,19 @@ export class DialogComponent implements OnInit {
       skill: new FormControl(),
     })
     this.addEmpskills = _formBuilder.group({
-      skillGroup: new FormControl(),
-      skill: new FormControl(),
+      skillGroupID: new FormControl(),
+      skillID: new FormControl(),
     })
   }
   ngOnInit() {
     this.skills_service.getSkill(this.datadialog).subscribe(datas => {
       this.data = datas;
     })
-    this.add_skill.getData().subscribe(dataa => {
-      this.apiData = dataa;
+    this.add_skill.getData().subscribe(res => {
+      this.DataofSkillGroup = res;
     })
     this.add_skill.getDatas().subscribe(datas => {
-      this.apiDataa = datas;
+      this.DataofSkill = datas;
     })
   }
 
@@ -77,7 +77,10 @@ export class DialogComponent implements OnInit {
     })
   }
   AddEmpSkill() {
-    this.empSkills = this.addEmpskills.value;
+    this.empSkills = {
+      ...this.addEmpskills.value,
+    };
+    console.warn(this.empSkills);
     this.skills_service.AddEmpSkill(this.empSkills).subscribe((res: any) => {
       this.addEmpskills.reset();
       this.ngOnInit();

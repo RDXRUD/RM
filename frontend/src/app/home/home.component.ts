@@ -79,6 +79,5 @@ export class HomeComponent implements OnInit {
   OnReset() {
     this.filteringForm.reset();
     this.ngOnInit();
-   
   }
 }

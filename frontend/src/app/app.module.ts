@@ -33,7 +33,8 @@ import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { InnerdialogComponent } from './innerdialog/innerdialog.component';
 import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
   declarations: [

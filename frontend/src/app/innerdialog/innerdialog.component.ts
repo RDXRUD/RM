@@ -29,10 +29,6 @@ export class InnerdialogComponent {
       skillID: this.dataofskills.element.skillID,
       skillGroupID: this.dataofskills.element.skillGroupID,
     });
-    console.log(this.dataofskills.element)
-    console.log(this.dataofskills.element.skillGroupID);
-    console.log(this.dataofskills.element.skillID);
-
     this.skill_group.getData().subscribe(data => {
       this.apiData = data;
     })

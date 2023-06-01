@@ -34,7 +34,7 @@ namespace ResourceManagerAPI.Controllers
                                     Start = e.Start,
                                     Finish = e.Finish
                                 }
-                                ).ToList();
+                                 ).ToList();
 
                 if (employee == null)
                 {
@@ -47,6 +47,7 @@ namespace ResourceManagerAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPost, Authorize]
         [Route("AddEmployeesTask")]
         [NonAction]

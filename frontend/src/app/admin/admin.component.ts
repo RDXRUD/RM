@@ -133,7 +133,7 @@ export class AdminComponent implements OnInit {
       this.ngOnInit();
     })
   }
-  getSkills(emailID: string) {
+  getSkills(emailID:string) {
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { emailID }
     });

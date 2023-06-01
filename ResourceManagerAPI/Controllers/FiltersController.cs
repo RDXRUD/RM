@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.Models;
 using ResourceManagerAPI.DBContext;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -33,25 +34,17 @@ namespace ResourceManagerAPI.Controllers
                                    Finish = et.Finish
                                };
 
-            var tempskill = from r in _dbContext.resources
-                            join rs in _dbContext.resourceskills
-                            on r.ResourceID equals rs.ResourceID
-                            join ss in _dbContext.skillset
-                            on rs.SkillSetID equals ss.SkillSetID
-                            join sg in _dbContext.skillgroup
-                            on ss.SkillGroupID equals sg.SkillGroupID
-                            join s in _dbContext.skill
-                            on ss.SkillID equals s.SkillID
-                            into detail
-                            from m in detail.DefaultIfEmpty()
-                            select new ResourceSkillManager
-                            {
-                                ResourceID = r.ResourceID,
-                                SkillID = ss.SkillID,
-                                EmailID = r.EmailID,
-                                SkillGroup = sg.SkillGroup,
-                                Skill = m.Skill
-                            };
+            var tempskill = (from r in _dbContext.resources
+                             join rs in _dbContext.resourceskills on r.ResourceID equals rs.ResourceID
+                             join ss in _dbContext.skillset on rs.SkillSetID equals ss.SkillSetID
+                             join s in _dbContext.skill on ss.SkillID equals s.SkillID
+                             group s.Skill by new { r.ResourceID, r.EmailID} into g
+                             select new ResourceSkillManager
+                             {
+                                 ResourceID = g.Key.ResourceID,
+                                 EmailID = g.Key.EmailID,
+                                 Skill = string.Join(", ", g.ToArray())
+                             }).ToList();
 
             if (String.IsNullOrEmpty(filter.Skill))
             {
@@ -62,20 +55,24 @@ namespace ResourceManagerAPI.Controllers
                     ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
                    ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
                 ).ToList();
+
                 return employee;
             }
             else
             {
-                var employees = tempemployee.Where(e =>
-                    tempskill.Any(s => s.EmailID == e.EmailID &&
-                    ((!String.IsNullOrEmpty(filter.Skill) && s.Skill.ToUpper().Contains(filter.Skill.ToUpper())) || (String.IsNullOrEmpty(filter.Skill)))) &&
-                    ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || (String.IsNullOrEmpty(filter.Name))) &&
-                    ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
-                    ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
-                    ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
-                    ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
-                ).ToList();
-                return employees;
+                var employees = tempemployee
+                .ToList()
+                .Where(e =>
+        tempskill.Any(s => s.EmailID == e.EmailID) &&
+        ((!String.IsNullOrEmpty(filter.Skill) && filter.Skill.Split().All(term => tempskill.Any(s => s.EmailID == e.EmailID && s.Skill.ToUpper().Contains(term.ToUpper()))) && tempskill.Where(s => s.EmailID == e.EmailID).Select(s => s.Skill.ToUpper()).Distinct().Count() == filter.Skill.Split().Count()) || String.IsNullOrEmpty(filter.Skill)) &&
+        ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || (String.IsNullOrEmpty(filter.Name))) &&
+        ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
+        ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
+        ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+        ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
+        ).ToList();
+
+             return employees;
             }
         }
     }

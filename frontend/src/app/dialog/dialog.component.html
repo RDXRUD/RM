@@ -1,20 +1,22 @@
 <mat-dialog-content>
   <div class="contain">
     <form [formGroup]="addEmpskills" (ngSubmit)="AddEmpSkill()">
-      <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-        <mat-form-field fxFlex="30">
-          <mat-label>SkillGroup</mat-label>
-          <input formControlName="skillGroup" matInput>
-        </mat-form-field>
-        <mat-form-field fxFlex="30">
-          <mat-label>Skill</mat-label>
-          <input formControlName="skill" matInput>
-        </mat-form-field>
+      <mat-form-field fxFlex="30">
+        <mat-label>SKILL GROUP</mat-label>
+        <mat-select formControlName="skillGroupID" single>
+          <mat-option *ngFor="let select of DataofSkillGroup" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="30">
+        <mat-label>SKILL</mat-label>
+        <mat-select formControlName="skillID" single>
+          <mat-option *ngFor="let select of DataofSkill" [value]="select.skillID">{{select.skill}}</mat-option>
+        </mat-select>
+      </mat-form-field>
         <div fxFlex="30" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
           <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
             value="AddEmpSkill">Add</button>
         </div>
-      </div>
     </form>
   </div>
   <table mat-table [dataSource]="data">
