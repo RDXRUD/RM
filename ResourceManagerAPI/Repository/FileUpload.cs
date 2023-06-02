@@ -49,7 +49,7 @@ namespace ResourceManagerAPI.Repository
 
             _dbContext.employees.RemoveRange(_dbContext.employees); //Deletion Of Old DB Data Before Loading The New One
             _dbContext.employeetasks.RemoveRange(_dbContext.employeetasks);
-            //_dbContext.Database.ExecuteSqlRaw("UPDATE resources SET EmpID = NULL");
+            //_dbContext.Database.ExecuteSqlRaw("update resources set EmpID = null");
             _dbContext.SaveChanges();
 
             List < ProjectData > tempResourceList = new List<ProjectData>();

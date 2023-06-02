@@ -75,8 +75,8 @@ namespace ResourceManagerAPI.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-
         }
+
         [HttpPut, Authorize]
         [NonAction]
         [Route("UpdateEmployeeTask")]

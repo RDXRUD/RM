@@ -18,6 +18,7 @@ export class UsersService {
 
   OnSubmit(formdata: employeeFilters): Observable<employeeFilters[]> {
     let url = "https://localhost:7271/api/Filters/FilterEmployees";
+    formdata.skill = formdata.skill.toString();
     return this.http.post<employeeFilters[]>(url, formdata);
   }
   getSkilldata(): Observable<DataOfSkill[]> {
