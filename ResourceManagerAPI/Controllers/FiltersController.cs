@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ResourceManagerAPI.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ResourceManagerAPI.DBContext;
-using Microsoft.AspNetCore.Authorization;
+using ResourceManagerAPI.Models;
 
 namespace ResourceManagerAPI.Controllers
 {
