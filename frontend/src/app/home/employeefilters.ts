@@ -5,7 +5,7 @@ export interface employeeFilters {
   taskName: string,
   assignedFrom: Date,
   assignedTo: Date,
-  availableFrom: Date,
-  skill: string,
+  availableFrom: Date;
+  skill: string;
  
 }
