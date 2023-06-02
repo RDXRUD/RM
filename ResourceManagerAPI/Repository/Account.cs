@@ -25,7 +25,7 @@ namespace ResourceManagerAPI.Repository
             objUser.Password = Encrypt(user.Password);
             _dbContext.users.Add(objUser);
             _dbContext.SaveChanges();
-            return "{\"message\": \"Record Deleted Successfully\"}";
+            return "{\"message\": \"Record Added Successfully\"}";
         }
         public string DeleteUser(Users user)
         {
