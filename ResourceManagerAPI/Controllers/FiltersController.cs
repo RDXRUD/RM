@@ -23,7 +23,7 @@ namespace ResourceManagerAPI.Controllers
         {
             var tempemployee = from e in _dbContext.employees
                                join et in _dbContext.employeetasks
-                           on e.EmpID equals et.EmpID
+                               on e.EmpID equals et.EmpID
                                select new EmployeeManager
                                {
                                    EmpID = e.EmpID,
@@ -64,7 +64,7 @@ namespace ResourceManagerAPI.Controllers
                 .ToList()
                 .Where(e =>
         tempskill.Any(s => s.EmailID == e.EmailID) &&
-        ((!String.IsNullOrEmpty(filter.Skill) && filter.Skill.Split().All(term => tempskill.Any(s => s.EmailID == e.EmailID && s.Skill.ToUpper().Contains(term.ToUpper()))) && tempskill.Where(s => s.EmailID == e.EmailID).Select(s => s.Skill.ToUpper()).Distinct().Count() == filter.Skill.Split().Count()) || String.IsNullOrEmpty(filter.Skill)) &&
+        ((!String.IsNullOrEmpty(filter.Skill) && filter.Skill.Split().All(term => tempskill.Any(s => s.EmailID == e.EmailID && s.Skill.Trim().ToUpper().Contains(term.Trim().ToUpper()))) && tempskill.Where(s => s.EmailID == e.EmailID).Select(s => s.Skill.ToUpper()).Distinct().Count() == filter.Skill.Split().Count()) || String.IsNullOrEmpty(filter.Skill)) &&
         ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || (String.IsNullOrEmpty(filter.Name))) &&
         ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
         ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
