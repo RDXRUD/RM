@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { skillset } from './skillset';
+import { empSkills } from './empSkills';
 import { SkillsService } from './skills.service';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -23,10 +24,12 @@ export class DialogComponent implements OnInit {
   datas: any;
   deletedata: any;
   emailID!: skillset;
-  apiData!: any[];
-  apiDataa!: any[];
+  DataofSkillGroup!: any[];
+  DataofSkill!: any[];
   skillgroupadd: FormGroup;
+  addEmpskills: FormGroup;
   formdatas!: addskillgroup;
+  empSkills!:empSkills;
   userdatas: any;
 
   constructor(private skills_service: SkillsService,
@@ -41,20 +44,20 @@ export class DialogComponent implements OnInit {
       skillGroup: new FormControl(),
       skill: new FormControl(),
     })
+    this.addEmpskills = _formBuilder.group({
+      skillGroupID: new FormControl(),
+      skillID: new FormControl(),
+    })
   }
   ngOnInit() {
-    console.log(this.datadialog);
     this.skills_service.getSkill(this.datadialog).subscribe(datas => {
-      console.warn(datas)
       this.data = datas;
     })
-    this.add_skill.getData().subscribe(dataa => {
-      console.warn(dataa)
-      this.apiData = dataa;
+    this.add_skill.getData().subscribe(res => {
+      this.DataofSkillGroup = res;
     })
     this.add_skill.getDatas().subscribe(datas => {
-      console.warn(datas)
-      this.apiDataa = datas;
+      this.DataofSkill = datas;
     })
   }
 
@@ -67,10 +70,20 @@ export class DialogComponent implements OnInit {
 
   AddSkills() {
     this.formdatas = this.skillgroupadd.value;
-    console.warn(this.formdatas);
     this.skills_service.AddSkills(this.formdatas).subscribe(userdatas => {
-      console.warn(userdatas)
+      this.skillgroupadd.reset();
+      this.ngOnInit();
 
+    })
+  }
+  AddEmpSkill() {
+    this.empSkills = {
+      ...this.addEmpskills.value,
+    };
+    console.warn(this.empSkills);
+    this.skills_service.AddEmpSkill(this.empSkills).subscribe((res: any) => {
+      this.addEmpskills.reset();
+      this.ngOnInit();
     })
   }
 }

@@ -27,7 +27,6 @@ export class LoginComponent {
     this.http.post('https://localhost:7271/Login', { userName: UserName, password: Password }).subscribe(
       (response: any) => {
         this.tokenService.setToken(response.Token);
-        console.warn(response);
         this.router.navigate(['/Home']);
       },
     );

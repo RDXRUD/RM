@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { UsersService } from './users.service';
@@ -39,6 +39,8 @@ export const MY_FORMATS = {
 export class HomeComponent implements OnInit {
   dataOfEmp: any;
   datas: any;
+  dataOfSkill:any;
+  skillData!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
@@ -53,30 +55,29 @@ export class HomeComponent implements OnInit {
       skill: new FormControl(),
       assignedFrom: new FormControl(),
       assignedTo: new FormControl(),
-      availableFrom: new FormControl(),
-      availableTo: new FormControl(),
+      availableFrom: new FormControl()
     })
   }
   ngOnInit() {
     this.users_Service.getData().subscribe(data => {
-      console.warn(data)
       this.dataOfEmp = data
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
       this.dataSource.sort = this.sort;
 
     })
+    this.users_Service.getSkilldata().subscribe(dataOfSkill => {
+      this.skillData = dataOfSkill;
+    })
   }
   OnSubmit() {
     this.formdata = this.filteringForm.value;
-    console.warn(this.formdata);
     this.users_Service.OnSubmit(this.formdata).subscribe(datas => {
-      console.warn(datas)
       this.dataOfEmp = datas
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
-
     })
   }
   OnReset() {
     this.filteringForm.reset();
+    this.ngOnInit();
   }
 }

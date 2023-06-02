@@ -40,11 +40,11 @@ namespace ResourceManagerAPI.Controllers
             try
             {
                 SkillGroups skillGroup = new SkillGroups();
-                skillGroup.SkillGroupID = skill.SkillGroupID;
+                //skillGroup.SkillGroupID = skill.SkillGroupID;
                 skillGroup.SkillGroup = skill.SkillGroup;
                 _dbContext.skillgroup.Add(skillGroup);
                 _dbContext.SaveChanges();
-                return Ok("Record Added Successfully");
+                return Ok("{\"message\": \"Record Added Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace ResourceManagerAPI.Controllers
 
                 _dbContext.Entry(existingSkillGroup).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-                return Ok("Record Updated Successfully");
+                return Ok("{\"message\": \"Record Updated Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -87,7 +87,7 @@ namespace ResourceManagerAPI.Controllers
                 skillGroup.SkillGroupID = skill.SkillGroupID;
                 _dbContext.skillgroup.RemoveRange(skillGroup);
                 _dbContext.SaveChanges();
-                return Ok("Record Deleted Successfully");
+                return Ok("{\"message\": \"Record Deleted Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -112,7 +112,7 @@ namespace ResourceManagerAPI.Controllers
                                 {
                                     SkillSetID = ss.SkillSetID,
                                     SkillGroupID = ss.SkillGroupID,
-                                    SkillID=s.SkillID,
+                                    SkillID = s.SkillID,
                                     SkillGroup = m.SkillGroup,
                                     Skill = s.Skill
                                 }
@@ -127,21 +127,21 @@ namespace ResourceManagerAPI.Controllers
 
         [HttpPost, Authorize]
         [Route("AddSkillSet")]
-        public async Task<IActionResult> AddSkillSet([FromBody] SkillSetManager skill)
+        public IActionResult AddSkillSet([FromBody] SkillSetManager skill)
         {
-             Skills skillForAdd = new Skills();
-             skillForAdd.SkillID = skill.SkillID;
-             skillForAdd.Skill = skill.Skill;
-             _dbContext.skill.Add(skillForAdd);
-             _dbContext.SaveChanges();
+            Skills skillForAdd = new Skills();
+            skillForAdd.SkillID = skill.SkillID;
+            skillForAdd.Skill = skill.Skill;
+            _dbContext.skill.Add(skillForAdd);
+            _dbContext.SaveChanges();
 
-             SkillSet skillSetForAdd = new SkillSet();
-             skillSetForAdd.SkillSetID = skill.SkillID;
-             skillSetForAdd.SkillGroupID = skill.SkillGroupID;
-             skillSetForAdd.SkillID = skill.SkillID;
-             _dbContext.skillset.Add(skillSetForAdd);
-             _dbContext.SaveChanges();
-             return Ok("Record Added Successfully");
+            SkillSet skillSetForAdd = new SkillSet();
+            skillSetForAdd.SkillSetID = skill.SkillID;
+            skillSetForAdd.SkillGroupID = skill.SkillGroupID;
+            skillSetForAdd.SkillID = skill.SkillID;
+            _dbContext.skillset.Add(skillSetForAdd);
+            _dbContext.SaveChanges();
+            return Ok("{\"message\": \"Record Added Successfully\"}");
         }
 
         [HttpPut, Authorize]
@@ -161,7 +161,7 @@ namespace ResourceManagerAPI.Controllers
                 _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("Record Updated Successfully");
+                return Ok("{\"message\": \"Record Updated Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -173,36 +173,36 @@ namespace ResourceManagerAPI.Controllers
         [Route("DeleteSkillSet")]
         public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
         {
-			var skills = (from r in _dbContext.resources
-						  join rs in _dbContext.resourceskills
-						  on r.ResourceID equals rs.ResourceID
-						  join ss in _dbContext.skillset
-						  on rs.SkillSetID equals ss.SkillSetID
-						  join sg in _dbContext.skillgroup
-						  on ss.SkillGroupID equals sg.SkillGroupID
-						  join s in _dbContext.skill
-						  on ss.SkillID equals s.SkillID
-						  into detail
-						  from m in detail.DefaultIfEmpty()
-						  select new ResourceSkillManager
-						  {
-							  ResourceID = r.ResourceID,
-							  SkillID = ss.SkillID,
-							  ResourceSkillID = rs.ResourceSkillID,
-							  SkillSetID = rs.SkillSetID,
-							  SkillGroupID = sg.SkillGroupID,
-							  EmailID = r.EmailID,
-							  SkillGroup = sg.SkillGroup,
-							  Skill = m.Skill
-						  }
-								).ToList();
+            var skills = (from r in _dbContext.resources
+                          join rs in _dbContext.resourceskills
+                          on r.ResourceID equals rs.ResourceID
+                          join ss in _dbContext.skillset
+                          on rs.SkillSetID equals ss.SkillSetID
+                          join sg in _dbContext.skillgroup
+                          on ss.SkillGroupID equals sg.SkillGroupID
+                          join s in _dbContext.skill
+                          on ss.SkillID equals s.SkillID
+                          into detail
+                          from m in detail.DefaultIfEmpty()
+                          select new ResourceSkillManager
+                          {
+                              ResourceID = r.ResourceID,
+                              SkillID = ss.SkillID,
+                              ResourceSkillID = rs.ResourceSkillID,
+                              SkillSetID = rs.SkillSetID,
+                              SkillGroupID = sg.SkillGroupID,
+                              EmailID = r.EmailID,
+                              SkillGroup = sg.SkillGroup,
+                              Skill = m.Skill
+                          }
+                                ).ToList();
 
             if (!skills.Any(s => s.SkillSetID == skill.SkillSetID))
             {
                 var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
                 _dbContext.skillset.RemoveRange(skillToDelete);
                 _dbContext.SaveChanges();
-                return Ok("Record Deleted Successfully");
+                return Ok("{\"message\": \"Record Deleted Successfully\"}");
             }
             else
             {
@@ -234,7 +234,7 @@ namespace ResourceManagerAPI.Controllers
                 skillForAdd.Skill = skill.Skill;
                 _dbContext.skill.Add(skillForAdd);
                 _dbContext.SaveChanges();
-                return Ok("Record Added Successfully");
+                return Ok("{\"message\": \"Record Added Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -259,7 +259,7 @@ namespace ResourceManagerAPI.Controllers
 
                 _dbContext.Entry(existingSkill).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-                return Ok("Record Updated Successfully");
+                return Ok("{\"message\": \"Record Updated Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -277,7 +277,7 @@ namespace ResourceManagerAPI.Controllers
                 skillSet.SkillID = skill.SkillID;
                 _dbContext.skillset.RemoveRange(skillSet);
                 _dbContext.SaveChanges();
-                return Ok("Record Deleted Successfully");
+                return Ok("{\"message\": \"Record Deleted Successfully\"}");
             }
             catch (Exception ex)
             {

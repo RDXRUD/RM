@@ -1,12 +1,31 @@
 <mat-dialog-content>
-
+  <div class="contain">
+    <form [formGroup]="addEmpskills" (ngSubmit)="AddEmpSkill()">
+      <mat-form-field fxFlex="30">
+        <mat-label>SKILL GROUP</mat-label>
+        <mat-select formControlName="skillGroupID" single>
+          <mat-option *ngFor="let select of DataofSkillGroup" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="30">
+        <mat-label>SKILL</mat-label>
+        <mat-select formControlName="skillID" single>
+          <mat-option *ngFor="let select of DataofSkill" [value]="select.skillID">{{select.skill}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+        <div fxFlex="30" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+            value="AddEmpSkill">Add</button>
+        </div>
+    </form>
+  </div>
   <table mat-table [dataSource]="data">
     <ng-container matColumnDef="resourceID">
       <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
       <td mat-cell *matCellDef="let user"> {{user.resourceID}} </td>
     </ng-container>
     <ng-container matColumnDef="resourceSkillID">
-      <th mat-header-cell *matHeaderCellDef>RESOURCE ID</th>
+      <th mat-header-cell *matHeaderCellDef>RESOURCE SKILL ID</th>
       <td mat-cell *matCellDef="let user"> {{user.resourceSkillID}} </td>
     </ng-container>
 

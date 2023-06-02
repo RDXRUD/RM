@@ -40,7 +40,7 @@ export class EmployeeService {
   }
   OnFile(formdata: file): Observable<file[]> {
     const formValues = new FormData();
-    formValues.append('userName', formdata.userName);
+    // formValues.append('userName', formdata.userName);
     formValues.append('planFile', formdata.planFile);
     let url = "https://localhost:7271/api/File/LoadFileData";
     this._coreService.openSnackBar('File Loaded Successfully', 'done')
@@ -59,7 +59,6 @@ export class EmployeeService {
   AddSkillGroup(skillgroupdata: addSkillGroup): Observable<addSkillGroup[]> {
     let url = "https://localhost:7271/api/SkillSet/AddSkillGroup";
     this._coreService.openSnackBar('Record Added Successfully', 'done')
-    this.getSkillGroup();
     return this.http.post<addSkillGroup[]>(url, skillgroupdata);
   
   }
@@ -77,7 +76,7 @@ export class EmployeeService {
   Delete(skillSetID: number) {
     console.warn(skillSetID);
     let url = "https://localhost:7271/api/SkillSet/DeleteSkillSet";
-    this._coreService.openSnackBar('"This field is used in another process you cant delete it"', 'done')
+    this._coreService.openSnackBar('Record Deleted Successfully', 'done')
     return this.http.delete(url, { body: { skillSetID: skillSetID } });
   }
   DeleteSkillGroup(skillGroupID: number) {

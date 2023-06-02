@@ -145,7 +145,7 @@ namespace ResourceManagerAPI.Controllers
                 _dbContext.skill.Add(skills);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok();
+                return Ok("{\"message\": \"Record Added Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -176,7 +176,7 @@ namespace ResourceManagerAPI.Controllers
                 existingResourceSkill.SkillSetID = skill.SkillSetID;
                 _dbContext.Entry(existingResourceSkill).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-                return Ok("Record Updated Successfully");
+                return Ok("{\"message\": \"Record Updated Successfully\"}");
             }
             catch (Exception ex)
             {
@@ -198,7 +198,7 @@ namespace ResourceManagerAPI.Controllers
                 _dbContext.skill.Remove(skillToDelete);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok();
+                return Ok("{\"message\": \"Record Deleted Successfully\"}");
             }
             catch (Exception ex)
             {

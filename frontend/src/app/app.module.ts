@@ -32,9 +32,9 @@ import { LoginComponent } from './login/login.component';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { InnerdialogComponent } from './innerdialog/innerdialog.component';
 import { RouterModule } from '@angular/router';
-import { EmployeeUpdateDialogComponent } from './employee-update-dialog/employee-update-dialog.component';
 import { MatSortModule } from '@angular/material/sort';
-import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
   declarations: [
@@ -44,8 +44,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
     DialogComponent,
     LoginComponent,
     DialogboxComponent,
-    InnerdialogComponent,
-    EmployeeUpdateDialogComponent,
+    InnerdialogComponent
   ],
   imports: [
     MatSortModule,

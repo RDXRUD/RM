@@ -10,5 +10,6 @@ namespace ResourceManagerAPI.Models
         public string? TaskName { get; set; }
         public DateTime? Start { get; set; }
         public DateTime? Finish { get; set; }
+        public string? Skill { get; set; }
     }
 }

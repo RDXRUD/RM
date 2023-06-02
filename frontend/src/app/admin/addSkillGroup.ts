@@ -1,4 +1,4 @@
 export interface addSkillGroup{
-    skillGroupID:number;
+    //skillGroupID:number;
     skillGroup:string;
 }

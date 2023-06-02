@@ -1,14 +1,10 @@
 <mat-tab-group >
-  <mat-tab label='Add SkillGroup'>
+  <mat-tab label='SkillGroup'>
     <div class="contain">
       <form [formGroup]="addSkillgroup" (ngSubmit)="AddSkillGroup()">
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
           <mat-form-field fxFlex="20">
-            <mat-label>ID:-</mat-label>
-            <input formControlName="skillGroupID" matInput>
-          </mat-form-field>
-          <mat-form-field fxFlex="20">
-            <mat-label>SkillGroup:-</mat-label>
+            <mat-label>SkillGroup</mat-label>
             <input formControlName="skillGroup" matInput>
           </mat-form-field>
           <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
@@ -39,17 +35,12 @@
       </table>
     </div>
   </mat-tab>
-  <mat-tab label="Add  Skills">
+  <mat-tab label="Skill">
     <div class="contain">
       <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-          <mat-form-field fxFlex="20">
-            <mat-label>SKILL ID:-</mat-label>
-            <input formControlName="skillID" matInput>
-          </mat-form-field>
-
           <mat-form-field fxFlex="30">
-            <mat-label>SKILL GROUP:-</mat-label>
+            <mat-label>SKILL GROUP</mat-label>
             <mat-select formControlName="skillGroupID" single>
               <mat-option *ngFor="let select of apiData"
                 [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
@@ -57,7 +48,7 @@
           </mat-form-field>
 
           <mat-form-field fxFlex="20">
-            <mat-label>SKILL:-</mat-label>
+            <mat-label>SKILL</mat-label>
             <input formControlName="skill" matInput>
           </mat-form-field>
 
@@ -100,7 +91,7 @@
       </table>
     </div>
   </mat-tab>
-  <mat-tab label="Resource Skills">
+  <mat-tab label="Resource Skill">
     <div class="scrollable-table">
       <div class="mat-elevation-z8 list-table">
         <div class="UsersTable">
@@ -137,13 +128,9 @@
     <div class="scrollable-table">
       <div class="container">
         <div class="box">
-          <h2>Upload File</h2>
+          <h2>Upload File Here</h2>
           <form [formGroup]="forms" (ngSubmit)="OnFile()">
             <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
-              <mat-form-field fxFlex="10">
-                <mat-label>UserName:-</mat-label>
-                <input formControlName="userName" matInput>
-              </mat-form-field>
               <mat-form-field fxFlex="10">
                 <ngx-mat-file-input formControlName="planFile" matInput>
                 </ngx-mat-file-input>
@@ -160,19 +147,19 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Users">
+  <mat-tab label="User">
     <div class="scrollable-table">
       <div class="containers">
         <form [formGroup]="userForm" (ngSubmit)="OnUser()">
           <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
 
             <mat-form-field fxFlex="20">
-              <mat-label>UserName:-</mat-label>
+              <mat-label>UserName</mat-label>
               <input type="text" formControlName="userName" matInput>
             </mat-form-field>
 
             <mat-form-field fxFlex="20">
-              <mat-label>FullName:-</mat-label>
+              <mat-label>FullName</mat-label>
               <input type="text" formControlName="fullName" matInput>
             </mat-form-field>
             <mat-form-field fxFlex="20">

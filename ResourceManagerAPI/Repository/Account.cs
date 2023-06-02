@@ -25,7 +25,7 @@ namespace ResourceManagerAPI.Repository
             objUser.Password = Encrypt(user.Password);
             _dbContext.users.Add(objUser);
             _dbContext.SaveChanges();
-            return "Record Added Successfully";
+            return "{\"message\": \"Record Added Successfully\"}";
         }
         public string DeleteUser(Users user)
         {
@@ -33,7 +33,7 @@ namespace ResourceManagerAPI.Repository
             objUser.UserID = user.UserID;
             _dbContext.users.RemoveRange(objUser);
             _dbContext.SaveChanges();
-            return "Record Deleted Successfully";
+            return "{\"message\": \"Record Deleted Successfully\"}";
         }
         public string Encrypt(string clearText)
         {

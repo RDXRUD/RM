@@ -1,5 +1,5 @@
 export interface addSkill{
-    skillID:number;
+    //skillID:number;
     skillSetID:number;
     skillGroupID:number;
     skill:string;

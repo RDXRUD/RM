@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { skillset } from './skillset';
 import { addskillgroup } from './addskillgroup';
 import { CoreService } from '../core/core.service';
+import { empSkills } from './empSkills';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,5 +20,10 @@ export class SkillsService {
     this._coreService.openSnackBar('Record Added', 'done')
     return this.http.put<addskillgroup[]>(url, formdatas);
   }
+  AddEmpSkill(empSkills:empSkills):Observable<empSkills[]>{
+    let url = "https://localhost:7271/api/Skills/AddNewSkill";
+    this._coreService.openSnackBar('Record Added', 'done')
+    return this.http.put<addskillgroup[]>(url, empSkills);
+  };
 }
 
