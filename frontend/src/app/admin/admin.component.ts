@@ -12,6 +12,7 @@ import { InnerdialogComponent } from '../innerdialog/innerdialog.component';
 import { employee } from './employee';
 import { addEmployee } from './addEmployee';
 import { CoreService } from '../core/core.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -52,6 +53,7 @@ export class AdminComponent implements OnInit {
   constructor(private employee_Service: EmployeeService,
     private skillgroup: SkillgroupService,
     private frmbuilder: FormBuilder,
+    private _coreService:CoreService,
     private dialog: MatDialog) {
     this.forms = frmbuilder.group({
       planFile: new FormControl(),
@@ -147,11 +149,19 @@ export class AdminComponent implements OnInit {
   Delete(skillSetID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
-      this.employee_Service.Delete(skillSetID).subscribe(deleteuser => {
-        this.ngOnInit();
-      });
+      this.employee_Service.Delete(skillSetID).subscribe(
+        deleteuser => {
+          this.ngOnInit();
+        },
+        (error: HttpErrorResponse) => {
+          if (error.status === 400) {
+            this._coreService.openSnackBar("This field is used in another process, you can't delete it");
+          }
+        }
+      );
     }
   }
+  
   deleteUser(userID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {

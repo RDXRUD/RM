@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
 
     })
     this.users_Service.getSkilldata().subscribe(dataOfSkill => {
-      this.skillData = dataOfSkill;
+      this.skillData = dataOfSkill.sort((a, b) => a.skill.localeCompare(b.skill));
     })
   }
   OnSubmit() {
