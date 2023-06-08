@@ -43,7 +43,7 @@ export class AdminComponent implements OnInit {
   dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'edit', 'delete'];
   user: any;
   userdata: any;
-  users: any;
+  skillGroups: any;
   res: any;
   deleteuser: any;
   deleteskillgroup: any;
@@ -107,8 +107,8 @@ export class AdminComponent implements OnInit {
     
 
     })
-    this.employee_Service.getSkillGroup().subscribe(users => {
-      this.users = users;
+    this.employee_Service.getSkillGroup().subscribe(skgroups => {
+      this.skillGroups = skgroups;
       
     })
   }
