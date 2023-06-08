@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmployeeService } from './employee.service';
 import { FormGroup, FormControl, FormBuilder, NgForm } from '@angular/forms';
 import { file } from './file';
@@ -13,7 +13,8 @@ import { employee } from './employee';
 import { addEmployee } from './addEmployee';
 import { CoreService } from '../core/core.service';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-admin',
@@ -21,7 +22,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
-   apiData!: any[];
+  apiData!: any[];
   dataOfEmployees!: employee[];
   forms: FormGroup;
   formdata!: file;
@@ -48,13 +49,17 @@ export class AdminComponent implements OnInit {
   deleteskillgroup: any;
   dc: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish', 'edit'];
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
-  displayedColumnsto: string[] = ['skillGroupID', 'skillGroup', 'delete'];
+  displayedColumnsto: string[] = [ 'skillGroup', 'delete'];
+  dataOfempSkill!: MatTableDataSource<any>;
+  @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private employee_Service: EmployeeService,
+  constructor(
+    private employee_Service: EmployeeService,
     private skillgroup: SkillgroupService,
     private frmbuilder: FormBuilder,
-    private _coreService:CoreService,
-    private dialog: MatDialog) {
+    private _coreService: CoreService,
+    private dialog: MatDialog
+  ) {
     this.forms = frmbuilder.group({
       planFile: new FormControl(),
     })
@@ -68,7 +73,7 @@ export class AdminComponent implements OnInit {
       skill: new FormControl(),
     })
     this.addSkillgroup = frmbuilder.group({
-      skillGroup: new FormControl,
+      skillGroup: new FormControl(),
     })
     this.AddDataOfEmployee = frmbuilder.group({
       resourceName: new FormControl(),
@@ -77,36 +82,51 @@ export class AdminComponent implements OnInit {
       end: new FormControl()
     })
   }
+
   ngOnInit() {
     this.employee_Service.getData().subscribe(data => {
       this.data = data
+      
     })
     this.employee_Service.getDataOfEmployee().subscribe(datasofemployees => {
       this.dataOfEmployees = datasofemployees
+     
     })
 
     this.skillgroup.getData().subscribe(sg => {
       this.apiData = sg;
+     
     })
     this.employee_Service.getDetails().subscribe(datas => {
-      this.datas = datas
+      this.datas = datas;
+      this.dataOfempSkill = new MatTableDataSource(this.datas);
+      this.dataOfempSkill.sort = this.sort;
     })
     this.employee_Service.getUsers().subscribe(user => {
-      this.user = user
+      this.user = user;
+    
+
     })
     this.employee_Service.getSkillGroup().subscribe(users => {
       this.users = users;
+      
     })
-
   }
 
   OnFile() {
     this.formdata = this.forms.value;
     console.warn(this.formdata);
     this.employee_Service.OnFile(this.formdata).subscribe(datas => {
-      console.warn(datas)
-    })
+      this.forms.reset();
+    },
+      (error: HttpErrorResponse) => {
+        if (error.status === 400) {
+          this._coreService.openSnackBar("Please choose a file to upload", "ok");
+        }
+      }
+    );
   }
+
   OnUser() {
     this.formdatas = this.userForm.value;
     this.employee_Service.OnUser(this.formdatas).subscribe(userdata => {
@@ -114,20 +134,22 @@ export class AdminComponent implements OnInit {
       this.ngOnInit();
     })
   }
+
   AddSkill() {
     this.skilldata = this.addskill.value;
     this.employee_Service.AddSkill(this.skilldata).subscribe(res => {
       this.addskill.reset();
     })
   }
+
   AddSkillGroup() {
     this.skillgroupdata = this.addSkillgroup.value;
     this.employee_Service.AddSkillGroup(this.skillgroupdata).subscribe(skillgroupdataApi => {
       this.addSkillgroup.reset();
       this.ngOnInit();
-
     })
   }
+
   AddEmpDetails() {
     this.addEmpDetails = this.AddDataOfEmployee.value;
     this.employee_Service.AddEmpDetails(this.addEmpDetails).subscribe(addEmpDetails => {
@@ -135,11 +157,13 @@ export class AdminComponent implements OnInit {
       this.ngOnInit();
     })
   }
-  getSkills(emailID:string) {
+
+  getSkills(emailID: string) {
     const dialogRef = this.dialog.open(DialogComponent, {
       data: { emailID }
     });
   }
+
   Edit(element: any) {
     const dialogRef = this.dialog.open(InnerdialogComponent, {
       data: { element }
@@ -161,23 +185,22 @@ export class AdminComponent implements OnInit {
       );
     }
   }
-  
+
   deleteUser(userID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
-    this.employee_Service.deleteUser(userID).subscribe(deletedata => {
-      this.ngOnInit();
+      this.employee_Service.deleteUser(userID).subscribe(deletedata => {
+        this.ngOnInit();
+      });
+    }
+  }
 
-    })}
-  };
   DeleteSkillGroup(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
-    this.employee_Service.DeleteSkillGroup(skillGroupID).subscribe(deleteskillgroup => {
-      this.ngOnInit();
-
-    });
-  }
-
+      this.employee_Service.DeleteSkillGroup(skillGroupID).subscribe(deleteskillgroup => {
+        this.ngOnInit();
+      });
+    }
   }
 }

@@ -46,9 +46,9 @@
     <mat-tab label="Skill">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="datas" class="SkillsTable">
+          <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort>
             <ng-container matColumnDef="skillSetID">
-              <th mat-header-cell *matHeaderCellDef> ID </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
               <td mat-cell *matCellDef="let user"> {{user.skillSetID}} </td>
             </ng-container>
             <ng-container matColumnDef="skillGroup">

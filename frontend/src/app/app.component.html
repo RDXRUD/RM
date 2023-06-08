@@ -1,5 +1,5 @@
 <div class="app-container">
-  <mat-toolbar color="primary" *ngIf="isLoggedIn && tokenService.isAuthenticated()">
+  <mat-toolbar color="primary" *ngIf="isLoggedIn">
 
     <span>Team Tracker</span>
     <span class="example-spacer"></span>
@@ -8,6 +8,7 @@
       <button mat-icon-button routerLink="Home"><mat-icon>home</mat-icon></button>
       <button mat-icon-button routerLink="Admin"><mat-icon>settings</mat-icon></button>
       <button mat-icon-button routerLink="#" (click)="OnLogout()"><mat-icon>logout</mat-icon></button>
+
     </nav>
   </mat-toolbar>
   <div style="flex: 1;">

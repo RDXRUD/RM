@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
       name: new FormControl(),
       emailID: new FormControl(),
       taskName: new FormControl(),
-      skill: new FormControl(""),
+      skill: new FormControl(),
       assignedFrom: new FormControl(),
       assignedTo: new FormControl(),
       availableFrom: new FormControl()
@@ -66,12 +66,11 @@ export class HomeComponent implements OnInit {
 
     })
     this.users_Service.getSkilldata().subscribe(dataOfSkill => {
-      this.skillData = dataOfSkill.sort((a, b) => a.skill.localeCompare(b.skill));
+      this.skillData = dataOfSkill;
     })
   }
   OnSubmit() {
     this.formdata = this.filteringForm.value;
-    this.formdata.skill = Array.isArray(this.formdata.skill) ? this.formdata.skill.join(',') : this.formdata.skill;
     this.users_Service.OnSubmit(this.formdata).subscribe(datas => {
       this.dataOfEmp = datas
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
