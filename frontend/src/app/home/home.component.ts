@@ -41,6 +41,7 @@ export class HomeComponent implements OnInit {
   datas: any;
   dataOfSkill:any;
   skillData!: any[];
+  skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
@@ -67,10 +68,12 @@ export class HomeComponent implements OnInit {
     })
     this.users_Service.getSkilldata().subscribe(dataOfSkill => {
       this.skillData = dataOfSkill;
+      this.skillDataSorted = this.skillData.sort((a, b) => a.skill.localeCompare(b.skill));
     })
   }
   OnSubmit() {
     this.formdata = this.filteringForm.value;
+    this.formdata.skill = Array.isArray(this.formdata.skill) ? this.formdata.skill.join(',') : this.formdata.skill;
     this.users_Service.OnSubmit(this.formdata).subscribe(datas => {
       this.dataOfEmp = datas
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
