@@ -31,6 +31,7 @@ export class DialogComponent implements OnInit {
   formdatas!: addskillgroup;
   empSkills!:empSkills;
   userdatas: any;
+  skillDataSorted:any[] | undefined;
 
   constructor(private skills_service: SkillsService,
     private add_skill: AddskillService,
@@ -58,6 +59,7 @@ export class DialogComponent implements OnInit {
     })
     this.add_skill.getDatas().subscribe(datas => {
       this.DataofSkill = datas;
+      this.skillDataSorted = this.DataofSkill.sort((a, b) => a.skill.localeCompare(b.skill));
     })
   }
 
