@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { UsersService } from './home/users.service';
+import { UsersService } from './_services/users.service';
 import { AppRoutingModule, routes } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -24,13 +24,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { MatDialogModule } from '@angular/material/dialog';
 import { NgxMatFileInputModule } from '@angular-material-components/file-input';
-import { DialogComponent } from './dialog/dialog.component';
+import { EditResSkillDialogComponent } from './_shared/edit-res-skill-dialog/edit-res-skill-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { JwtModule } from '@auth0/angular-jwt';
-import { AuthInterceptor } from './login/AuthInterceptor';
+import { AuthInterceptor } from './_helpers/auth.interceptor';
+import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { LoginComponent } from './login/login.component';
-import { DialogboxComponent } from './dialogbox/dialogbox.component';
-import { InnerdialogComponent } from './innerdialog/innerdialog.component';
+import { EditEmpSkillDialogComponent } from './_shared/edit-emp-skill-dialog/edit-emp-skill-dialog.component';
+import { EditSkillDialogComponent } from './_shared/edit-skill-dialog/edit-skill-dialog.component';
 import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -41,10 +42,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     AppComponent,
     HomeComponent,
     AdminComponent,
-    DialogComponent,
+    EditResSkillDialogComponent,
     LoginComponent,
-    DialogboxComponent,
-    InnerdialogComponent
+    EditEmpSkillDialogComponent,
+    EditSkillDialogComponent
   ],
   imports: [
     MatSortModule,
@@ -82,11 +83,11 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
       },
     }),
   ],
-  providers: [UsersService, { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } }, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  },],
+  providers: [UsersService,
+  { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,66 +1,91 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ResourceManagerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FiltersController : ControllerBase
+    public class FiltersController : Controller
     {
         private readonly PGDBContext _dbContext;
-
         public FiltersController(PGDBContext empContext)
         {
             _dbContext = empContext;
         }
 
-        [HttpPost]
-        [Authorize]
+        [HttpPost, Authorize]
         [Route("FilterEmployees")]
         public List<EmployeeManager> GetFilteredEmployees([FromBody] FilterViewModel filter)
         {
-            var employeesQuery = from e in _dbContext.employees
-                                 join et in _dbContext.employeetasks on e.EmpID equals et.EmpID
-                                 select new EmployeeManager
-                                 {
-                                     EmpID = e.EmpID,
-                                     ResourceName = e.ResourceName,
-                                     EmailID = e.EmailID,
-                                     TaskName = et.TaskName,
-                                     Start = et.Start,
-                                     Finish = et.Finish
-                                 };
+            var tempemployee = from e in _dbContext.employees
+                               join et in _dbContext.employeetasks
+                           on e.EmpID equals et.EmpID
+                               select new EmployeeManager
+                               {
+                                   EmpID = e.EmpID,
+                                   ResourceName = e.ResourceName,
+                                   EmailID = e.EmailID,
+                                   TaskName = et.TaskName,
+                                   Start = et.Start,
+                                   Finish = et.Finish
+                               };
 
-            var employees = employeesQuery.ToList().Where(e =>
-                ((!String.IsNullOrEmpty(filter.Skill) && ContainsAnySkill(e.EmailID, filter.Skill.ToUpper().Split(','))) || String.IsNullOrEmpty(filter.Skill)) &&
-                ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || String.IsNullOrEmpty(filter.Name)) &&
-                ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || String.IsNullOrEmpty(filter.EmailID)) &&
-                ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || String.IsNullOrEmpty(filter.TaskName)) &&
-                ((!filter.AssignedFrom.HasValue || e.Start >= filter.AssignedFrom) && (!filter.AssignedTo.HasValue || e.Start <= filter.AssignedTo)) &&
-                (filter.AvailableFrom.HasValue ? _dbContext.employeetasks.Any(et => et.EmpID == e.EmpID && et.Start >= filter.AvailableFrom) : true) &&
-                (filter.AvailableTo.HasValue ? _dbContext.employeetasks.Any(et => et.EmpID == e.EmpID && et.Finish <= filter.AvailableTo) : true)
-            ).ToList();
+            var tempskill = (from r in _dbContext.resources
+                             join rs in _dbContext.resourceskills on r.ResourceID equals rs.ResourceID
+                             join ss in _dbContext.skillset on rs.SkillSetID equals ss.SkillSetID
+                             join s in _dbContext.skill on ss.SkillID equals s.SkillID
+                             group s.Skill by new { r.ResourceID, r.EmailID } into g
+                             select new ResourceSkillManager
+                             {
+                                 ResourceID = g.Key.ResourceID,
+                                 EmailID = g.Key.EmailID,
+                                 Skill = string.Join(", ", g.ToArray())
+                             }).ToList();
 
-            return employees;
+            if (String.IsNullOrEmpty(filter.Skill))
+            {
+                var employee = tempemployee.Where(e =>
+                    ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || String.IsNullOrEmpty(filter.Name)) &&
+                    ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
+                    ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
+                    ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+                   ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
+                ).ToList();
+
+                return employee;
+            }
+            else
+            {
+                string[] filterSkills = filter.Skill.ToUpper().Split(',');
+
+                var employees = tempemployee.ToList().Where(e =>
+                    tempskill.Any(s => s.EmailID == e.EmailID &&
+                    ((!String.IsNullOrEmpty(filter.Skill) && ContainsAnySkill(s.Skill.ToUpper().Split(','), filterSkills)) || (String.IsNullOrEmpty(filter.Skill)))) &&
+                    ((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || (String.IsNullOrEmpty(filter.Name))) &&
+                    ((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
+                    ((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
+                    ((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+                    ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom) || (!filter.AvailableFrom.HasValue))
+                ).ToList();
+
+                return employees;
+            }
         }
-
-        private bool ContainsAnySkill(string emailId, string[] filterSkills)
+        private bool ContainsAnySkill(string[] skills, string[] filter)
         {
-            var skills = _dbContext.resources
-                .Join(_dbContext.resourceskills, r => r.ResourceID, rs => rs.ResourceID, (r, rs) => new { r.EmailID, rs.SkillSetID })
-                .Join(_dbContext.skillset, rs => rs.SkillSetID, ss => ss.SkillSetID, (rs, ss) => new { rs.EmailID, ss.SkillID })
-                .Join(_dbContext.skill, s => s.SkillID, sk => sk.SkillID, (s, sk) => new { s.EmailID, sk.Skill })
-                .Where(x => x.EmailID == emailId)
-                .Select(x => x.Skill)
-                .ToList();
-
-            return filterSkills.Any(fs => skills.Any(s => s.Trim().ToUpper() == fs.Trim().ToUpper()));
+            foreach (string filterSkill in filter)
+            {
+                foreach (string skill in skills)
+                {
+                    if (filterSkill.Trim() == skill.Trim())
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }
+
+

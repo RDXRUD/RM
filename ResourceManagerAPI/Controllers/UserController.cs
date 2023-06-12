@@ -121,7 +121,7 @@ namespace ResourceManagerAPI.Controllers
                         _configuration["Jwt:Issuer"],
                         _configuration["Jwt:Audience"],
                         claims,
-                        expires: DateTime.UtcNow.AddMinutes(1),
+                        expires: DateTime.UtcNow.AddDays(1),
                         signingCredentials: signIn);
                     var jwtToken = new JwtToken
                     {

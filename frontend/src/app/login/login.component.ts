@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router'
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { TokenService } from './token.service';
-import { CoreService } from '../core/core.service';
+import { TokenService } from '../_services/token.service';
+import { CoreService } from '../_services/core.service';
 
 @Component({
   selector: 'app-login',

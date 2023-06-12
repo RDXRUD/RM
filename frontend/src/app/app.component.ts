@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService } from './login/token.service';
+import { TokenService } from './_services/token.service';
 import { Router } from '@angular/router';
 
 
@@ -18,7 +18,7 @@ export class AppComponent {
     })
   }
   ngOnInit(): void {
-    this.checkTokenExpiration();
+    // this.checkTokenExpiration();
   }
   
   OnLogout() {
@@ -27,9 +27,9 @@ export class AppComponent {
   }
   
 
-  checkTokenExpiration(): void {
-    this.showSessionExpiredMessage = this.tokenService.isTokenExpired();
-  }
+  // checkTokenExpiration(): void {
+  //   this.showSessionExpiredMessage = this.tokenService.isTokenExpired();
+  // }
   
   
 }
