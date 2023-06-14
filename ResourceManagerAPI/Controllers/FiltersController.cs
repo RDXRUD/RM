@@ -17,7 +17,7 @@ namespace ResourceManagerAPI.Controllers
 
 		[HttpPost, Authorize]
 		[Route("FilterEmployees")]
-		public List<EmployeeManager> GetFilteredEmployees(FilterViewModel filter)
+		public List<EmployeeManager> GetFilteredEmployees([FromBody] FilterViewModel filter)
 		{
 			var tempemployee = from e in _dbContext.employees
 							   join et in _dbContext.employeetasks
@@ -67,7 +67,7 @@ namespace ResourceManagerAPI.Controllers
 					((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
 					((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
 					((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Start <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
-					((filter.AvailableFrom.HasValue && e.Finish >= filter.AvailableFrom && e.Finish <= filter.AvailableTo) || (!filter.AvailableFrom.HasValue && !filter.AvailableTo.HasValue))
+					((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom) || (!filter.AvailableFrom.HasValue))
 				).ToList();
 
 				return employees;
@@ -81,7 +81,7 @@ namespace ResourceManagerAPI.Controllers
 				{
 					if (filterSkill.Trim() == skill.Trim())
 						return true;
-				}   
+				}
 			}
 			return false;
 		}

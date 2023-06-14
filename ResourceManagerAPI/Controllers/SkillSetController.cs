@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using jdk.nashorn.tools;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
@@ -225,6 +226,46 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost, Authorize]
+		[Route("GetSkillAsPerSkillGroup")]
+		public async Task<IEnumerable<Skills>> GetSkill([FromBody]SkillGroups skillGroup)
+		{
+			try
+			{
+				var employee = await(from ss in _dbContext.skillset
+								join s in _dbContext.skill
+								on ss.SkillID equals s.SkillID
+								join sg in _dbContext.skillgroup
+								on ss.SkillGroupID equals sg.SkillGroupID
+								into detail
+								from m in detail.DefaultIfEmpty()
+								select new SkillSetManager
+								{
+									SkillSetID = ss.SkillSetID,
+									SkillGroupID = ss.SkillGroupID,
+									SkillID = s.SkillID,
+									SkillGroup = m.SkillGroup,
+									Skill = s.Skill
+                                }
+								).ToListAsync();
+
+				var skill = employee.Where(e => e.SkillGroupID == skillGroup.SkillGroupID).Select(e => new Skills { Skill = e.Skill }).ToList();
+
+				if (skill != null)
+				{
+					return skill;
+				}
+				else
+				{
+					return Enumerable.Empty<Skills>();
+				}
+			}
+			catch (Exception ex)
+			{
+				return (IEnumerable<Skills>)StatusCode(500, ex.Message);
+			}
+		}
+
+		[HttpPost, Authorize]
         [Route("AddSkill")]
         public async Task<IActionResult> AddSkill(Skills skill)
         {

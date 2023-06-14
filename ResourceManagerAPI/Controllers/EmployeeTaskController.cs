@@ -34,7 +34,7 @@ namespace ResourceManagerAPI.Controllers
                                     Start = e.Start,
                                     Finish = e.Finish
                                 }
-                                 ).ToList();
+                                 ).AsEnumerable().DistinctBy(e => e.EmpID).ToList();
 
                 if (employee == null)
                 {
