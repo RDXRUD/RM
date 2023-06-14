@@ -3,6 +3,7 @@ export interface employeeDetails {
    emailID: string;
    resourceName: string;
    taskName: string;
+   skill:string;
    start: string;
    finish: string;
 }
