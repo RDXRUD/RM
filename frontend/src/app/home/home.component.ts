@@ -1,14 +1,16 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { UsersService } from './users.service';
+import { UsersService } from '../_services/users.service';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 const moment = _rollupMoment || _moment;
-import { employeeFilters } from './employeefilters';
+import { employeeFilters } from '../_model/employeefilters';
+import { SkillsetService } from '../_services/skillset.service';
+import { EmployeeService } from '../_services/employee.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -41,39 +43,41 @@ export class HomeComponent implements OnInit {
   datas: any;
   dataOfSkill:any;
   skillData!: any[];
+  skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private users_Service: UsersService, private frmbuilder: FormBuilder) {
+  constructor(private users_Service: UsersService, private frmbuilder: FormBuilder,
+    private skillsetService: SkillsetService, private employeeService: EmployeeService) {
     this.filteringForm = frmbuilder.group({
       name: new FormControl(),
       emailID: new FormControl(),
       taskName: new FormControl(),
+      skill: new FormControl(),
       assignedFrom: new FormControl(),
       assignedTo: new FormControl(),
-      availableFrom: new FormControl(),
-      skill: new FormControl(),
+      availableFrom: new FormControl()
     })
   }
   ngOnInit() {
-    this.users_Service.getData().subscribe(data => {
+    this.employeeService.getDataOfEmployee().subscribe(data => {
       this.dataOfEmp = data
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
       this.dataSource.sort = this.sort;
 
     })
-    this.users_Service.getSkilldata().subscribe(dataOfSkill => {
+    this.skillsetService.getSkills().subscribe(dataOfSkill => {
       this.skillData = dataOfSkill;
+      this.skillDataSorted = this.skillData.sort((a, b) => a.skill.localeCompare(b.skill));
     })
-
   }
   OnSubmit() {
     this.formdata = this.filteringForm.value;
-    console.warn(this.formdata);
-    this.users_Service.OnSubmit(this.formdata).subscribe(datas => {
+    this.formdata.skill = Array.isArray(this.formdata.skill) ? this.formdata.skill.join(',') : this.formdata.skill;
+    this.employeeService.FilterEmp(this.formdata).subscribe(datas => {
       this.dataOfEmp = datas
       this.dataSource = new MatTableDataSource(this.dataOfEmp);
     })

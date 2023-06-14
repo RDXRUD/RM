@@ -207,7 +207,7 @@ namespace ResourceManagerAPI.Controllers
             }
             else
             {
-                return Ok("This field is used in another process you can't delete it");
+                return BadRequest("{\"message\":\"This field is used in another process, you can't delete it\"}");
             }
         }
 

@@ -1,14 +1,13 @@
 <div class="app-container">
-  <mat-toolbar color="primary" *ngIf="isLoggedIn">
+  <mat-toolbar color="primary" *ngIf="isLoggedIn && tokenService.isAuthenticated()">
 
     <span>Team Tracker</span>
     <span class="example-spacer"></span>
     <nav class="navigation">
       <button mat-icon-button routerLink="Login" *ngIf="!tokenService.isLoggedIn"><mat-icon>login</mat-icon></button>
-      <button mat-icon-button routerLink="Home"><mat-icon>home</mat-icon></button>
-      <button mat-icon-button routerLink="Admin"><mat-icon>settings</mat-icon></button>
-      <button mat-icon-button routerLink="#" (click)="OnLogout()"><mat-icon>logout</mat-icon></button>
-
+      <button mat-icon-button matTooltip="Home" routerLink="Home"><mat-icon>home</mat-icon></button>
+      <button mat-icon-button matTooltip="Settings" routerLink="Admin"><mat-icon>settings</mat-icon></button>
+      <button mat-icon-button matTooltip="Logout" routerLink="#" (click)="OnLogout()"><mat-icon>logout</mat-icon></button>
     </nav>
   </mat-toolbar>
   <div style="flex: 1;">
