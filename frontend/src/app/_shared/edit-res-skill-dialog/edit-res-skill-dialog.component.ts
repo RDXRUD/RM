@@ -94,7 +94,7 @@ export class EditResSkillDialogComponent implements OnInit {
   onSkillGroupSelection() {
     const skillGroupID = Number(this.addEmpskills.get('skillGroupID')?.value);
     const skillGroup: SkillGroups = {
-      skillGroupID: skillGroupID// Provide an appropriate value for the skillGroup property
+      skillGroupID: skillGroupID
     };
     this.skills_service.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
       console.log(res);
