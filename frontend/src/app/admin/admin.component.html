@@ -15,7 +15,8 @@
             <ng-container matColumnDef="delete">
               <th mat-header-cell *matHeaderCellDef> Action </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary" (click)="DeleteSkillGroup(element.skillGroupID)">DELETE</button>
+                <button mat-raised-button color="primary"
+                  (click)="DeleteSkillGroup(element.skillGroupID)">DELETE</button>
               </td>
             </ng-container>
             <ng-container matColumnDef="action">
@@ -85,14 +86,15 @@
                             [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
                         </mat-select>
                       </mat-form-field>
-          
+
                       <mat-form-field fxFlex="45">
                         <mat-label>SKILL</mat-label>
                         <input formControlName="skill" matInput>
                       </mat-form-field>
-          
+
                       <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="AddSkill">Add</button>
+                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                          value="AddSkill">Add</button>
                       </div>
                     </div>
                   </form>
@@ -109,24 +111,25 @@
     <mat-tab label="Resource Skills">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="data">
+          <table mat-table [dataSource]="dataOfSkills" matSort>
             <ng-container matColumnDef="empID">
-              <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee ID </th>
               <td mat-cell *matCellDef="let resSkill"> {{resSkill.empID}} </td>
             </ng-container>
             <ng-container matColumnDef="resourceName">
-              <th mat-header-cell *matHeaderCellDef> Name</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
               <td mat-cell *matCellDef="let resSkill"> {{resSkill.resourceName}} </td>
             </ng-container>
             <ng-container matColumnDef="emailID">
-              <th mat-header-cell *matHeaderCellDef> Email ID </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
               <td mat-cell *matCellDef="let resSkill"> {{resSkill.emailID}} </td>
             </ng-container>
             <ng-container matColumnDef="details">
               <th mat-header-cell *matHeaderCellDef> Action </th>
               <td mat-cell *matCellDef="let element">
                 <mat-dialog-actions>
-                  <button mat-raised-button color="primary" (click)="getResourceSkills(element.emailID)">Get Details</button>
+                  <button mat-raised-button color="primary" (click)="getResourceSkills(element.emailID)">Get
+                    Details</button>
                 </mat-dialog-actions>
               </td>
             </ng-container>
@@ -137,24 +140,55 @@
       </div>
     </mat-tab>
     <mat-tab label="Resource Plan">
-      <div class="scrollable-table">
-        <div class="container">
-          <div class="box">
-            <h2>Upload File Here</h2>
-            <form [formGroup]="forms" (ngSubmit)="OnFile()">
-              <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
-                <mat-form-field fxFlex="10">
-                  <ngx-mat-file-input formControlName="planFile" matInput>
-                  </ngx-mat-file-input>
-                  <mat-icon></mat-icon>
-                </mat-form-field>
-                <div class="button-container">
-                  <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                    value="OnFile">Upload</button>
-                </div>
+      <div class="container">
+        <div class="box">
+          <h2>Upload File Here</h2>
+          <form [formGroup]="forms" (ngSubmit)="OnFile()">
+            <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
+              <mat-form-field fxFlex="10">
+                <ngx-mat-file-input formControlName="planFile" matInput>
+                </ngx-mat-file-input>
+                <mat-icon></mat-icon>
+              </mat-form-field>
+              <div class="button-container">
+                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                  value="OnFile">Upload</button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="scrollable-table">
+        <div class="table-container">
+          <table mat-table [dataSource]="dataOfResources" matSort>
+            <ng-container matColumnDef="empID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee ID</th>
+              <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
+            </ng-container>
+            <ng-container matColumnDef="resourceName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+              <td mat-cell *matCellDef="let user"> {{user.resourceName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="emailID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+              <td mat-cell *matCellDef="let user"> {{user.emailID}} </td>
+            </ng-container>
+            <ng-container matColumnDef="taskName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Task Name</th>
+              <td mat-cell *matCellDef="let user"> {{user.taskName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="start">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
+              <td mat-cell *matCellDef="let user"> {{user.start |date:"LL-MMM-YYYY"}} </td>
+            </ng-container>
+            <ng-container matColumnDef="finish">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
+              <td mat-cell *matCellDef="let user"> {{user.finish |date:"LL-MMM-YYYY"}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsOfemp; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsOfemp;"></tr>
+          </table>
         </div>
       </div>
     </mat-tab>
@@ -187,12 +221,12 @@
                 <div style="margin-top: 10px;">
                   <form [formGroup]="userForm" (ngSubmit)="OnUser()">
                     <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
-        
+
                       <mat-form-field fxFlex="30">
                         <mat-label>UserName</mat-label>
                         <input type="text" formControlName="userName" matInput>
                       </mat-form-field>
-        
+
                       <mat-form-field fxFlex="30">
                         <mat-label>FullName</mat-label>
                         <input type="text" formControlName="fullName" matInput>
@@ -200,12 +234,13 @@
                       <mat-form-field fxFlex="30">
                         <mat-label>Password</mat-label>
                         <input type="password" formControlName="password" matInput>
-        
+
                       </mat-form-field>
                       <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" value="OnUser">Add</button>
+                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                          value="OnUser">Add</button>
                       </div>
-        
+
                     </div>
                   </form>
                 </div>

@@ -5,7 +5,7 @@
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="20px grid">
       <mat-form-field fxFlex="30">
         <mat-label>SKILL GROUP</mat-label>
-        <mat-select formControlName="skillGroupID" single>
+        <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
           <mat-option *ngFor="let select of DataofSkillGroup" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -43,7 +43,7 @@
     </ng-container>
 
     <ng-container matColumnDef="skillGroupID">
-      <th mat-header-cell *matHeaderCellDef>SKILL GROUP</th>
+      <th mat-header-cell *matHeaderCellDef>SKILL GROUP ID</th>
       <td mat-cell *matCellDef="let user"> {{user.skillGroupID}}
       </td>
 
@@ -55,12 +55,12 @@
     </ng-container>
 
     <ng-container matColumnDef="skillID">
-      <th mat-header-cell *matHeaderCellDef>SKILL</th>
+      <th mat-header-cell *matHeaderCellDef>SKILL ID</th>
       <td mat-cell *matCellDef="let user"> {{user.skillID}}
       </td>
     </ng-container>
     <ng-container matColumnDef="skillSetID">
-      <th mat-header-cell *matHeaderCellDef>SKILL</th>
+      <th mat-header-cell *matHeaderCellDef>SKILL SET ID</th>
       <td mat-cell *matCellDef="let user"> {{user.skillSetID}}
       </td>
     </ng-container>

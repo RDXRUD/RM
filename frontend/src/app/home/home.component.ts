@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
   skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
-  displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
+  displayedColumns: string[] = ['empID', 'resourceName', 'emailID'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
 

@@ -29,5 +29,9 @@ export class EmployeeService {
     let url = "https://localhost:7271/api/Filters/FilterEmployees";
     return this.http.post<employeeFilters[]>(url, formdata);
   }
+  getDetailsofEmp():Observable<employee[]>{
+    let url="https://localhost:7271/api/EmployeeTask/GetEmployeesTask";
+    return this.http.get<employee[]>(url);
+  }
 }
 
