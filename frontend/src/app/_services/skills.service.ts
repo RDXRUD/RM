@@ -33,9 +33,9 @@ export class SkillsService {
     this._coreService.openSnackBar('Record Updated Successfully', 'done')
     return this.http.put<skillset[]>(url, formdatas);
   }
-  getSkillAsPerSkillGroup(skillGroup: SkillGroups): Observable<SkillGroups[]> {
+  getSkillAsPerSkillGroup(skillGroup: SkillGroups): Observable<skill[]> {
     let url = "https://localhost:7271/api/Skills/GetSkillAsPerSkillGroup";
-    return this.http.post<SkillGroups[]>(url, skillGroup);
+    return this.http.post<skill[]>(url, skillGroup);
   }
 }
 

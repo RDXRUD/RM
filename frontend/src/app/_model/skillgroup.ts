@@ -1,3 +1,4 @@
 export interface skillgroup{
-    skillgroup:string;
+    skillGroupID:number;
+    skillGroup:string;
 }
