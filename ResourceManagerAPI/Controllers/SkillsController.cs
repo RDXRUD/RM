@@ -167,11 +167,11 @@ namespace ResourceManagerAPI.Controllers
 					return NotFound($"Resource with EmailID {request.EmailID} not found.");
 				}
 
-				var skill = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillSetID);
+				var skill = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillID);
 
 				if (skill == null)
 				{
-					return NotFound($"Skill with ID {request.SkillSetID} not found.");
+					return NotFound($"Skill with ID {request.SkillID} not found.");
 				}
 
 				var skillGroup = await _dbContext.skillgroup.FirstOrDefaultAsync(sg => sg.SkillGroupID == request.SkillGroupID);
@@ -184,13 +184,13 @@ namespace ResourceManagerAPI.Controllers
 				var resourceSkill = new ResourceSkills
 				{
 					ResourceID = resource.ResourceID,
-					SkillSetID = request.SkillSetID
+					SkillSetID = request.SkillID
 				};
 
 				_dbContext.resourceskills.Add(resourceSkill);
 				await _dbContext.SaveChangesAsync();
 
-				return Ok($"New SkillSetID {request.SkillSetID} added to Resource with EmailID {request.EmailID}.");
+				return Ok($"New SkillSetID {request.SkillID} added to Resource with EmailID {request.EmailID}.");
 			}
 			catch (Exception ex)
 			{
