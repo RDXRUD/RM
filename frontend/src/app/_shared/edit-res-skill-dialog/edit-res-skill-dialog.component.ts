@@ -10,7 +10,6 @@ import { addskillgroupdata } from '../../_model/addskillgroupdata';
 import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
 import { skill } from 'src/app/_model/skill';
 import { SkillGroups } from 'src/app/_model/SkillGroups';
-import { skillgroup } from 'src/app/_model/skillgroup';
 
 
 @Component({
@@ -28,8 +27,8 @@ export class EditResSkillDialogComponent implements OnInit {
   datas: any;
   deletedata: any;
   emailID!: skillset;
-  DataofSkillGroup!: skillgroup[];
-  DataofSkill!: skill[];
+  DataofSkillGroup!: any[];
+  DataofSkill!: any[];
   skillgroupadd: FormGroup;
   addEmpskills: FormGroup;
   formdatas!: addskillgroupdata;
@@ -97,13 +96,13 @@ export class EditResSkillDialogComponent implements OnInit {
     const skillGroupID = Number(this.addEmpskills.get('skillGroupID')?.value);
     const skillGroup: SkillGroups = {
       skillGroupID: skillGroupID,
-      skillGroup: ""
+      skillGroup: ''
     };
-    this.skills_service.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+    this.skillsetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
       console.log(res);
       this.DataofSkill = res;
     });
   }
-  
+  // AddEmpSkill(){}
 }
 

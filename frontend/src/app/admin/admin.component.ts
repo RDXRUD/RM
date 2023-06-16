@@ -45,6 +45,7 @@ export class AdminComponent implements OnInit {
   userdata: any;
   skillGroups: any;
   res: any;
+  dataOfFile:any;
   dataEmp: any;
   deleteuser: any;
   dataOfResourcesName: any;
@@ -129,18 +130,20 @@ export class AdminComponent implements OnInit {
   OnFile() {
     this.formdata = this.forms.value;
     console.warn(this.formdata);
-    this.usersService.loadFile(this.formdata).subscribe(dataOffile => {
-      this.forms.reset();
-      this.ngOnInit();
-    },
+    this.usersService.loadFile(this.formdata).subscribe(
+      dataOffile => {
+        this.forms.reset();
+        this.ngOnInit();
+      },
       (error: HttpErrorResponse) => {
-        if (error.status === 400) {
+        if (error.status == 400) {
+        } else {
           this._coreService.openSnackBar("Please choose a file to upload", "ok");
         }
       }
     );
   }
-
+  
   OnUser() {
     this.formdatas = this.userForm.value;
     this.usersService.addUser(this.formdatas).subscribe(userdata => {
@@ -193,6 +196,7 @@ export class AdminComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           if (error.status === 400) {
+          }else{
             this._coreService.openSnackBar("This field is used in another process, you can't delete it");
           }
         }
