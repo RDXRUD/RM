@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Edit Resource Skills - {{datadialog.emailID}}</h1>
 <mat-dialog-content>
   <div class="contain">
-    <form [formGroup]="addEmpskills" (ngSubmit)="AddEmpSkill()">
+    <form [formGroup]="addEmpskills" (ngSubmit)="AddEmpSkill(datadialog.emailID)">
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="20px grid">
       <mat-form-field fxFlex="30">
         <mat-label>SKILL GROUP</mat-label>

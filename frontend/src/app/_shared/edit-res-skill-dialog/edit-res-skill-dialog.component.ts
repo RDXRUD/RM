@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { skillset } from '../../_model/skillset';
-import { empSkills } from '../../_model/empSkills';
+import { SkillsofEmp } from '../../_model/empSkills';
 import { SkillsService } from '../../_services/skills.service';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -26,13 +26,14 @@ export class EditResSkillDialogComponent implements OnInit {
   dataa: any;
   datas: any;
   deletedata: any;
+  res!:SkillsofEmp;
   emailID!: skillset;
   DataofSkillGroup!: any[];
   DataofSkill!: any[];
   skillgroupadd: FormGroup;
   addEmpskills: FormGroup;
   formdatas!: addskillgroupdata;
-  empSkills!:empSkills;
+  empSkills!:SkillsofEmp;
   userdatas: any;
   skillDataSorted:any[] | undefined;
 
@@ -73,24 +74,40 @@ export class EditResSkillDialogComponent implements OnInit {
     });
   };
   
-  AddSkills() {
-    this.formdatas = this.skillgroupadd.value;
-    this.skills_service.AddSkills(this.formdatas).subscribe(userdatas => {
-      this.skillgroupadd.reset();
-      this.ngOnInit();
+  // AddSkills() {
+  //   this.formdatas = this.skillgroupadd.value;
+  //   this.skills_service.AddSkills(this.formdatas).subscribe(userdatas => {
+  //     this.skillgroupadd.reset();
+  //     this.ngOnInit();
 
-    })
-  }
-  AddEmpSkill() {
+  //   })
+  // }
+  AddEmpSkill(emailID: string) {
     this.empSkills = {
       ...this.addEmpskills.value,
+      emailID: emailID,
     };
     console.warn(this.empSkills);
-    this.skills_service.AddEmpSkill(this.empSkills).subscribe((res: any) => {
+    this.skills_service.AddEmpSkill(this.empSkills).subscribe(res => {
+      console.log(res);
       this.addEmpskills.reset();
       this.ngOnInit();
-    })
+    });
   }
+  // AddEmpSkill(emailID: string) {
+  //   const request: empSkills = {
+  //     EmailID: emailID,
+  //     SkillID: this.addEmpskills.value.skillID,
+  //     SkillGroupID: this.addEmpskills.value.skillGroupID
+  //   };
+  
+  //   this.skills_service.AddEmpSkill(request).subscribe(res => {
+  //     console.log(res);
+  //     this.addEmpskills.reset();
+  //     this.ngOnInit();
+  //   });
+  // }
+  
   onSkillGroupSelection() {
     
     const skillGroupID = Number(this.addEmpskills.get('skillGroupID')?.value);

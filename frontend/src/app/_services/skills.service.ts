@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { skillset } from '../_model/skillset';
 import { addskillgroupdata } from '../_model/addskillgroupdata';
 import { CoreService } from '../_services/core.service';
-import { empSkills } from '../_model/empSkills';
+import { SkillsofEmp } from '../_model/empSkills';
 import { SkillGroups } from '../_model/SkillGroups';
 import { skill } from '../_model/skill';
 import { getSkill } from '../_model/getSkill';
@@ -23,15 +23,15 @@ export class SkillsService {
     this._coreService.openSnackBar('Record Added', 'done')
     return this.http.put<addskillgroupdata[]>(url, formdatas);
   }
-  AddEmpSkill(empSkills:empSkills):Observable<empSkills[]>{
-    let url = "https://localhost:7271/api/Skills/AddNewSkill";
+  AddEmpSkill(empSkills:SkillsofEmp):Observable<SkillsofEmp[]>{
+   let url=" https://localhost:7271/api/Skills/AddSkillToSkillGroup";
     this._coreService.openSnackBar('Record Added', 'done')
-    return this.http.put<addskillgroupdata[]>(url, empSkills);
+    return this.http.post<SkillsofEmp[]>(url, empSkills);
   };
   UpdateSkills(formdatas: skillset): Observable<skillset[]> {
     let url = "https://localhost:7271/api/Skills/UpdateSetOfSkill";
     this._coreService.openSnackBar('Record Updated Successfully', 'done')
-    return this.http.put<skillset[]>(url, formdatas);
+    return this.http.post<skillset[]>(url, formdatas);
   }
 }
 
