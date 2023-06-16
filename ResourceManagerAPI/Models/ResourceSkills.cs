@@ -9,7 +9,6 @@ namespace ResourceManagerAPI.Models
         [Key]
         public int ResourceSkillID { get; set; }
         public int ResourceID { get; set; }
-        [ForeignKey("SkillSetID")]
         public int SkillSetID { get; set; }
     }
 }
