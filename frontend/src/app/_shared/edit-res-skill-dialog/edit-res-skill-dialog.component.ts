@@ -8,6 +8,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../../_services/skillset.service';
 import { addskillgroupdata } from '../../_model/addskillgroupdata';
 import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
+import { skill } from 'src/app/_model/skill';
+import { SkillGroups } from 'src/app/_model/SkillGroups';
+import { skillgroup } from 'src/app/_model/skillgroup';
+
 
 @Component({
   selector: 'app-edit-res-skill-dialog',
@@ -24,13 +28,15 @@ export class EditResSkillDialogComponent implements OnInit {
   datas: any;
   deletedata: any;
   emailID!: skillset;
-  DataofSkillGroup!: any[];
-  DataofSkill!: any[];
+  DataofSkillGroup!: skillgroup[];
+  DataofSkill!: skill[];
   skillgroupadd: FormGroup;
   addEmpskills: FormGroup;
   formdatas!: addskillgroupdata;
   empSkills!:empSkills;
   userdatas: any;
+  skillDataSorted:any[] | undefined;
+
 
   constructor(private skills_service: SkillsService,
     private skillsetService: SkillsetService,
@@ -56,9 +62,10 @@ export class EditResSkillDialogComponent implements OnInit {
     this.skillsetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
     })
-    this.skillsetService.getSkills().subscribe(datas => {
-      this.DataofSkill = datas;
-    })
+    // this.skillsetService.getSkills().subscribe(datas => {
+    //   this.DataofSkill = datas;
+    //   this.skillDataSorted = this.DataofSkill.sort((a, b) => a.skill.localeCompare(b.skill));
+    // })
   }
 
   Edit(element: any) {
@@ -66,8 +73,7 @@ export class EditResSkillDialogComponent implements OnInit {
       data: { element }
     });
   };
-
-
+  
   AddSkills() {
     this.formdatas = this.skillgroupadd.value;
     this.skills_service.AddSkills(this.formdatas).subscribe(userdatas => {
@@ -86,5 +92,18 @@ export class EditResSkillDialogComponent implements OnInit {
       this.ngOnInit();
     })
   }
+  onSkillGroupSelection() {
+    
+    const skillGroupID = Number(this.addEmpskills.get('skillGroupID')?.value);
+    const skillGroup: SkillGroups = {
+      skillGroupID: skillGroupID,
+      skillGroup: ""
+    };
+    this.skills_service.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+      console.log(res);
+      this.DataofSkill = res;
+    });
+  }
+  
 }
 

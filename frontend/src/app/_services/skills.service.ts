@@ -5,6 +5,9 @@ import { skillset } from '../_model/skillset';
 import { addskillgroupdata } from '../_model/addskillgroupdata';
 import { CoreService } from '../_services/core.service';
 import { empSkills } from '../_model/empSkills';
+import { SkillGroups } from '../_model/SkillGroups';
+import { skill } from '../_model/skill';
+import { getSkill } from '../_model/getSkill';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,6 +32,10 @@ export class SkillsService {
     let url = "https://localhost:7271/api/Skills/UpdateSetOfSkill";
     this._coreService.openSnackBar('Record Updated Successfully', 'done')
     return this.http.put<skillset[]>(url, formdatas);
+  }
+  getSkillAsPerSkillGroup(skillGroup: SkillGroups): Observable<skill[]> {
+    let url = "https://localhost:7271/api/Skills/GetSkillAsPerSkillGroup";
+    return this.http.post<skill[]>(url, skillGroup);
   }
 }
 
