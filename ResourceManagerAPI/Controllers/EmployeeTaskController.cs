@@ -48,7 +48,36 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        [HttpPost, Authorize]
+		[HttpPost, Authorize]
+		[Route("TaskNameByEmpId")]
+		public List<EmployeeTasks> GetSkillByEmail(Employee emp)
+		{
+
+			var employee = (from e in _dbContext.employeetasks
+							join s in _dbContext.employees
+							on e.EmpID equals s.EmpID
+							select new EmployeeManager
+							{
+								EmpID = e.EmpID,
+								ResourceName = s.ResourceName,
+								EmailID = s.EmailID,
+								TaskName = e.TaskName,
+								Start = e.Start,
+								Finish = e.Finish
+							}).ToList();
+
+			var employeetasks = employee.Where(e => e.EmpID == emp.EmpID)
+								.Select(e => new EmployeeTasks
+								{
+									TaskName = e.TaskName,
+									Start = e.Start,
+									Finish = e.Finish
+								}).ToList();
+			return employeetasks;
+
+		}
+
+		[HttpPost, Authorize]
         [Route("AddEmployeesTask")]
         [NonAction]
         public async Task<IActionResult> AddEmployeeTasks(EmployeeManager employee)
