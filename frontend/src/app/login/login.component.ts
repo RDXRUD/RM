@@ -31,16 +31,14 @@ export class LoginComponent {
         this.tokenService.setToken(response.Token);
         this.router.navigate(['/Home']);
       },
-      (error: HttpErrorResponse) => {
+      (error:HttpErrorResponse) => {
         if (error.status === 400) {
-          this._coreService.openSnackBar('Invalid username or password. Please try again.', 'Ok')
-        } else { 
-          this._coreService.openSnackBar('Database is not connected','Ok')
-        }
+          this._coreService.openSnackBar('Invalid username or password. Please try again.', 'Ok');
       }
-    );
-  }
+      else{
+        this._coreService.openSnackBar('Database is not connected', 'Ok');
+      }
+  })
   
 }
-
-
+}

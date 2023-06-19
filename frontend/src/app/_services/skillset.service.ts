@@ -4,10 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { CoreService } from './core.service';
 import { skillgroup } from '../_model/skillgroup';
 import { skill } from '../_model/skill';
+import { getSkill } from '../_model/getSkill';
 import { skillgroupdata } from '../_model/skillgroupdata';
 import { addSkillGroup } from '../_model/addSkillGroup';
 import { addSkill } from '../_model/addSkill';
 import { skillsetupdate } from '../_model/skillsetupdate';
+import { SkillGroups } from '../_model/SkillGroups';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,10 @@ export class SkillsetService {
   getSkillGroups(): Observable<skillgroup[]> {
     let url = "https://localhost:7271/api/SkillSet/GetSkillGroup";
     return this.http.get<skillgroup[]>(url);
+  }
+  getSkillAsPerSkillGroup(skillGroup: SkillGroups): Observable<getSkill[]> {
+    let url="https://localhost:7271/api/SkillSet/GetSkillAsPerSkillGroup";
+    return this.http.post<getSkill[]>(url, skillGroup);
   }
   getSkills(): Observable<skill[]> {
     let url = "https://localhost:7271/api/SkillSet/GetSkill";

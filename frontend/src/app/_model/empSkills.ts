@@ -1,4 +1,5 @@
-export interface empSkills{
-    skillGroup:string;
-    skill:string;
+export interface SkillsofEmp{
+    skillGroupID:string;
+    skillID:string;
+    emailID:string;
 }

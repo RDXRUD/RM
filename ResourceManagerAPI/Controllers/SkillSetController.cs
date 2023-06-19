@@ -248,7 +248,7 @@ namespace ResourceManagerAPI.Controllers
                                 }
 								).ToListAsync();
 
-				var skill = employee.Where(e => e.SkillGroupID == skillGroup.SkillGroupID).Select(e => new Skills { Skill = e.Skill }).ToList();
+				var skill = employee.Where(e => e.SkillGroupID == skillGroup.SkillGroupID).Select(e => new Skills {SkillID=e.SkillID, Skill = e.Skill }).ToList();
 
 				if (skill != null)
 				{
