@@ -11,6 +11,9 @@ const moment = _rollupMoment || _moment;
 import { employeeFilters } from '../_model/employeefilters';
 import { SkillsetService } from '../_services/skillset.service';
 import { EmployeeService } from '../_services/employee.service';
+import { ViewTasknameDialogComponent } from '../_shared/view-taskname-dialog/view-taskname-dialog.component';
+import { DialogRef } from '@angular/cdk/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 export const MY_FORMATS = {
   parse: {
@@ -46,12 +49,15 @@ export class HomeComponent implements OnInit {
   skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
-  displayedColumns: string[] = ['empID', 'resourceName', 'emailID'];
+  displayedColumns: string[] = ['empID', 'resourceName', 'emailID','Viewtasks'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private users_Service: UsersService, private frmbuilder: FormBuilder,
-    private skillsetService: SkillsetService, private employeeService: EmployeeService) {
+  constructor(private users_Service: UsersService,
+     private frmbuilder: FormBuilder,
+    private skillsetService: SkillsetService,
+     private employeeService: EmployeeService,
+     private dialog:MatDialog) {
     this.filteringForm = frmbuilder.group({
       name: new FormControl(),
       emailID: new FormControl(),
@@ -85,5 +91,10 @@ export class HomeComponent implements OnInit {
   OnReset() {
     this.filteringForm.reset();
     this.ngOnInit();
+  }
+  OpentaskName(emailID: string) {
+    const dialogRef = this.dialog.open(ViewTasknameDialogComponent, {
+      data: { emailID }
+    });
   }
 }

@@ -8,8 +8,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../../_services/skillset.service';
 import { addskillgroupdata } from '../../_model/addskillgroupdata';
 import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
-import { skill } from 'src/app/_model/skill';
 import { SkillGroups } from 'src/app/_model/SkillGroups';
+import { CoreService } from 'src/app/_services/core.service';
+
 
 
 @Component({
@@ -45,6 +46,7 @@ export class EditResSkillDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private _formBuilder: FormBuilder,
+    private _coreService:CoreService
   ) {
     this.skillgroupadd = _formBuilder.group({
       skillGroup: new FormControl(),
@@ -62,10 +64,6 @@ export class EditResSkillDialogComponent implements OnInit {
     this.skillsetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
     })
-    // this.skillsetService.getSkills().subscribe(datas => {
-    //   this.DataofSkill = datas;
-    //   this.skillDataSorted = this.DataofSkill.sort((a, b) => a.skill.localeCompare(b.skill));
-    // })
   }
 
   Edit(element: any) {
@@ -73,40 +71,27 @@ export class EditResSkillDialogComponent implements OnInit {
       data: { element }
     });
   };
-  
-  // AddSkills() {
-  //   this.formdatas = this.skillgroupadd.value;
-  //   this.skills_service.AddSkills(this.formdatas).subscribe(userdatas => {
-  //     this.skillgroupadd.reset();
-  //     this.ngOnInit();
-
-  //   })
-  // }
   AddEmpSkill(emailID: string) {
     this.empSkills = {
       ...this.addEmpskills.value,
       emailID: emailID,
     };
     console.warn(this.empSkills);
-    this.skills_service.AddEmpSkill(this.empSkills).subscribe(res => {
-      console.log(res);
-      this.addEmpskills.reset();
-      this.ngOnInit();
-    });
+    this.skills_service.AddEmpSkill(this.empSkills).subscribe(
+      res => {
+        this.addEmpskills.reset();
+        this.ngOnInit();
+      },
+      error => {
+        console.error(error);
+        if (error.status === 400) {
+          this._coreService.openSnackBar('Skill already exists for the resource.', 'ok');
+        } else {
+          this._coreService.openSnackBar('An error occurred while adding the skill.', 'ok');
+        }
+      }
+    );
   }
-  // AddEmpSkill(emailID: string) {
-  //   const request: empSkills = {
-  //     EmailID: emailID,
-  //     SkillID: this.addEmpskills.value.skillID,
-  //     SkillGroupID: this.addEmpskills.value.skillGroupID
-  //   };
-  
-  //   this.skills_service.AddEmpSkill(request).subscribe(res => {
-  //     console.log(res);
-  //     this.addEmpskills.reset();
-  //     this.ngOnInit();
-  //   });
-  // }
   
   onSkillGroupSelection() {
     
@@ -120,6 +105,6 @@ export class EditResSkillDialogComponent implements OnInit {
       this.DataofSkill = res;
     });
   }
-  // AddEmpSkill(){}
+ 
 }
 

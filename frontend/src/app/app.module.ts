@@ -35,6 +35,7 @@ import { EditSkillDialogComponent } from './_shared/edit-skill-dialog/edit-skill
 import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ViewTasknameDialogComponent } from './_shared/view-taskname-dialog/view-taskname-dialog.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     EditResSkillDialogComponent,
     LoginComponent,
     EditEmpSkillDialogComponent,
-    EditSkillDialogComponent
+    EditSkillDialogComponent,
+    ViewTasknameDialogComponent
   ],
   imports: [
     MatSortModule,
