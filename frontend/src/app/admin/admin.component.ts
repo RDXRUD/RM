@@ -56,7 +56,7 @@ export class AdminComponent implements OnInit {
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
   displayedColumnsto: string[] = ['skillGroup', 'delete'];
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
-
+  
   dataOfempSkill!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -180,7 +180,6 @@ export class AdminComponent implements OnInit {
       data: { emailID }
     });
   }
-
   Edit(element: any) {
     const dialogRef = this.dialog.open(EditSkillDialogComponent, {
       data: { element }
