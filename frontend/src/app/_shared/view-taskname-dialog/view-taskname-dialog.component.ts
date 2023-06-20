@@ -1,5 +1,6 @@
-import { Component,Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { tasks } from 'src/app/_model/tasks';
 
 @Component({
   selector: 'app-view-taskname-dialog',
@@ -8,15 +9,8 @@ import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dial
 })
 export class ViewTasknameDialogComponent {
   displayedColumns: string[] = ['taskName', 'start', 'finish'];
-  tasks:any;
-  constructor(
-    public dialogRef: MatDialogRef<ViewTasknameDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-  )
-  { this.tasks = data.tasks;
-  }
-  onClose(): void {
-    this.dialogRef.close();
+  tasks: tasks[];
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    this.tasks = data.tasks;
   }
 }
-

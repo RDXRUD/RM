@@ -12,8 +12,8 @@ import { employeeFilters } from '../_model/employeefilters';
 import { SkillsetService } from '../_services/skillset.service';
 import { EmployeeService } from '../_services/employee.service';
 import { ViewTasknameDialogComponent } from '../_shared/view-taskname-dialog/view-taskname-dialog.component';
-import { DialogRef } from '@angular/cdk/dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { tasks } from '../_model/tasks';
 
 export const MY_FORMATS = {
   parse: {
@@ -44,7 +44,9 @@ export const MY_FORMATS = {
 export class HomeComponent implements OnInit {
   dataOfEmp: any;
   datas: any;
+  tasks!:tasks;
   dataOfSkill:any;
+  data:any;
   skillData!: any[];
   skillDataSorted!: any[];
   formdata!: employeeFilters;
@@ -92,9 +94,12 @@ export class HomeComponent implements OnInit {
     this.filteringForm.reset();
     this.ngOnInit();
   }
-  OpentaskName(emailID: string) {
-    const dialogRef = this.dialog.open(ViewTasknameDialogComponent, {
-      data: { emailID }
+  getTasksByEmpID(empID: number) {
+    this.employeeService.getTasksByEmpID(empID).subscribe(tasks => {
+      console.log(tasks);
+      const dialogRef = this.dialog.open(ViewTasknameDialogComponent, {
+        data: { tasks }
+      });
     });
   }
 }

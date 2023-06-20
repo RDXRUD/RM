@@ -6,6 +6,7 @@ import { employee } from '../_model/employee';
 import { addEmployee } from '../_model/addEmployee';
 import { CoreService } from './core.service';
 import { employeeFilters } from '../_model/employeefilters';
+import { tasks } from '../_model/tasks';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class EmployeeService {
   getDetailsofEmp():Observable<employee[]>{
     let url="https://localhost:7271/api/EmployeeTask/GetEmployeesTask";
     return this.http.get<employee[]>(url);
+  }
+  getTasksByEmpID(empID: number): Observable<tasks[]> {
+    let url = 'https://localhost:7271/api/EmployeeTask/TaskNameByEmpId';
+    return this.http.post<tasks[]>(url, { EmpID: empID });
   }
 }
 
