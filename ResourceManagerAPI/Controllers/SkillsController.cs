@@ -61,11 +61,20 @@ namespace ResourceManagerAPI.Controllers
         [Route("SkillByEmail")]
         public List<ResourceSkillManager> GetSkillByEmail(Resources resource)
         {
-                var skills = from r in _dbContext.resources
+                var resSkills = from r in _dbContext.resources
                              join rs in _dbContext.resourceskills
-                             on r.ResourceID equals rs.ResourceID
+                             on r.ResourceID equals rs.ResourceID into resSkils
+                             from subres in resSkils.DefaultIfEmpty()
+                             select new 
+                             {
+                                ResourceID = r.ResourceID,
+                                EmailID = r.EmailID,
+                                ResourceSkillID = (subres == null) ? - 1 : subres.ResourceSkillID,
+                                SkillSetID = (subres == null) ? - 1 : subres.SkillSetID
+                             };
+                var skills = from x in resSkills
                              join ss in _dbContext.skillset
-                             on rs.SkillSetID equals ss.SkillSetID
+                             on x.SkillSetID equals ss.SkillSetID
                              join sg in _dbContext.skillgroup
                              on ss.SkillGroupID equals sg.SkillGroupID
                              join s in _dbContext.skill
@@ -74,12 +83,12 @@ namespace ResourceManagerAPI.Controllers
                              from m in detail.DefaultIfEmpty()
                              select new ResourceSkillManager
                              {
-                                 ResourceID = r.ResourceID,
+                                 ResourceID = x.ResourceID,
                                  SkillID = ss.SkillID,
-                                 ResourceSkillID = rs.ResourceSkillID,
-                                 SkillSetID = rs.SkillSetID,
+                                 ResourceSkillID = x.ResourceSkillID,
+                                 SkillSetID = x.SkillSetID,
                                  SkillGroupID = sg.SkillGroupID,
-                                 EmailID = r.EmailID,
+                                 EmailID = x.EmailID,
                                  SkillGroup = sg.SkillGroup,
                                  Skill = m.Skill
                              };
