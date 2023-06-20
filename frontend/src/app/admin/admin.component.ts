@@ -132,6 +132,7 @@ export class AdminComponent implements OnInit {
     console.warn(this.formdata);
     this.usersService.loadFile(this.formdata).subscribe(
       dataOffile => {
+        this._coreService.openSnackBar('File Loaded Successfully', 'done');
         this.forms.reset();
         this.ngOnInit();
       },

@@ -123,7 +123,7 @@ namespace ResourceManagerAPI.Repository
 
                 var res = new Resources
                 {
-                    ResourceID = resID,
+                    ResourceID = resID + 1,
                     EmailID = projectData.Email,
                     EmpID = projectData.Id
                 };

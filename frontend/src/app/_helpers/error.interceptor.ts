@@ -20,7 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor{
               this.tokenService.removeToken();
               location.reload();
             }
-            return throwError(() => new Error(err));
+            return throwError(() => err);
         }
         ))
     }
