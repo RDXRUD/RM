@@ -5,6 +5,7 @@ import { file } from '../_model/file';
 import { user } from '../_model/user';
 import { userform } from '../_model/userform';
 import { CoreService } from './core.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,7 @@ export class UsersService {
     const formValues = new FormData();
     // formValues.append('userName', formdata.userName);
     formValues.append('planFile', formdata.planFile);
-    let url = "https://localhost:7271/api/File/LoadFileData";
-    this._coreService.openSnackBar('File Loaded Successfully', 'done');
+    let url = `${environment.apiUrl}/File/LoadFileData`;
     return this.http.post<any>(url, formValues, { headers: { 'Content-Disposition': 'multipart/form-data' }, });
   }
 
