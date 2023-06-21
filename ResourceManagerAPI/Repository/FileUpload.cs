@@ -26,7 +26,7 @@ namespace ResourceManagerAPI.Repository
     {
         private readonly PGDBContext _dbContext;
         private IConfiguration Configuration;
-		public FileUpload(PGDBContext connection, IConfiguration configuration)
+        public FileUpload(PGDBContext connection, IConfiguration configuration)
         {
             _dbContext = connection;
             Configuration = configuration;
@@ -44,7 +44,7 @@ namespace ResourceManagerAPI.Repository
             }
             ProjectFile projectObj = reader.read(filePath);
             string FileNameDB = fileName + fileExtension;
-           
+
             AddUploadRecordToDb(UserController.userId, FileNameDB);
 
             _dbContext.employees.RemoveRange(_dbContext.employees); //Deletion Of Old DB Data Before Loading The New One
@@ -52,7 +52,7 @@ namespace ResourceManagerAPI.Repository
             //_dbContext.Database.ExecuteSqlRaw("update resources set EmpID = null");
             _dbContext.SaveChanges();
 
-            List < ProjectData > tempResourceList = new List<ProjectData>();
+            List<ProjectData> tempResourceList = new List<ProjectData>();
             var id = 0;
             foreach (Task task in ToEnumerable(projectObj.getTasks()))
             {
@@ -107,19 +107,19 @@ namespace ResourceManagerAPI.Repository
             var Emp = new Employee()
             {
                 EmpID = projectData.Id,
-                ResourceName = projectData.Name!="" ? projectData.Name:"null",
-                EmailID = projectData.Email!="" ? projectData.Email:"null"
+                ResourceName = projectData.Name != "" ? projectData.Name : "null",
+                EmailID = projectData.Email != "" ? projectData.Email : "null"
             };
             _dbContext.employees.Add(Emp);
             _dbContext.SaveChanges();
 
-            //var resource = _dbContext.resources.FirstOrDefault(r => r.EmailID == projectData.Email);
-            
-            //if (resource == null)
-            //{
-            //    int resID;
-            //    int? intIdt = _dbContext.resources.Max(r => (int?)r.ResourceID);
-            //    resID = (intIdt is null) ? 1 : (int)intIdt;
+            var resource = _dbContext.resources.FirstOrDefault(r => r.EmailID == projectData.Email);
+
+            if (resource == null)
+            {
+                int resID;
+                int? intIdt = _dbContext.resources.Max(r => (int?)r.ResourceID);
+                resID = (intIdt is null) ? 1 : (int)intIdt;
 
                 var res = new Resources
                 {
@@ -148,12 +148,12 @@ namespace ResourceManagerAPI.Repository
             _dbContext.employeetasks.Add(EmpTask);
             _dbContext.SaveChanges();
         }
-        private void AddUploadRecordToDb(int UserId,string FileNameDB)
+        private void AddUploadRecordToDb(int UserId, string FileNameDB)
         {
             var Upload = new PlanUploadRecord()
             {
                 UserId = UserId,
-                FileName= FileNameDB
+                FileName = FileNameDB
             };
             _dbContext.uploadrecord.Add(Upload);
             _dbContext.SaveChanges();
