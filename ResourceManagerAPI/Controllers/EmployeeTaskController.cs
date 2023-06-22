@@ -48,6 +48,38 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
+		[HttpGet, Authorize]
+		[Route("GetEmployeesTask")]
+		public IActionResult GetEmployeePlanTasks()
+		{
+			try
+			{
+				var employee = (from e in _dbContext.employeetasks
+								join s in _dbContext.employees
+								on e.EmpID equals s.EmpID
+								select new EmployeeManager
+								{
+									EmpID = e.EmpID,
+									ResourceName = s.ResourceName,
+									EmailID = s.EmailID,
+									TaskName = e.TaskName,
+									Start = e.Start,
+									Finish = e.Finish
+								}
+								 ).ToList();
+
+				if (employee == null)
+				{
+					return NotFound();
+				}
+				return Ok(employee);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
+
 		[HttpPost, Authorize]
 		[Route("TaskNameByEmpId")]
 		public List<EmployeeTasks> GetSkillByEmail(Employee emp)
