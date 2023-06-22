@@ -206,10 +206,14 @@ namespace ResourceManagerAPI.Controllers
 
             if (!skills.Any(s => s.SkillSetID == skill.SkillSetID))
             {
-                var skillToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
-                _dbContext.skillset.RemoveRange(skillToDelete);
-                _dbContext.SaveChanges();
-                return Ok("{\"message\": \"Record Deleted Successfully\"}");
+                var skillSetToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+				_dbContext.skillset.RemoveRange(skillSetToDelete);
+				_dbContext.SaveChanges();
+				Skills skillSet = new Skills();
+				skillSet.SkillID = skill.SkillSetID;
+				_dbContext.skill.RemoveRange(skillSet);
+				_dbContext.SaveChanges();
+				return Ok("{\"message\": \"Record Deleted Successfully\"}");
             }
             else
             {
