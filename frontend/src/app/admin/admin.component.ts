@@ -105,7 +105,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.dataOfSkills.sort = this.sortedData;
 
     })
-    this.employee_Service.getDataOfEmployee().subscribe(datasofemployees => {
+    this.employee_Service.getEmployeesPlan().subscribe(datasofemployees => {
       this.datasofemployees = datasofemployees;
       this.dataOfResources = new MatTableDataSource(this.datasofemployees);
       this.dataOfResources.sort = this.sorted;
@@ -127,8 +127,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.skillGroups = skgroups;
     })
   }
-  getEmployees() {
-    this.employee_Service.getEmployees().subscribe(data => {
+  getEmployeesPlan() {
+    this.employee_Service.getEmployeesPlan().subscribe(data => {
       this.data = data;
     })
   }
@@ -141,7 +141,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       dataOffile => {
         this._coreService.openSnackBar('File Loaded Successfully', 'done');
         this.forms.reset();
-        this.getEmployees();
+        this.getEmployeesPlan();
       },
       (error: HttpErrorResponse) => {
         if (error.status == 400) {

@@ -49,7 +49,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
 		[HttpGet, Authorize]
-		[Route("GetEmployeesTask")]
+		[Route("GetEmployeePlanTasks")]
 		public IActionResult GetEmployeePlanTasks()
 		{
 			try
