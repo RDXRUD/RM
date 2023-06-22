@@ -22,7 +22,7 @@ import { UsersService } from '../_services/users.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit,AfterViewInit{
+export class AdminComponent implements OnInit, AfterViewInit {
   apiData!: any[];
   dataOfEmployees!: employee[];
   forms: FormGroup;
@@ -45,7 +45,7 @@ export class AdminComponent implements OnInit,AfterViewInit{
   userdata: any;
   skillGroups: any;
   res: any;
-  dataOfFile:any;
+  dataOfFile: any;
   dataEmp: any;
   deleteuser: any;
   deleteskillgroup: any;
@@ -55,12 +55,12 @@ export class AdminComponent implements OnInit,AfterViewInit{
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
   displayedColumnsto: string[] = ['skillGroup', 'delete'];
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
-  
+
   dataOfempSkill!: MatTableDataSource<any>;
   @ViewChild('sort') sort!: MatSort;
 
   dataOfResources!: MatTableDataSource<any>;
-  @ViewChild('sorted') sorted!: MatSort 
+  @ViewChild('sorted') sorted!: MatSort
 
   dataOfSkills!: MatTableDataSource<any>;
   @ViewChild('sortedData') sortedData!: MatSort;
@@ -127,44 +127,43 @@ export class AdminComponent implements OnInit,AfterViewInit{
       this.skillGroups = skgroups;
     })
   }
-  getEmployees(){
-  this.employee_Service.getEmployees().subscribe(data => {
-    this.data = data;
-  })
-}
-OnFile() {
-  this.formdata = this.forms.value;
-  console.warn(this.formdata);
-  this._coreService.openSnackBar('Please wait, your file is uploading...');
+  getEmployees() {
+    this.employee_Service.getEmployees().subscribe(data => {
+      this.data = data;
+    })
+  }
+  OnFile() {
+    this.formdata = this.forms.value;
+    console.warn(this.formdata);
+    this._coreService.openSnackBar('Please wait, your file is uploading...');
 
-  this.usersService.loadFile(this.formdata).subscribe(
-    dataOffile => {
-      this._coreService.openSnackBar('File Loaded Successfully', 'done');
-      this.forms.reset();
-      this.getEmployees();
-    },
-    (error: HttpErrorResponse) => {
-      if (error.status == 400) {
-        this._coreService.openSnackBar('Please choose a file to upload', 'ok');
+    this.usersService.loadFile(this.formdata).subscribe(
+      dataOffile => {
+        this._coreService.openSnackBar('File Loaded Successfully', 'done');
+        this.forms.reset();
+        this.getEmployees();
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status == 400) {
+          this._coreService.openSnackBar('Please choose a file to upload', 'ok');
+        }
       }
-    }
-  );
-}
-
+    );
+  }
   OnUser() {
     this.formdatas = this.userForm.value;
     this.usersService.addUser(this.formdatas).subscribe(userdata => {
-      this._coreService.openSnackBar("User Added Successfully","ok")
+      this._coreService.openSnackBar("User Added Successfully", "ok")
       this.userForm.reset();
       this.ngOnInit();
     })
   }
-
   AddSkill() {
     this.skilldata = this.addskill.value;
     this.skillSetService.AddSkillset(this.skilldata).subscribe(res => {
       this._coreService.openSnackBar('Record Added Successfully', 'done')
       this.addskill.reset();
+      this.ngOnInit();
     })
   }
   AddSkillGroup() {
@@ -214,12 +213,12 @@ OnFile() {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
       this.usersService.deleteUser(userID).subscribe((deletedata: any) => {
-        this._coreService.openSnackBar("User Record deleted","ok")
-        this.ngOnInit(); 
+        this._coreService.openSnackBar("User Record deleted", "ok")
+        this.ngOnInit();
       });
     }
   }
-  
+
   DeleteSkillGroup(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
