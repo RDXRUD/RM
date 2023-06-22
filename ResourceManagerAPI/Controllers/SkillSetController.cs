@@ -43,7 +43,7 @@ namespace ResourceManagerAPI.Controllers
                 SkillGroups skillGroup = new SkillGroups();
 				int? intSkillGroupId = _dbContext.skillgroup.Max(r => (int?)r.SkillGroupID);
 				int skillGroupID = (intSkillGroupId is null) ? 1 : (int)intSkillGroupId;
-                skillGroup.SkillGroupID = skillGroupID++;
+                skillGroup.SkillGroupID = skillGroupID + 1;
                 skillGroup.SkillGroup = skill.SkillGroup;
                 _dbContext.skillgroup.Add(skillGroup);
                 _dbContext.SaveChanges();
@@ -144,8 +144,8 @@ namespace ResourceManagerAPI.Controllers
 			int? intSkillsetId = _dbContext.skillset.Max(r => (int?)r.SkillID);
 			int skillsetID = (intSkillsetId is null) ? 1 : (int)intSkillsetId;
 			skillSetForAdd.SkillGroupID = skill.SkillGroupID;
-            skillSetForAdd.SkillSetID = skillsetID++;
-            skillSetForAdd.SkillID = skillsetID++;
+            skillSetForAdd.SkillSetID = skillsetID + 1;
+            skillSetForAdd.SkillID = skillsetID + 1;
             _dbContext.skillset.Add(skillSetForAdd);
             _dbContext.SaveChanges();
             return Ok("{\"message\": \"Record Added Successfully\"}");
