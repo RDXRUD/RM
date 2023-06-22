@@ -2,35 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { skillset } from '../_model/skillset';
-import { addskillgroupdata } from '../_model/addskillgroupdata';
-import { CoreService } from '../_services/core.service';
 import { SkillsofEmp } from '../_model/empSkills';
-import { SkillGroups } from '../_model/SkillGroups';
-import { skill } from '../_model/skill';
-import { getSkill } from '../_model/getSkill';
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class SkillsService {
 
-  constructor(private http: HttpClient, private _coreService: CoreService) { }
+  constructor(private http: HttpClient) { }
   getSkill(emailID: any): Observable<skillset[]> {
-    let url = 'https://localhost:7271/api/Skills/SkillByEmail';
+    let url = `${environment.apiUrl}/Skills/SkillByEmail`;
     return this.http.post<skillset[]>(url, emailID);
   }
-  AddSkills(formdatas: addskillgroupdata): Observable<addskillgroupdata[]> {
-    let url = "https://localhost:7271/api/Skills/AddNewSkill";
-    this._coreService.openSnackBar('Record Added', 'done')
-    return this.http.put<addskillgroupdata[]>(url, formdatas);
-  }
   AddEmpSkill(empSkills:SkillsofEmp):Observable<SkillsofEmp[]>{
-   let url=" https://localhost:7271/api/Skills/AddSkillToSkillGroup";
-    this._coreService.openSnackBar('Record Added', 'done')
+   let url = `${environment.apiUrl}/Skills/AddSkillToSkillGroup`;
     return this.http.post<SkillsofEmp[]>(url, empSkills);
   };
   UpdateSkills(formdatas: skillset): Observable<skillset[]> {
-    let url = "https://localhost:7271/api/Skills/UpdateSetOfSkill";
-    this._coreService.openSnackBar('Record Updated Successfully', 'done')
+    let url = `${environment.apiUrl}/Skills/UpdateSetOfSkill`;
     return this.http.post<skillset[]>(url, formdatas);
   }
 }

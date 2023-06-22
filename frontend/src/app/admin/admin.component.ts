@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, NgForm } from '@angular/forms';
 import { file } from '../_model/file';
 import { EditResSkillDialogComponent } from '../_shared/edit-res-skill-dialog/edit-res-skill-dialog.component';
@@ -22,7 +22,7 @@ import { UsersService } from '../_services/users.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit,AfterViewInit{
   apiData!: any[];
   dataOfEmployees!: employee[];
   forms: FormGroup;
@@ -48,7 +48,6 @@ export class AdminComponent implements OnInit {
   dataOfFile:any;
   dataEmp: any;
   deleteuser: any;
-  dataOfResourcesName: any;
   deleteskillgroup: any;
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'details'];
   dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'edit', 'delete'];
@@ -58,13 +57,13 @@ export class AdminComponent implements OnInit {
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   
   dataOfempSkill!: MatTableDataSource<any>;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('sort') sort!: MatSort;
 
   dataOfResources!: MatTableDataSource<any>;
-  @ViewChild(MatSort) sorted!: MatSort;
+  @ViewChild('sorted') sorted!: MatSort 
 
   dataOfSkills!: MatTableDataSource<any>;
-  @ViewChild(MatSort) sortedData!: MatSort;
+  @ViewChild('sortedData') sortedData!: MatSort;
 
   constructor(
     private employee_Service: EmployeeService,
@@ -96,6 +95,8 @@ export class AdminComponent implements OnInit {
       end: new FormControl()
     })
   }
+  ngAfterViewInit(): void {
+  }
 
   ngOnInit() {
     this.employee_Service.getEmployees().subscribe(data => {
@@ -105,8 +106,8 @@ export class AdminComponent implements OnInit {
 
     })
     this.employee_Service.getDataOfEmployee().subscribe(datasofemployees => {
-      this.dataEmp = datasofemployees;
-      this.dataOfResources = new MatTableDataSource(this.dataEmp);
+      this.datasofemployees = datasofemployees;
+      this.dataOfResources = new MatTableDataSource(this.datasofemployees);
       this.dataOfResources.sort = this.sorted;
     })
 
@@ -126,28 +127,34 @@ export class AdminComponent implements OnInit {
       this.skillGroups = skgroups;
     })
   }
+  getEmployees(){
+  this.employee_Service.getEmployees().subscribe(data => {
+    this.data = data;
+  })
+}
+OnFile() {
+  this.formdata = this.forms.value;
+  console.warn(this.formdata);
+  this._coreService.openSnackBar('Please wait, your file is uploading...');
 
-  OnFile() {
-    this.formdata = this.forms.value;
-    console.warn(this.formdata);
-    this.usersService.loadFile(this.formdata).subscribe(
-      dataOffile => {
-        this._coreService.openSnackBar('File Loaded Successfully', 'done');
-        this.forms.reset();
-        this.ngOnInit();
-      },
-      (error: HttpErrorResponse) => {
-        if (error.status == 400) {
-        } else {
-          this._coreService.openSnackBar("Please choose a file to upload", "ok");
-        }
+  this.usersService.loadFile(this.formdata).subscribe(
+    dataOffile => {
+      this._coreService.openSnackBar('File Loaded Successfully', 'done');
+      this.forms.reset();
+      this.getEmployees();
+    },
+    (error: HttpErrorResponse) => {
+      if (error.status == 400) {
+        this._coreService.openSnackBar('Please choose a file to upload', 'ok');
       }
-    );
-  }
-  
+    }
+  );
+}
+
   OnUser() {
     this.formdatas = this.userForm.value;
     this.usersService.addUser(this.formdatas).subscribe(userdata => {
+      this._coreService.openSnackBar("User Added Successfully","ok")
       this.userForm.reset();
       this.ngOnInit();
     })
@@ -156,26 +163,26 @@ export class AdminComponent implements OnInit {
   AddSkill() {
     this.skilldata = this.addskill.value;
     this.skillSetService.AddSkillset(this.skilldata).subscribe(res => {
+      this._coreService.openSnackBar('Record Added Successfully', 'done')
       this.addskill.reset();
     })
   }
-
   AddSkillGroup() {
     this.skillgroupdata = this.addSkillgroup.value;
     this.skillSetService.AddSkillGroup(this.skillgroupdata).subscribe(skillgroupdataApi => {
+      this._coreService.openSnackBar('Record Added Successfully', 'done')
       this.addSkillgroup.reset();
       this.ngOnInit();
     })
   }
-
   AddEmpDetails() {
     this.addEmpDetails = this.AddDataOfEmployee.value;
     this.employee_Service.AddEmpDetails(this.addEmpDetails).subscribe(addEmpDetails => {
+      this._coreService.openSnackBar('Record Added Successfully', 'done')
       this.AddDataOfEmployee.reset();
       this.ngOnInit();
     })
   }
-
   getResourceSkills(emailID: string) {
     const dialogRef = this.dialog.open(EditResSkillDialogComponent, {
       data: { emailID }
@@ -187,16 +194,16 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  Delete(skillSetID: number) {
+  DeleteSkillset(skillSetID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
       this.skillSetService.DeleteSkillset(skillSetID).subscribe(
         deleteuser => {
+          this._coreService.openSnackBar('Record Deleted Successfully', 'done')
           this.ngOnInit();
         },
         (error: HttpErrorResponse) => {
           if (error.status === 400) {
-          }else{
             this._coreService.openSnackBar("This field is used in another process, you can't delete it");
           }
         }
@@ -206,15 +213,18 @@ export class AdminComponent implements OnInit {
   deleteUser(userID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
-      this.usersService.deleteUser(userID).subscribe(deletedata => {
-        this.ngOnInit();
+      this.usersService.deleteUser(userID).subscribe((deletedata: any) => {
+        this._coreService.openSnackBar("User Record deleted","ok")
+        this.ngOnInit(); 
       });
     }
   }
+  
   DeleteSkillGroup(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
       this.skillSetService.DeleteSkillGroup(skillGroupID).subscribe(deleteskillgroup => {
+        this._coreService.openSnackBar('Record Deleted Successfully', 'done')
         this.ngOnInit();
       });
     }

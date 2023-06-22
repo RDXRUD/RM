@@ -41,7 +41,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
 		[HttpGet, Authorize]
-        [Route("AllUser")]
+        [Route("/api/AllUser")]
         public async Task<IEnumerable<Users>> Get()
         {
             try
@@ -55,7 +55,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost, Authorize]
-        [Route("AddUser")]
+        [Route("/api/AddUser")]
         public IActionResult AddUser([FromBody] Users user)
         {
             try
@@ -69,7 +69,7 @@ namespace ResourceManagerAPI.Controllers
         }
         
         [HttpDelete, Authorize]
-        [Route("DeleteUser")]
+        [Route("/api/DeleteUser")]
         public IActionResult DeleteUser([FromBody] Users user)
         {
             try

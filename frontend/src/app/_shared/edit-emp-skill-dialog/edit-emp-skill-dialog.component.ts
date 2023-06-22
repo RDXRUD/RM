@@ -4,6 +4,7 @@ import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { SkillsService } from '../../_services/skills.service';
 import { skillset } from '../../_model/skillset';
 import { SkillsetService } from '../../_services/skillset.service';
+import { CoreService } from 'src/app/_services/core.service';
 
 @Component({
   selector: 'app-edit-emp-skill-dialog',
@@ -22,6 +23,7 @@ export class EditEmpSkillDialogComponent {
     private skillsService: SkillsService,
     private skillsetService: SkillsetService,
     private frmbuilder: FormBuilder,
+    private _coreService:CoreService,
     @Inject(MAT_DIALOG_DATA) public dataOfskills: any,
   ) {
     this.skillgroupskill = frmbuilder.group({
@@ -49,8 +51,8 @@ export class EditEmpSkillDialogComponent {
       resourceSkillID: resourceSkillID,
       resourceID: resourceID,
     };
-    console.warn(this.formdatas);
     this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {
+      this._coreService.openSnackBar('Record Updated Successfully', 'done')
       this.skillgroupskill.reset();
       this.ngOnInit();
     });

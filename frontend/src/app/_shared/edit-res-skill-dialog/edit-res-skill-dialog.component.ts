@@ -65,6 +65,11 @@ export class EditResSkillDialogComponent implements OnInit {
       this.DataofSkillGroup = res;
     })
   }
+  getSkill(){
+  this.skills_service.getSkill(this.datadialog).subscribe(datas => {
+    this.data = datas;
+  })
+}
 
   Edit(element: any) {
     const dialogRef = this.dialog.open(EditEmpSkillDialogComponent, {
@@ -79,8 +84,9 @@ export class EditResSkillDialogComponent implements OnInit {
     console.warn(this.empSkills);
     this.skills_service.AddEmpSkill(this.empSkills).subscribe(
       res => {
+        this._coreService.openSnackBar('Record Added', 'done')
         this.addEmpskills.reset();
-        this.ngOnInit();
+        this.getSkill();
       },
       error => {
         console.error(error);
@@ -94,14 +100,12 @@ export class EditResSkillDialogComponent implements OnInit {
   }
   
   onSkillGroupSelection() {
-    
     const skillGroupID = Number(this.addEmpskills.get('skillGroupID')?.value);
     const skillGroup: SkillGroups = {
       skillGroupID: skillGroupID,
       skillGroup: ''
     };
     this.skillsetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
-      console.log(res);
       this.DataofSkill = res;
     });
   }

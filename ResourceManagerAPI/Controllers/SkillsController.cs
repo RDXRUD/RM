@@ -201,8 +201,8 @@ namespace ResourceManagerAPI.Controllers
 				_dbContext.resourceskills.Add(resourceSkill);
 				await _dbContext.SaveChangesAsync();
 
-				return Ok($"New SkillSetID {request.SkillID} added to Resource with EmailID {request.EmailID}.");
-			}
+                return Ok("{\"message\": \"Record Added Successfully\"}");
+            }
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);

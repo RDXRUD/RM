@@ -47,17 +47,17 @@
     <mat-tab label="Skills">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort>
+          <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort #sort="matSort">
             <ng-container matColumnDef="skillSetID">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
               <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillSetID}} </td>
             </ng-container>
             <ng-container matColumnDef="skillGroup">
-              <th mat-header-cell *matHeaderCellDef> Skill Group</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
               <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillGroup}} </td>
             </ng-container>
             <ng-container matColumnDef="skill">
-              <th mat-header-cell *matHeaderCellDef> Skill </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill </th>
               <td mat-cell *matCellDef="let skillSet"> {{skillSet.skill}} </td>
             </ng-container>
             <ng-container matColumnDef="edit">
@@ -71,7 +71,7 @@
             <ng-container matColumnDef="delete">
               <th mat-header-cell *matHeaderCellDef> Action - Delete </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary" (click)="Delete(element.skillSetID)">DELETE</button>
+                <button mat-raised-button color="primary" (click)="DeleteSkillset(element.skillSetID)">DELETE</button>
               </td>
             </ng-container>
             <ng-container matColumnDef="action">
@@ -111,7 +111,7 @@
     <mat-tab label="Resource Skills">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="dataOfSkills" matSort>
+          <table mat-table [dataSource]="dataOfSkills" matSort #sortedData="matSort" matSortDirection="asc">
             <ng-container matColumnDef="empID">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee ID </th>
               <td mat-cell *matCellDef="let resSkill"> {{resSkill.empID}} </td>
@@ -160,7 +160,7 @@
       </div>
       <div class="scrollable-table">
         <div class="table-container">
-          <table mat-table [dataSource]="dataOfResources" matSort>
+          <table mat-table [dataSource]="dataOfResources" matSort #sorted="matSort" matSortDirection="asc">
             <ng-container matColumnDef="empID">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee ID</th>
               <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
