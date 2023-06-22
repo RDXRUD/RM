@@ -131,15 +131,19 @@ namespace ResourceManagerAPI.Controllers
         public IActionResult AddSkillSet([FromBody] SkillSetManager skill)
         {
             Skills skillForAdd = new Skills();
-            skillForAdd.SkillID = skill.SkillID;
+			int? intSkillId = _dbContext.skill.Max(r => (int?)r.SkillID);
+			int skillID = (intSkillId is null) ? 1 : (int)intSkillId;
+            skillForAdd.SkillID = skillID + 1;
             skillForAdd.Skill = skill.Skill;
             _dbContext.skill.Add(skillForAdd);
             _dbContext.SaveChanges();
 
             SkillSet skillSetForAdd = new SkillSet();
-            skillSetForAdd.SkillSetID = skill.SkillID;
-            skillSetForAdd.SkillGroupID = skill.SkillGroupID;
-            skillSetForAdd.SkillID = skill.SkillID;
+			int? intSkillsetId = _dbContext.skillset.Max(r => (int?)r.SkillID);
+			int skillsetID = (intSkillsetId is null) ? 1 : (int)intSkillsetId;
+			skillSetForAdd.SkillGroupID = skill.SkillGroupID;
+            skillSetForAdd.SkillSetID = skillsetID + 1;
+            skillSetForAdd.SkillID = skillsetID + 1;
             _dbContext.skillset.Add(skillSetForAdd);
             _dbContext.SaveChanges();
             return Ok("{\"message\": \"Record Added Successfully\"}");

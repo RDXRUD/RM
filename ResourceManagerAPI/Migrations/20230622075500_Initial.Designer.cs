@@ -12,7 +12,7 @@ using ResourceManagerAPI.DBContext;
 namespace ResourceManagerAPI.Migrations
 {
     [DbContext(typeof(PGDBContext))]
-    [Migration("20230530081446_Initial")]
+    [Migration("20230622075500_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
