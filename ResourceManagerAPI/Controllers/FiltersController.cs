@@ -52,7 +52,7 @@ namespace ResourceManagerAPI.Controllers
 					((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
 					((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Finish <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
 				   ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
-				).ToList();
+				).AsEnumerable().DistinctBy(e => e.EmpID).ToList();
 
 				return employee;
 			}
@@ -68,7 +68,7 @@ namespace ResourceManagerAPI.Controllers
 					((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
 					((filter.AssignedFrom.HasValue && e.Start >= filter.AssignedFrom && e.Finish <= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
 					((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom) || (!filter.AvailableFrom.HasValue))
-				).ToList();
+				).AsEnumerable().DistinctBy(e => e.EmpID).ToList();
 
 				return employees;
 			}
