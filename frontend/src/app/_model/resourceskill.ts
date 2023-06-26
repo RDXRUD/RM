@@ -1,6 +1,6 @@
 export interface resourceSkill{ 
-  empID:number;
-  resourceName:string;
+   empID:number;
+   resourceName:string;
    emailID:string;
    details:string;
   }
