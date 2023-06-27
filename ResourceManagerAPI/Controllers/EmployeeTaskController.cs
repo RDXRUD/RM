@@ -82,23 +82,10 @@ namespace ResourceManagerAPI.Controllers
 
 		[HttpPost, Authorize]
 		[Route("TaskNameByEmpId")]
-		public List<EmployeeTasks> GetSkillByEmail(Employee emp)
+		public List<EmployeeTasks> GetTaskByEmpId(Employee emp)
 		{
 
-			var employee = (from e in _dbContext.employeetasks
-							join s in _dbContext.employees
-							on e.EmpID equals s.EmpID
-							select new EmployeeManager
-							{
-								EmpID = e.EmpID,
-								ResourceName = s.ResourceName,
-								EmailID = s.EmailID,
-								TaskName = e.TaskName,
-								Start = e.Start,
-								Finish = e.Finish
-							}).ToList();
-
-			var employeetasks = employee.Where(e => e.EmpID == emp.EmpID)
+			var employeetasks = _dbContext.employeetasks.Where(e => e.EmpID == emp.EmpID)
 								.Select(e => new EmployeeTasks
 								{
 									TaskName = e.TaskName,
@@ -106,7 +93,6 @@ namespace ResourceManagerAPI.Controllers
 									Finish = e.Finish
 								}).ToList();
 			return employeetasks;
-
 		}
 
 		[HttpPost, Authorize]

@@ -227,9 +227,9 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                return await _dbContext.skill.ToListAsync();
-            }
-            catch (Exception ex)
+				return await Task.Run(() => _dbContext.skill.AsEnumerable().DistinctBy(e => e.Skill).ToList());
+			}
+			catch (Exception ex)
             {
                 return (IEnumerable<Skills>)StatusCode(500, ex.Message);
             }
