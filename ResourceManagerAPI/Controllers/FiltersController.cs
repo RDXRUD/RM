@@ -50,7 +50,9 @@ namespace ResourceManagerAPI.Controllers
 					((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || String.IsNullOrEmpty(filter.Name)) &&
 					((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
 					((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
-					((filter.AssignedFrom.HasValue && filter.AssignedTo.HasValue && e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+					((filter.AssignedFrom.HasValue && filter.AssignedTo.HasValue && e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedTo) || (!filter.AssignedFrom.HasValue || !filter.AssignedTo.HasValue)) &&
+					((filter.AssignedFrom.HasValue &&  e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedFrom) || (!filter.AssignedFrom.HasValue)) &&
+					((filter.AssignedTo.HasValue && e.Finish >= filter.AssignedTo) || (!filter.AssignedTo.HasValue)) &&
 				   ((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom.Value.Date) || !filter.AvailableFrom.HasValue)
 				).AsEnumerable().DistinctBy(e => e.EmpID).ToList();
 
@@ -66,7 +68,9 @@ namespace ResourceManagerAPI.Controllers
 					((!String.IsNullOrEmpty(filter.Name) && e.ResourceName.ToUpper().Contains(filter.Name.ToUpper())) || (String.IsNullOrEmpty(filter.Name))) &&
 					((!String.IsNullOrEmpty(filter.EmailID) && e.EmailID.ToUpper().Contains(filter.EmailID.ToUpper())) || (String.IsNullOrEmpty(filter.EmailID))) &&
 					((!String.IsNullOrEmpty(filter.TaskName) && e.TaskName.ToUpper().Contains(filter.TaskName.ToUpper())) || (String.IsNullOrEmpty(filter.TaskName))) &&
-					((filter.AssignedFrom.HasValue && filter.AssignedTo.HasValue && e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedTo) || (!filter.AssignedFrom.HasValue && !filter.AssignedTo.HasValue)) &&
+					((filter.AssignedFrom.HasValue && filter.AssignedTo.HasValue && e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedTo) || (!filter.AssignedFrom.HasValue || !filter.AssignedTo.HasValue)) &&
+					((filter.AssignedFrom.HasValue && e.Start <= filter.AssignedFrom && e.Finish >= filter.AssignedFrom) || (!filter.AssignedFrom.HasValue)) &&
+					((filter.AssignedTo.HasValue && e.Finish >= filter.AssignedTo) || (!filter.AssignedTo.HasValue)) &&
 					((filter.AvailableFrom.HasValue && e.Finish <= filter.AvailableFrom) || (!filter.AvailableFrom.HasValue))
 				).AsEnumerable().DistinctBy(e => e.EmpID).ToList();
 
