@@ -105,19 +105,19 @@ namespace ResourceManagerAPI.Controllers
             try
             {
                 var employee = (from ss in _dbContext.skillset
-                                join s in _dbContext.skill
-                                on ss.SkillID equals s.SkillID
                                 join sg in _dbContext.skillgroup
-                                on ss.SkillGroupID equals sg.SkillGroupID
-                                into detail
-                                from m in detail.DefaultIfEmpty()
+                                on ss.SkillGroupID equals sg.SkillGroupID into detail
+                                from skillGroup in detail.DefaultIfEmpty()
+                                join s in _dbContext.skill
+                                on ss.SkillID equals s.SkillID into details
+                                from skill in details.DefaultIfEmpty()
                                 select new SkillSetManager
                                 {
                                     SkillSetID = ss.SkillSetID,
-                                    SkillGroupID = ss.SkillGroupID,
-                                    SkillID = s.SkillID,
-                                    SkillGroup = m.SkillGroup,
-                                    Skill = s.Skill
+                                    SkillGroupID = skillGroup.SkillGroupID,
+                                    SkillID = skill.SkillID,
+                                    SkillGroup = skillGroup.SkillGroup,
+                                    Skill = skill.Skill
                                 }
                                 ).ToList();
                 return Ok(employee);
@@ -141,11 +141,11 @@ namespace ResourceManagerAPI.Controllers
             _dbContext.SaveChanges();
 
             SkillSet skillSetForAdd = new SkillSet();
-			int? intSkillsetId = _dbContext.skillset.Max(r => (int?)r.SkillID);
+			int? intSkillsetId = _dbContext.skillset.Max(r => (int?)r.SkillSetID);
 			int skillsetID = (intSkillsetId is null) ? 1 : (int)intSkillsetId;
 			skillSetForAdd.SkillGroupID = skill.SkillGroupID;
             skillSetForAdd.SkillSetID = skillsetID + 1;
-            skillSetForAdd.SkillID = skillsetID + 1;
+            skillSetForAdd.SkillID = skillID + 1;
             _dbContext.skillset.Add(skillSetForAdd);
             _dbContext.SaveChanges();
             return Ok("{\"message\": \"Record Added Successfully\"}");
@@ -207,13 +207,17 @@ namespace ResourceManagerAPI.Controllers
             if (!skills.Any(s => s.SkillSetID == skill.SkillSetID))
             {
                 var skillSetToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
-				_dbContext.skillset.RemoveRange(skillSetToDelete);
-				_dbContext.SaveChanges();
-				Skills skillSet = new Skills();
-				skillSet.SkillID = skill.SkillSetID;
-				_dbContext.skill.RemoveRange(skillSet);
-				_dbContext.SaveChanges();
-				return Ok("{\"message\": \"Record Deleted Successfully\"}");
+                if (skillSetToDelete != null)
+                {
+                    _dbContext.skillset.RemoveRange(skillSetToDelete);
+                    _dbContext.SaveChanges();
+                    Skills skillSet = new Skills();
+                    skillSet.SkillID = skillSetToDelete.SkillID;
+                    _dbContext.skill.RemoveRange(skillSet);
+                    _dbContext.SaveChanges();
+                    }
+                    return Ok("{\"message\": \"Record Deleted Successfully\"}");
+               
             }
             else
             {

@@ -98,6 +98,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost("Login")]
+
         public async Task<IActionResult> Post([FromBody] Users _userData)
         {
             if (_userData != null && _userData.UserName != null && _userData.Password != null)
@@ -144,10 +145,6 @@ namespace ResourceManagerAPI.Controllers
                 return BadRequest("Username Or Password Missing");
             }
         }
-        //private async Task<Users> GetUser(string username,string password)
-        //{
-        //    return await _dbContext.users.FirstOrDefaultAsync(u => u.UserName == username && Decrypt(u.Password) == password);
-        //}
         private string Decrypt(string cipherText)
         {
             string encryptionKey = "MAKV2SPBNI99212";

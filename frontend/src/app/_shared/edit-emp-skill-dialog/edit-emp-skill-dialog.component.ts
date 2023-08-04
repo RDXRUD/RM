@@ -40,10 +40,14 @@ export class EditEmpSkillDialogComponent {
     this.skillsetService.getSkillGroups().subscribe((data) => {
       this.apiData = data;
     });
-    this.skillsetService.getSkillSets().subscribe((datas) => {
-      this.apiDataa = datas;
-    });
+    this.getSkillSets();
+ 
   }
+  getSkillSets(){
+  this.skillsetService.getSkillSets().subscribe((datas) => {
+    this.apiDataa = datas;
+  });
+}
 
   UpdateSkills(resourceSkillID: number, resourceID: number) {
     this.formdatas = {
@@ -51,7 +55,7 @@ export class EditEmpSkillDialogComponent {
       resourceSkillID: resourceSkillID,
       resourceID: resourceID,
     };
-    this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {
+    this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {  
       this._coreService.openSnackBar('Record Updated Successfully', 'done')
       this.skillgroupskill.reset();
       this.ngOnInit();

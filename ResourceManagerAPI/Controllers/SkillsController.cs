@@ -165,49 +165,54 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-		[HttpPost, Authorize]
-		[Route("AddSkillToSkillGroup")]
-		public async Task<IActionResult> AddSkillToSkillGroup([FromBody] ResourceSkillManager request)
-		{
-			try
-			{
-				var resource = await _dbContext.resources.FirstOrDefaultAsync(r => r.EmailID == request.EmailID);
+        [HttpPost, Authorize]
+        [Route("AddSkillToSkillGroup")]
+        public async Task<IActionResult> AddSkillToSkillGroup([FromBody] ResourceSkillManager request)
+        {
+            try
+            {
+                var resource = await _dbContext.resources.FirstOrDefaultAsync(r => r.EmailID == request.EmailID);
 
-				if (resource == null)
-				{
-					return NotFound($"Resource with EmailID {request.EmailID} not found.");
-				}
+                if (resource == null)
+                {
+                    return NotFound($"Resource with EmailID {request.EmailID} not found.");
+                }
 
-				var skill = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillID);
+                var skill = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillID);
 
-				if (skill == null)
-				{
-					return NotFound($"Skill with ID {request.SkillID} not found.");
-				}
+                if (skill == null)
+                {
+                    return NotFound($"Skill with ID {request.SkillID} not found.");
+                }
 
-				var skillGroup = await _dbContext.skillgroup.FirstOrDefaultAsync(sg => sg.SkillGroupID == request.SkillGroupID);
+                var skillGroup = await _dbContext.skillgroup.FirstOrDefaultAsync(sg => sg.SkillGroupID == request.SkillGroupID);
 
-				if (skillGroup == null)
-				{
-					return NotFound($"Skill group with ID {request.SkillGroupID} not found.");
-				}
+                if (skillGroup == null)
+                {
+                    return NotFound($"Skill group with ID {request.SkillGroupID} not found.");
+                }
 
-				var resourceSkill = new ResourceSkills
-				{
-					ResourceID = resource.ResourceID,
-					SkillSetID = request.SkillID
-				};
+                if (skill != null && skillGroup != null)
+                {
+                    var result = await _dbContext.skillset.FirstOrDefaultAsync(x => x.SkillID == request.SkillID && x.SkillGroupID == request.SkillGroupID);
+                    var resourceSkill = new ResourceSkills
+                    {
+                        ResourceID = resource.ResourceID,
+                        SkillSetID = result.SkillSetID
+                    };
 
-				_dbContext.resourceskills.Add(resourceSkill);
-				await _dbContext.SaveChangesAsync();
-
-                return Ok("{\"message\": \"Record Added Successfully\"}");
+                    _dbContext.resourceskills.Add(resourceSkill);
+                    await _dbContext.SaveChangesAsync();
+                }
+                    return Ok("{\"message\": \"Record Added Successfully\"}");
             }
-			catch (Exception ex)
-			{
-				return StatusCode(500, ex.Message);
-			}
-		}
+
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
 
 		[HttpPut, Authorize]
         [Route("UpdateSetOfSkill")]

@@ -18,6 +18,8 @@ namespace ResourceManagerAPI.DBContext
         public virtual DbSet<SkillGroups> skillgroup { get; set; }
         public virtual DbSet<Skills> skill { get; set; }
         public virtual DbSet<PlanUploadRecord> uploadrecord { get; set; }
+        public virtual DbSet<SharePointUploadRecord> skillsuploadrecord { get; set; }
+        public virtual DbSet<ColumnLists> columnlistrecord { get; set; }
     }
 }
 

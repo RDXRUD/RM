@@ -17,19 +17,12 @@ export class AppComponent {
       this.isLoggedIn = loggedIn;
     })
   }
+
   ngOnInit(): void {
-    // this.checkTokenExpiration();
   }
   
   OnLogout() {
     this.tokenService.removeToken();
     this.router.navigate(['/Login'])
   }
-  
-
-  // checkTokenExpiration(): void {
-  //   this.showSessionExpiredMessage = this.tokenService.isTokenExpired();
-  // }
-  
-  
 }

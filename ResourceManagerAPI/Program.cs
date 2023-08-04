@@ -27,6 +27,8 @@ builder.Services.AddDbContextPool<PGDBContext>(o => o.UseNpgsql(builder.Configur
 // Add services to the container.
 builder.Services.AddTransient<IAccount, Account>();
 builder.Services.AddTransient<IFileUpload, FileUpload>();
+builder.Services.AddTransient<IFileUploadForSkills, FileUploadForSkill>();
+builder.Services.AddTransient<IUserInput, UserInput>();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(opt =>
 {

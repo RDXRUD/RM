@@ -7,11 +7,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ResourceManagerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "columnlistrecord",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ColumnList = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_columnlistrecord", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "employees",
                 columns: table => new
@@ -111,6 +124,20 @@ namespace ResourceManagerAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "skillsuploadrecord",
+                columns: table => new
+                {
+                    SkillsRecordId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_skillsuploadrecord", x => x.SkillsRecordId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "uploadrecord",
                 columns: table => new
                 {
@@ -144,6 +171,9 @@ namespace ResourceManagerAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "columnlistrecord");
+
+            migrationBuilder.DropTable(
                 name: "employees");
 
             migrationBuilder.DropTable(
@@ -163,6 +193,9 @@ namespace ResourceManagerAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "skillset");
+
+            migrationBuilder.DropTable(
+                name: "skillsuploadrecord");
 
             migrationBuilder.DropTable(
                 name: "uploadrecord");

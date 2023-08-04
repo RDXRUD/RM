@@ -113,28 +113,28 @@ namespace ResourceManagerAPI.Repository
             _dbContext.employees.Add(Emp);
             _dbContext.SaveChanges();
 
-            var resource = _dbContext.resources.FirstOrDefault(r => r.EmailID == projectData.Email);
+            //var resource = _dbContext.resources.FirstOrDefault(r => r.EmailID == projectData.Email);
 
-            if (resource == null)
-            {
-                int resID;
-                int? intIdt = _dbContext.resources.Max(r => (int?)r.ResourceID);
-                resID = (intIdt is null) ? 1 : (int)intIdt;
+            //if (resource == null)
+            //{
+            //    int resID;
+            //    int? intIdt = _dbContext.resources.Max(r => (int?)r.ResourceID);
+            //    resID = (intIdt is null) ? 1 : (int)intIdt;
 
-                var res = new Resources
-                {
-                    ResourceID = resID + 1,
-                    EmailID = projectData.Email,
-                    EmpID = projectData.Id
-                };
-                _dbContext.resources.Add(res);
-                _dbContext.SaveChanges();
-            }
-            else
-            {
-                resource.EmpID = projectData.Id;
-                _dbContext.SaveChanges();
-            }
+            //    var res = new Resources
+            //    {
+            //        ResourceID = resID + 1,
+            //        EmailID = projectData.Email,
+            //        //EmpID = projectData.Id
+            //    };
+            //    _dbContext.resources.Add(res);
+            //    _dbContext.SaveChanges();
+            //}
+            //else
+            //{
+            //    resource.EmpID = projectData.Id;
+            //    _dbContext.SaveChanges();
+            //}
         }
         private void AddEmployeeTasksToDb(int empId, string taskName, DateTime start, DateTime finish)
         {
@@ -158,15 +158,15 @@ namespace ResourceManagerAPI.Repository
             _dbContext.uploadrecord.Add(Upload);
             _dbContext.SaveChanges();
         }
-        private void AddEmpIDToResourcesTable(int tempEmpID)
-        {
-            var Emp = new Resources()
-            {
-                EmpID = tempEmpID
-            };
-            _dbContext.resources.Add(Emp);
-            _dbContext.SaveChanges();
-        }
+        //private void AddEmpIDToResourcesTable(int tempEmpID)
+        //{
+        //    var Emp = new Resources()
+        //    {
+        //        EmpID = tempEmpID
+        //    };
+        //    _dbContext.resources.Add(Emp);
+        //    _dbContext.SaveChanges();
+        //}
         private static EnumerableCollection ToEnumerable(Collection javaCollection)
         {
             return new EnumerableCollection(javaCollection);

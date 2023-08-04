@@ -16,6 +16,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../_services/skillset.service';
 import { EmployeeService } from '../_services/employee.service';
 import { UsersService } from '../_services/users.service';
+import { SkillData } from '../_model/SkillData';
+
 
 @Component({
   selector: 'app-admin',
@@ -26,6 +28,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   apiData!: any[];
   dataOfEmployees!: employee[];
   forms: FormGroup;
+  formsOfSkills:FormGroup;
   formdata!: file;
   userForm: FormGroup;
   formdatas!: userform;
@@ -47,6 +50,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   res: any;
   dataOfFile: any;
   dataEmp: any;
+  dataOfLists:any;
+  dataOfSkillsFile!: file[] ;
   deleteuser: any;
   deleteskillgroup: any;
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'details'];
@@ -55,6 +60,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
   displayedColumnsto: string[] = ['skillGroup', 'delete'];
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
+  displayedColumnsOfLists: string[] = ['columnLists','selectors'];
+
 
   dataOfempSkill!: MatTableDataSource<any>;
   @ViewChild('sort') sort!: MatSort;
@@ -65,6 +72,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   dataOfSkills!: MatTableDataSource<any>;
   @ViewChild('sortedData') sortedData!: MatSort;
 
+  dataOfSkillList!:MatTableDataSource<any>;
+  @ViewChild('sortedData') sortedSkillData!: MatSort;
+
+
+  
   constructor(
     private employee_Service: EmployeeService,
     private frmbuilder: FormBuilder,
@@ -74,6 +86,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     private usersService: UsersService
   ) {
     this.forms = frmbuilder.group({
+      planFile: new FormControl(),
+    })
+    this.formsOfSkills = frmbuilder.group({
       planFile: new FormControl(),
     })
     this.userForm = frmbuilder.group({
@@ -126,6 +141,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.skillSetService.getSkillGroups().subscribe(skgroups => {
       this.skillGroups = skgroups;
     })
+
   }
   getEmployeesPlan() {
     this.employee_Service.getEmployeesPlan().subscribe(data => {
@@ -218,7 +234,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
   DeleteSkillGroup(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
@@ -228,4 +243,49 @@ export class AdminComponent implements OnInit, AfterViewInit {
       });
     }
   }
-}
+  OnSkillFile() {
+    this.formdata = this.formsOfSkills.value;
+    this._coreService.openSnackBar('Please wait, your file is uploading...','ok');
+    this.usersService.loadSkillFile(this.formdata, this.formdata.columnLists).subscribe(
+      (dataOfSkillsFile) => {
+        this._coreService.openSnackBar('File Loaded Successfully', 'done');
+        this.formsOfSkills.reset();
+        this.dataOfSkillList = new MatTableDataSource<any>(dataOfSkillsFile);
+        this.dataOfSkillList.sort = this.sortedSkillData;
+
+        this.dataOfSkillsFile = dataOfSkillsFile;   
+      },
+      (error: HttpErrorResponse) => {
+        if (error.status == 400) {
+          this._coreService.openSnackBar('Please choose a file to upload', 'ok');
+        }
+      }
+    );
+  } 
+  submitMappingData( dataOfSkillsFile: any[]) {  
+    const transformedData = dataOfSkillsFile.reduce((result, user) => {
+      result[user.columnLists] = user.selectors;
+      return result;
+    }, {});
+    const jsonString = JSON.stringify(transformedData);
+    const skillData: SkillData = {
+      inputData: jsonString,
+      PlanFile: this.formdata.planFile, 
+    };
+
+    console.log('SkillData:',skillData);
+    this._coreService.openSnackBar('Please wait,Mapping in progress','ok');
+    this.usersService.mappedSkills(skillData).subscribe(
+      (response) => {
+        this._coreService.openSnackBar('Mapped Successfully', 'done');
+        this.ngOnInit();
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    );
+  }
+  }
+
+  
+  

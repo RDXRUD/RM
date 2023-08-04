@@ -17,6 +17,8 @@
 	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.0.123" />
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
+		<PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
 		<PackageReference Include="loggerservice" Version="1.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
@@ -43,6 +45,7 @@
 	      <PrivateAssets>all</PrivateAssets>
 	      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    </PackageReference>
+	    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
 </ItemGroup>
 
 	<ItemGroup>

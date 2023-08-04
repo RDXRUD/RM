@@ -193,6 +193,58 @@
       </div>
     </mat-tab>
 
+    <mat-tab label="Resource Skill Plan">
+      <div class="container">
+        <div class="box">
+          <h2>Upload Skills File Here</h2>
+          <form [formGroup]="formsOfSkills" (ngSubmit)="OnSkillFile()">
+            <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
+              <mat-form-field fxFlex="10">
+                <ngx-mat-file-input formControlName="planFile" matInput>
+                </ngx-mat-file-input>
+                <mat-icon></mat-icon>
+              </mat-form-field>
+              <div class="button-container">
+                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                  value="OnFile">Upload</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="table-container">
+        <h2>Mapping Table</h2>
+        <table mat-table [dataSource]="dataOfSkillList" matSort #sortedSkillData="matSort" matSortDirection="asc">
+
+          <ng-container matColumnDef="columnLists">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Column Lists</th>
+            <td mat-cell *matCellDef="let user" class="column-cell">
+              {{ user.columnLists }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="selectors">
+            <th mat-header-cell *matHeaderCellDef>Selectors</th>
+            <td mat-cell *matCellDef="let user" class="column-cell">
+              <mat-form-field>
+                <mat-label>Select</mat-label>
+                <mat-select [(value)]="user.selectors">
+
+                  <mat-option value="not imported">Not Imported</mat-option>
+                  <mat-option value="skill Group">Skill Group</mat-option>
+                  <mat-option value="Email">Email</mat-option>
+                </mat-select>
+                
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsOfLists; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsOfLists;"></tr>
+        </table>
+      </div>
+      <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="submitMappingData(dataOfSkillsFile)">Submit</button>
+    </mat-tab>
+
     <mat-tab label="Users">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">

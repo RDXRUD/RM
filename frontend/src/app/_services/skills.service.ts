@@ -19,9 +19,10 @@ export class SkillsService {
    let url = `${environment.apiUrl}/Skills/AddSkillToSkillGroup`;
     return this.http.post<SkillsofEmp[]>(url, empSkills);
   };
+
   UpdateSkills(formdatas: skillset): Observable<skillset[]> {
     let url = `${environment.apiUrl}/Skills/UpdateSetOfSkill`;
-    return this.http.post<skillset[]>(url, formdatas);
+    return this.http.put<skillset[]>(url, formdatas);
   }
 }
 

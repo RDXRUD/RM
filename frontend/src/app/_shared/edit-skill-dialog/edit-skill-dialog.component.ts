@@ -43,7 +43,6 @@ export class EditSkillDialogComponent {
       ...this.skills.value,
       skillSetID: skillSetID
     };
-    console.warn(this.formdata);
     this.skillsetService.UpdateSkill(this.formdata).subscribe(result => {
       this._coreService.openSnackBar("Record Updated Successfully","ok");
       this.skills.reset();

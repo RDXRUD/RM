@@ -12,8 +12,8 @@ using ResourceManagerAPI.DBContext;
 namespace ResourceManagerAPI.Migrations
 {
     [DbContext(typeof(PGDBContext))]
-    [Migration("20230622075500_Initial")]
-    partial class Initial
+    [Migration("20230714112450_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,22 @@ namespace ResourceManagerAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.ColumnLists", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ColumnList")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("columnlistrecord");
+                });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.Employee", b =>
                 {
@@ -124,6 +140,25 @@ namespace ResourceManagerAPI.Migrations
                     b.HasKey("ResourceID");
 
                     b.ToTable("resources");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.SharePointUploadRecord", b =>
+                {
+                    b.Property<int>("SkillsRecordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillsRecordId"));
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SkillsRecordId");
+
+                    b.ToTable("skillsuploadrecord");
                 });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.SkillGroups", b =>

@@ -2,12 +2,11 @@
 
 namespace ResourceManagerAPI.Models
 {
-    public class PlanUploadRecord
+    public class SharePointUploadRecord
     {
         [Key]
-        public int UploadRecordId { get; set; }
+        public int SkillsRecordId{ get; set; }
         public int UserId { get; set; }
         public string? FileName { get; set; }
-
     }
 }
