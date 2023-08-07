@@ -2,14 +2,14 @@
   <mat-tab-group style="height: calc(100vh - 64px);">
     <mat-tab label='Skill Groups'>
       <div style="height: 100%; overflow-y: auto;">
-        <div style="height: 100%;">
-          <table mat-table [dataSource]="skillGroups">
+        <div style="height: 100%;">       
+          <table mat-table [dataSource]="skillGroups" matSort #matSorted="matSort">
             <ng-container matColumnDef="skillGroupID">
               <th mat-header-cell *matHeaderCellDef> ID</th>
               <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroupID}} </td>
             </ng-container>
             <ng-container matColumnDef="skillGroup">
-              <th mat-header-cell *matHeaderCellDef> Skill Group</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
               <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroup}} </td>
             </ng-container>
             <ng-container matColumnDef="delete">

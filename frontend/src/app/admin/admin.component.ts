@@ -17,6 +17,7 @@ import { SkillsetService } from '../_services/skillset.service';
 import { EmployeeService } from '../_services/employee.service';
 import { UsersService } from '../_services/users.service';
 import { SkillData } from '../_model/SkillData';
+import { skillgroup } from '../_model/skillgroup';
 
 
 @Component({
@@ -46,7 +47,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   datas: any;
   user: any;
   userdata: any;
-  skillGroups: any;
+  skgroups:any;
   res: any;
   dataOfFile: any;
   dataEmp: any;
@@ -73,8 +74,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild('sortedData') sortedData!: MatSort;
 
   dataOfSkillList!:MatTableDataSource<any>;
-  @ViewChild('sortedData') sortedSkillData!: MatSort;
+  @ViewChild('sortedSkillData') sortedSkillData!: MatSort;
 
+  skillGroups!:MatTableDataSource<any>;
+  @ViewChild('matSorted') matSorted!: MatSort;
 
   
   constructor(
@@ -128,7 +131,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
     this.skillSetService.getSkillGroups().subscribe(sg => {
       this.apiData = sg;
-
     })
     this.skillSetService.getSkillSets().subscribe(datas => {
       this.datas = datas;
@@ -139,7 +141,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.user = user;
     })
     this.skillSetService.getSkillGroups().subscribe(skgroups => {
-      this.skillGroups = skgroups;
+      this.skgroups = skgroups;
+      this.skillGroups = new MatTableDataSource(this.skgroups);
+      this.skillGroups.sort =this.matSorted;
     })
 
   }
