@@ -8,17 +8,10 @@ using Assignment = net.sf.mpxj.ResourceAssignment;
 using Path = System.IO.Path;
 using Task = net.sf.mpxj.Task;
 using File = ResourceManagerAPI.Models.File;
-using System.IO;
 using ResourceManagerAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Entity;
 using net.sf.mpxj.MpxjUtilities;
-using com.sun.tools.javadoc;
-using com.sun.xml.@internal.bind.v2.runtime.unmarshaller;
-using static com.sun.xml.@internal.xsom.impl.WildcardImpl;
-using java.lang;
 using ResourceManagerAPI.Controllers;
-using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
+
 
 namespace ResourceManagerAPI.Repository
 {

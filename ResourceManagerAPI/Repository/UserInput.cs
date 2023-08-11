@@ -218,7 +218,7 @@ namespace ResourceManagerAPI.Repository
                     {
                         Resources tempRes = new Resources
                         {
-                            ResourceID = resID,              
+                            ResourceID = resID,
                             EmailID = email
                         };
                         EmailData.Add(tempRes);

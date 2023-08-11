@@ -17,15 +17,16 @@ import { tasks } from '../_model/tasks';
 
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'MM DD YYYY',
+    dateInput: 'YYYY-MM-DD',
   },
   display: {
-    dateInput: ' DD-MMM-YYYY',
-    monthYearLabel: ' MMM',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMM LL YYYY',
+    dateInput: 'DD MMM YYYY',
+    monthYearLabel: 'MMM',
+    dateA11yLabel: 'DD',
+    monthYearA11yLabel: 'MMM YYYY',
   },
 };
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

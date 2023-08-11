@@ -23,8 +23,7 @@ namespace ResourceManagerAPI.Repository
         {
 
             List<JsonSkill> columnList = new List<JsonSkill>();
-            //Dictionary<string, List<string>> excelDataDictionary = new Dictionary<string, List<string>>();
-
+       
             string fileName = $"{DateTime.Now.ToString("yyyyMMMdd")}_{Path.GetRandomFileName()}";
             string fileExtension = Path.GetExtension(planFileInfo.PlanFile.FileName);
             string filePath = Path.Combine("FileHolder", fileName + fileExtension);

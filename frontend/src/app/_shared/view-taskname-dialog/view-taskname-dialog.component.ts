@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { tasks } from 'src/app/_model/tasks';
 
+
 @Component({
   selector: 'app-view-taskname-dialog',
   templateUrl: './view-taskname-dialog.component.html',
