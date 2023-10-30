@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { skillsetupdate } from '../../_model/skillsetupdate';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SkillsetService } from '../../_services/skillset.service';
 import { CoreService } from 'src/app/_services/core.service';
-
+import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-edit-skill-dialog',
   templateUrl: './edit-skill-dialog.component.html',
@@ -17,23 +17,29 @@ export class EditSkillDialogComponent {
   datas: any;
   skills: FormGroup;
   formdata!: skillsetupdate;
-
-  constructor(private frmbuilder: FormBuilder, private fb: FormBuilder, private skillsetService: SkillsetService,private _coreService:CoreService,
+  constructor(private frmbuilder: FormBuilder, 
+    public dialogRef: MatDialogRef<EditSkillDialogComponent>,
+    private fb: FormBuilder, 
+    private skillsetService: SkillsetService,
+    private _coreService:CoreService,
     @Inject(MAT_DIALOG_DATA) public dataofskills: any) {
     this.skills = frmbuilder.group({
-      skillID: new FormControl(''),
+      skill: new FormControl(''),
       skillGroupID: new FormControl(''),
+      Description: new FormControl('')
     })
   }
   ngOnInit() {
     this.skills.setValue({
-      skillID: this.dataofskills.element.skillID,
+      skill: this.dataofskills.element.skill,
       skillGroupID: this.dataofskills.element.skillGroupID,
+      Description:this.dataofskills.element.description
     });
     this.skillsetService.getSkillGroups().subscribe(data => {
       this.apiData = data;
     })
     this.skillsetService.getSkills().subscribe(datas => {
+      console.log(datas);
       this.apiDataa = datas;
     })
   }
@@ -43,10 +49,18 @@ export class EditSkillDialogComponent {
       ...this.skills.value,
       skillSetID: skillSetID
     };
-    this.skillsetService.UpdateSkill(this.formdata).subscribe(result => {
+    this.skillsetService.UpdateSkillSet(this.formdata).subscribe(result => {
+      console.log(result)
       this._coreService.openSnackBar("Record Updated Successfully","ok");
       this.skills.reset();
-      this.ngOnInit();
+      this.dialogRef.close('success');
+    }, (error: HttpErrorResponse) => {
+      if (error.status === 502) {
+        this._coreService.openSnackBar("Skill already exist in the given skill group");
+      }
+      else if(error.status === 501) {
+        this._coreService.openSnackBar("Can't edit INACTIVE skill");
+      }
     })
   }
 }

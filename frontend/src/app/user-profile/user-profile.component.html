@@ -1,0 +1,33 @@
+<div title>
+    <h1>Resource Profile </h1>
+</div>
+<form [formGroup]="resourceProfile">
+    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+        <mat-form-field fxFlex="50">
+            <mat-label>Resource Name</mat-label>
+            <input type="text" readonly formControlName="res_name" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlex="50">
+            <mat-label>Email</mat-label>
+            <input type="email" readonly formControlName="res_email_id" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlex="50">
+            <mat-label>Location</mat-label>
+            <input type="text" readonly formControlName="location" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlex="50">
+            <mat-label>User Role</mat-label>
+            <input type="text" readonly formControlName="role_name" matInput>
+        </mat-form-field>
+        <mat-form-field fxFlex="50">
+            <mat-label>UserID</mat-label>
+            <input type="text" readonly formControlName="res_user_id" matInput>
+        </mat-form-field>
+        <div fxFlex="25">
+            <button class="btn" mat-raised-button style="width:100%;" color="primary" (click)="UpdateUser()">Update Profile</button>
+        </div>
+        <div fxFlex="25" >
+            <button class="btn" mat-raised-button style="width:100%;" color="primary" (click)="ResetPassword()">Change Password </button>
+        </div>
+    </div>
+</form>

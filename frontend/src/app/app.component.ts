@@ -10,12 +10,20 @@ import { Router } from '@angular/router';
   
 })
 export class AppComponent {
+  Roles:any;
   title = 'TeamTracker';
   isLoggedIn: boolean = false;
   showSessionExpiredMessage = false;
+  localStorage: any;
+ 
   constructor(public tokenService: TokenService, private router: Router) {
+
+
     this.tokenService.isLoggedIn.subscribe((loggedIn) => {
-      this.isLoggedIn = loggedIn;
+      this.Roles=localStorage.getItem("Role")
+      console.log('Rolesthis:', this.Roles);
+      this.isLoggedIn = this.tokenService.isAuthenticated();
+      
     })
   }
 
@@ -24,6 +32,6 @@ export class AppComponent {
   
   OnLogout() {
     this.tokenService.removeToken();
-    this.router.navigate(['/Login'])
+    this.router.navigate(['/Login']);
   }
 }

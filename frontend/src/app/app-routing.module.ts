@@ -4,13 +4,18 @@ import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_helpers/auth.guard';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { RoleGuard } from './_helpers/auth.role';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
 
   { path: 'Home', component: HomeComponent, canActivate: [AuthGuard] },
   {
-    path: 'Admin', component: AdminComponent, canActivate: [AuthGuard]
+    path: 'Admin', component: AdminComponent, canActivate: [AuthGuard, RoleGuard]
+  },
+  {
+    path: 'UserProfile', component: UserProfileComponent, canActivate: [AuthGuard]
   },
   {
     path: 'Login', component: LoginComponent

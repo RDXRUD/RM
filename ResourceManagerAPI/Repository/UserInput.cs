@@ -7,6 +7,8 @@ using System.Text;
 using File = ResourceManagerAPI.Models.File;
 using Resources = ResourceManagerAPI.Models.Resources;
 using Skills = ResourceManagerAPI.Models.Skills;
+using System.Diagnostics;
+
 
 namespace ResourceManagerAPI.Repository
 {
@@ -24,6 +26,8 @@ namespace ResourceManagerAPI.Repository
         }
         List<SkillGroups> skillGroupList = new List<SkillGroups>();
         List<Resources> EmailData = new List<Resources>();
+        List<Resources> LocationData = new List<Resources>();
+
 
         public void GetSkillData([FromForm] Dictionary<string, string> InputData, [FromForm] File planFileInfo)
         {
@@ -109,6 +113,11 @@ namespace ResourceManagerAPI.Repository
                         GetEmailData(key, columnList, excelDataDictionary);
 
                         GetResourceSkills(rowDataList);
+                    }
+                    else if (value == "Location")
+                    {
+                        GetLocationData(key, columnList, excelDataDictionary);
+                        //GetResourceSkills(rowDataList);
                     }
 
                     else if (value == "skill Group")
@@ -206,10 +215,9 @@ namespace ResourceManagerAPI.Repository
 
         private void GetEmailData(string key, List<JsonSkill> columnList, Dictionary<string, List<string>> excelDataDictionary)
         {
-
             int resID = 1;
             List<Resources> resourcesToAdd = new List<Resources>();
-
+           
             if (excelDataDictionary.ContainsKey(key))
             {
                 {
@@ -218,9 +226,14 @@ namespace ResourceManagerAPI.Repository
                     {
                         Resources tempRes = new Resources
                         {
+
                             ResourceID = resID,
-                            EmailID = email
+                            EmailID = email,
                         };
+                        Debug.WriteLine(email);
+                        Console.WriteLine(email);
+                        Console.WriteLine($"Resource{email}");
+
                         EmailData.Add(tempRes);
                         resourcesToAdd.Add(tempRes);
                         resID++;
@@ -231,6 +244,86 @@ namespace ResourceManagerAPI.Repository
             _dbContext.resources.AddRange(resourcesToAdd);
             _dbContext.SaveChanges();
         }
+
+        private void GetLocationData(string key, List<JsonSkill> columnList, Dictionary<string, List<string>> excelDataDictionary)
+        {
+            int resID = 1;
+            List<Resources> resourcesToUpdate = new List<Resources>();
+            //Resources resource = new Resources();
+            Employee employee = new Employee(); 
+            if (excelDataDictionary.ContainsKey(key))
+            {
+                List<string> columnData = excelDataDictionary[key];
+                foreach (var location in columnData)
+                {
+                    
+                    //var res = _dbContext.resources.FirstOrDefault(r => r.ResourceID == resID);
+                    //if (res != null)
+                    //{
+                        var existingResource = _dbContext.employees.FirstOrDefault(r => r.EmpID == resID);
+                        if (existingResource != null)
+                        {
+                        Debug.WriteLine(location);
+                        employee.Location = location;
+                        
+                    }
+                        
+                    //}
+                    else
+                    {
+                        // Add debug output or log here to check if a resource is not found.
+                        Console.WriteLine($"Resource with ResourceID {resID} not found.");
+                    }
+                    resID++;
+                }
+            }
+            _dbContext.SaveChanges();
+            //if (resourcesToUpdate.Count > 0)
+            //{
+            //    //_dbContext.resources.UpdateRange(resourcesToUpdate);
+                
+            //}
+        }
+
+
+
+
+        //private void GetLocationData(string key, List<JsonSkill> columnList, Dictionary<string, List<string>> excelDataDictionary)
+        //{
+
+        //    int resID = 1;
+        //    List<Resources> resourcesToAdd = new List<Resources>();
+
+        //    if (excelDataDictionary.ContainsKey(key))
+        //    {
+        //        {
+        //            //var db = _dbContext.resources.Where(r => r.ResourceID == 2).FirstOrDefault();
+        //            List<string> columnData = excelDataDictionary[key];
+        //            foreach (var location in columnData)
+        //            {
+        //                var db = _dbContext.resources.Where(r => r.ResourceID == resID).FirstOrDefault();
+        //                db.Location = location;
+        //                //Resources tempRes = new Resources
+        //                //{
+        //                //    //ResourceID = resID,
+        //                //    Location = location
+        //                //};
+        //                //LocationData.Add(tempRes);
+        //                //resourcesToAdd.Add(tempRes);
+        //                resID++;
+        //                //db.SaveChanges();
+        //            }
+
+        //        }
+        //    }
+
+        //    //if (resourcesToAdd != null && resourcesToAdd.Any())
+        //    //{
+        //    //_dbContext.resources.Update(LocationData);
+        //    //_dbContext.resources.UpdateRange(resourcesToAdd);
+        //    _dbContext.SaveChanges();
+        //    //}
+        //}
 
         private void GetResourceSkills(List<Dictionary<string, string>> rowDataList)
         {

@@ -12,6 +12,7 @@ namespace ResourceManagerAPI.Repository
 {
     public class Account : IAccount
     {
+        
         private readonly PGDBContext _dbContext;
         public Account(PGDBContext connection)
         {
@@ -26,6 +27,10 @@ namespace ResourceManagerAPI.Repository
             _dbContext.users.Add(objUser);
             _dbContext.SaveChanges();
             return "{\"message\": \"Record Added Successfully\"}";
+        }
+        public string ResourcePass(Login user)
+        {
+            return Encrypt(user.Password);
         }
         public string DeleteUser(Users user)
         {

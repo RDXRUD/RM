@@ -6,14 +6,11 @@ import { user } from '../_model/user';
 import { userform } from '../_model/userform';
 import { environment } from '../../environments/environment';
 import { SkillData } from '../_model/SkillData';
-   
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
-
   constructor(private http: HttpClient) { }
-  
   getUsers(): Observable<user[]> {
     let url = `${environment.apiUrl}/AllUser`;
     return this.http.get<user[]>(url);

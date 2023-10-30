@@ -49,7 +49,13 @@ namespace ResourceManagerAPI.Migrations
                     b.Property<string>("EmailID")
                         .HasColumnType("text");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("text");
+
                     b.Property<string>("ResourceName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
                         .HasColumnType("text");
 
                     b.HasKey("EmpID");
@@ -82,6 +88,109 @@ namespace ResourceManagerAPI.Migrations
                     b.ToTable("employeetasks");
                 });
 
+            modelBuilder.Entity("ResourceManagerAPI.Models.LocationMaster", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("location")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("location_master");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.NewResourceSkills", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("SkillSetID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("res_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("resource_skill");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.NewSkillGroup", b =>
+                {
+                    b.Property<int>("SkillGroupID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillGroupID"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SkillGroup")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.HasKey("SkillGroupID");
+
+                    b.ToTable("skill_group");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.NewSkillSet", b =>
+                {
+                    b.Property<int>("SkillSetID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillSetID"));
+
+                    b.Property<int>("SkillGroupID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SkillID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("SkillSetID");
+
+                    b.ToTable("skill_set");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.NewSkills", b =>
+                {
+                    b.Property<int>("SkillID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillID"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Skill")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.HasKey("SkillID");
+
+                    b.ToTable("_skill");
+                });
+
             modelBuilder.Entity("ResourceManagerAPI.Models.PlanUploadRecord", b =>
                 {
                     b.Property<int>("UploadRecordId")
@@ -99,6 +208,69 @@ namespace ResourceManagerAPI.Migrations
                     b.HasKey("UploadRecordId");
 
                     b.ToTable("uploadrecord");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.ResourceMaster", b =>
+                {
+                    b.Property<int>("res_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("res_id"));
+
+                    b.Property<int>("location_id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("password")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("res_create_date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("res_email_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("res_last_modified")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("res_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("res_user_id")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("sso_flag")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("res_id");
+
+                    b.ToTable("resource_master");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.ResourceRole", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("resource_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("role_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("resource_role");
                 });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.ResourceSkills", b =>
@@ -131,12 +303,30 @@ namespace ResourceManagerAPI.Migrations
                     b.Property<string>("EmailID")
                         .HasColumnType("text");
 
-                    b.Property<int>("EmpID")
-                        .HasColumnType("integer");
-
                     b.HasKey("ResourceID");
 
                     b.ToTable("resources");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.RoleMaster", b =>
+                {
+                    b.Property<int>("role_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("role_id"));
+
+                    b.Property<string>("role_description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("role_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("role_id");
+
+                    b.ToTable("role_master");
                 });
 
             modelBuilder.Entity("ResourceManagerAPI.Models.SharePointUploadRecord", b =>
@@ -166,7 +356,13 @@ namespace ResourceManagerAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillGroupID"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("SkillGroup")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
                         .HasColumnType("text");
 
                     b.HasKey("SkillGroupID");
@@ -201,7 +397,13 @@ namespace ResourceManagerAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillID"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("Skill")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
                         .HasColumnType("text");
 
                     b.HasKey("SkillID");

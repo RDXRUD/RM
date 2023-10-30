@@ -6,4 +6,4 @@ export interface skillgroupdata{
      skill:string;
      edit:string;
      delete:string;
-    }
+}

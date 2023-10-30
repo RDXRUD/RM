@@ -45,17 +45,16 @@
           <mat-datepicker #three></mat-datepicker>
         </mat-form-field>
         <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
             value="OnSubmit">Submit</button>
         </div>
         <div fxFlex="20" fxFlexFill>
-          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">
+          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">
             Reset</button>
         </div>
       </div>
     </form>
   </mat-expansion-panel>
-
   <div class="mat-elevation-z8 list-table">
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort>
@@ -90,7 +89,6 @@
               (click)="getTasksByEmpID(element.empID)">View Tasks</button>
           </td>
         </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>

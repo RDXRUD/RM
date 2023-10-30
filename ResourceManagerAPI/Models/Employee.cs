@@ -8,5 +8,7 @@ namespace ResourceManagerAPI.Models
         public int EmpID { get; set; }
         public string? ResourceName { get; set; }
         public string? EmailID { get; set; }
+        public string? Location { get; set; }
+        public string? Status { get; set; } = "Active"; // Default value is "Active"
     }
 }

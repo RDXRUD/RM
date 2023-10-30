@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Update Profile </h1>
+<form [formGroup]="OnUpdate">
+    <div mat-dialog-content>
+        <mat-form-field>
+            <mat-label>Resource Name</mat-label>
+            <input type="text"  formControlName="res_name" matInput>
+        </mat-form-field>
+        <br>
+        <mat-form-field >
+            <mat-label>Email</mat-label>
+            <input type="email"  formControlName="res_email_id" matInput>
+        </mat-form-field>
+        <br>
+        <mat-form-field >
+            <mat-label>Location</mat-label>
+            <mat-select formControlName="location">
+                <mat-option *ngFor="let loc of locations" [value]="loc.location">{{loc.location}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br>
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" mat-dialog-close>Cancel</button>
+            <button mat-raised-button color="primary" (click)="UpdateUser(this.Data.details[0].res_id)">Save</button>
+        </div>
+    </div>
+</form>

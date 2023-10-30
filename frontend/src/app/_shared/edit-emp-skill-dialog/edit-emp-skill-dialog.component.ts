@@ -1,11 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { SkillsService } from '../../_services/skills.service';
 import { skillset } from '../../_model/skillset';
 import { SkillsetService } from '../../_services/skillset.service';
 import { CoreService } from 'src/app/_services/core.service';
-
+import { HttpErrorResponse } from '@angular/common/http';
+import { SkillGroups } from 'src/app/_model/SkillGroups';
 @Component({
   selector: 'app-edit-emp-skill-dialog',
   templateUrl: './edit-emp-skill-dialog.component.html',
@@ -18,8 +19,9 @@ export class EditEmpSkillDialogComponent {
   formdatas!: skillset;
   apiData!: any[];
   apiDataa!: any[];
-
+  DataofSkill: any;
   constructor(
+    public dialogRef: MatDialogRef<EditEmpSkillDialogComponent>,
     private skillsService: SkillsService,
     private skillsetService: SkillsetService,
     private frmbuilder: FormBuilder,
@@ -31,7 +33,6 @@ export class EditEmpSkillDialogComponent {
       skillGroupID: new FormControl(''),
     });
   }
-
   ngOnInit() {
     this.skillgroupskill.setValue({
       skillGroupID: this.dataOfskills.element.skillGroupID,
@@ -41,12 +42,18 @@ export class EditEmpSkillDialogComponent {
       this.apiData = data;
     });
     this.getSkillSets();
- 
   }
   getSkillSets(){
-  this.skillsetService.getSkillSets().subscribe((datas) => {
+  this.skillsetService.getActiveSkillSets().subscribe((datas) => {
+    console.log("set:",datas)
+    console.log( this.dataOfskills.element.skillGroupID)
     this.apiDataa = datas;
+    this.filterSkillsBySkillGroup();
   });
+}
+filterSkillsBySkillGroup() {
+  const selectedSkillGroupID = this.skillgroupskill.get('skillGroupID')?.value;
+  this.apiDataa = this.apiDataa.filter(item => item.skillGroupID === selectedSkillGroupID);
 }
 
   UpdateSkills(resourceSkillID: number, resourceID: number) {
@@ -55,10 +62,15 @@ export class EditEmpSkillDialogComponent {
       resourceSkillID: resourceSkillID,
       resourceID: resourceID,
     };
+    console.log(this.formdatas)
     this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {  
       this._coreService.openSnackBar('Record Updated Successfully', 'done')
       this.skillgroupskill.reset();
-      this.ngOnInit();
+      this.dialogRef.close('success');
+    }, (error: HttpErrorResponse) => {
+      if (error.status === 502) {
+        this._coreService.openSnackBar("Record is already present!");
+      }
     });
   }
 }

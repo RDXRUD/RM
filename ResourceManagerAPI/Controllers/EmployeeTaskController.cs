@@ -67,7 +67,7 @@ namespace ResourceManagerAPI.Controllers
 									Finish = e.Finish
 								}
 								 ).ToList();
-
+                //Console.WriteLine(employee);
 				if (employee == null)
 				{
 					return NotFound();
@@ -103,7 +103,6 @@ namespace ResourceManagerAPI.Controllers
             try
             {
                 EmployeeTasks empTask = new EmployeeTasks();
-                //empTask.EmpID = employee.EmpID;
                 empTask.TaskName = employee.TaskName;
                 empTask.Start = employee.Start;
                 empTask.Finish = employee.Finish;
@@ -111,7 +110,6 @@ namespace ResourceManagerAPI.Controllers
                 _dbContext.SaveChanges();
 
                 Employee employees = new Employee();
-                //employees.EmpID = employee.EmpID;
                 employees.ResourceName = employee.ResourceName;
                 employees.EmailID = employee.EmailID;
                 _dbContext.employees.Add(employees);

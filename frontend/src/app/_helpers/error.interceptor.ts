@@ -8,11 +8,9 @@ import {
 import { Observable, throwError  } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokenService } from '../_services/token.service';
-
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor{
     constructor(private tokenService: TokenService) {}
-
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>>{
         return next.handle(request).pipe(catchError(err => {
             if (err.status === 401) {

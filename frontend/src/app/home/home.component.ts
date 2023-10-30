@@ -14,7 +14,6 @@ import { EmployeeService } from '../_services/employee.service';
 import { ViewTasknameDialogComponent } from '../_shared/view-taskname-dialog/view-taskname-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { tasks } from '../_model/tasks';
-
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -26,7 +25,6 @@ export const MY_FORMATS = {
     monthYearA11yLabel: 'MMM YYYY',
   },
 };
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -53,7 +51,6 @@ export class HomeComponent implements OnInit {
   displayedColumns: string[] = ['empID', 'resourceName', 'emailID', 'Viewtasks'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
-
   constructor(
     private users_Service: UsersService,
     private frmbuilder: FormBuilder,
@@ -71,7 +68,6 @@ export class HomeComponent implements OnInit {
       availableFrom: new FormControl()
     });
   }
-
   ngOnInit() {
     this.getDataOfEmployee();
     this.skillsetService.getSkills().subscribe(dataOfSkill => {
@@ -79,7 +75,6 @@ export class HomeComponent implements OnInit {
       this.skillDataSorted = this.skillData.sort((a, b) => a.skill.localeCompare(b.skill));
     });
   }
-
   getDataOfEmployee() {
     this.employeeService.getDataOfEmployee().subscribe(data => {
       this.dataOfEmp = data;
@@ -87,7 +82,6 @@ export class HomeComponent implements OnInit {
       this.dataSource.sort = this.sort;
     });
   }
-
   applySortToDataSource() {
     if (this.dataSource) {
       this.dataSource.sort = this.sort;
@@ -102,13 +96,11 @@ export class HomeComponent implements OnInit {
       this.applySortToDataSource();
     });
   }
-
   OnReset() {
     this.filteringForm.reset();
     this.getDataOfEmployee();
     this.applySortToDataSource();
   }
-
   getTasksByEmpID(empID: number) {
     this.employeeService.getTasksByEmpID(empID).subscribe(tasks => {
       console.log(tasks);

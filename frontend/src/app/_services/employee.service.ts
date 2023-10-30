@@ -7,11 +7,13 @@ import { addEmployee } from '../_model/addEmployee';
 import { employeeFilters } from '../_model/employeefilters';
 import { tasks } from '../_model/tasks';
 import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
+  editResource(resdata: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private http: HttpClient ) { }
   getEmployees(): Observable<resourceSkill[]> {
     let url = `${environment.apiUrl}/Employees/GetEmployees`;
@@ -42,4 +44,3 @@ export class EmployeeService {
     return this.http.post<tasks[]>(url, { EmpID: empID });
   }
 }
-

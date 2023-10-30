@@ -54,27 +54,27 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        [HttpPost, Authorize]
-        [Route("SkillByEmail")]
-        public List<ResourceSkillManager> GetSkillByEmail(Resources resource)
+        [HttpGet, Authorize]
+        [Route("SkillByEmail/{email}")]
+        public List<ResourceSkillManager> GetSkillByEmail(string email)
         {
-                var resSkills = from r in _dbContext.resources
-                             join rs in _dbContext.resourceskills
-                             on r.ResourceID equals rs.ResourceID into resSkils
+                var resSkills = from r in _dbContext.resource_master
+                             join rs in _dbContext.resource_skill
+                             on r.res_id equals rs.res_id into resSkils
                              from subres in resSkils.DefaultIfEmpty()
                              select new 
                              {
-                                ResourceID = r.ResourceID,
-                                EmailID = r.EmailID,
-                                ResourceSkillID = (subres == null) ? - 1 : subres.ResourceSkillID,
+                                ResourceID = r.res_id,
+                                EmailID = r.res_email_id,
+                                ResourceSkillID = (subres == null) ? - 1 : subres.ID,
                                 SkillSetID = (subres == null) ? - 1 : subres.SkillSetID
                              };
                 var skills = from x in resSkills
-                             join ss in _dbContext.skillset
+                             join ss in _dbContext.skill_set
                              on x.SkillSetID equals ss.SkillSetID
-                             join sg in _dbContext.skillgroup
+                             join sg in _dbContext.skill_group
                              on ss.SkillGroupID equals sg.SkillGroupID
-                             join s in _dbContext.skill
+                             join s in _dbContext._skill
                              on ss.SkillID equals s.SkillID
                              into detail
                              from m in detail.DefaultIfEmpty()
@@ -90,39 +90,10 @@ namespace ResourceManagerAPI.Controllers
                                  Skill = m.Skill
                              };
 
-                var employeeskills = skills.Where(s =>
-                !String.IsNullOrEmpty(resource.EmailID) && s.EmailID.ToUpper() == resource.EmailID.ToUpper()
+                var resourceskills = skills.Where(s =>
+                !String.IsNullOrEmpty(email) && s.EmailID.ToUpper() == email.ToUpper()
                 ).ToList();
-                return employeeskills;
-        }
-
-		[NonAction]
-        [HttpGet, Authorize]
-        public List<ResourceSkillManager> GetEmployeesSkill()
-        {
-
-            var allskill = from r in _dbContext.resources
-                           join rs in _dbContext.resourceskills
-                           on r.ResourceID equals rs.ResourceID
-                           join ss in _dbContext.skillset
-                           on rs.SkillSetID equals ss.SkillSetID
-                           join sg in _dbContext.skillgroup
-                           on ss.SkillGroupID equals sg.SkillGroupID
-                           join s in _dbContext.skill
-                           on ss.SkillID equals s.SkillID
-                           into detail
-                           from m in detail.DefaultIfEmpty()
-                           select new ResourceSkillManager
-                           {
-                               ResourceID = r.ResourceID,
-                               SkillID = ss.SkillID,
-                               EmailID = r.EmailID,
-                               SkillGroup = sg.SkillGroup,
-                               Skill = m.Skill
-                           };
-            var employee = allskill.Where(e => _dbContext.employees.Any(s => (s.EmailID == e.EmailID))
-            ).ToList();
-            return employee;
+                return resourceskills;
         }
 
         [HttpPost, Authorize]
@@ -168,21 +139,21 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var resource = await _dbContext.resources.FirstOrDefaultAsync(r => r.EmailID == request.EmailID);
+                var resource = await _dbContext.resource_master.FirstOrDefaultAsync(r => r.res_email_id == request.EmailID);
 
                 if (resource == null)
                 {
                     return NotFound($"Resource with EmailID {request.EmailID} not found.");
                 }
 
-                var skill = await _dbContext.skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillID);
+                var skill = await _dbContext._skill.FirstOrDefaultAsync(s => s.SkillID == request.SkillID);
 
                 if (skill == null)
                 {
                     return NotFound($"Skill with ID {request.SkillID} not found.");
                 }
 
-                var skillGroup = await _dbContext.skillgroup.FirstOrDefaultAsync(sg => sg.SkillGroupID == request.SkillGroupID);
+                var skillGroup = await _dbContext.skill_group.FirstOrDefaultAsync(sg => sg.SkillGroupID == request.SkillGroupID);
 
                 if (skillGroup == null)
                 {
@@ -191,14 +162,21 @@ namespace ResourceManagerAPI.Controllers
 
                 if (skill != null && skillGroup != null)
                 {
-                    var result = await _dbContext.skillset.FirstOrDefaultAsync(x => x.SkillID == request.SkillID && x.SkillGroupID == request.SkillGroupID);
-                    var resourceSkill = new ResourceSkills
+                    var result = await _dbContext.skill_set.FirstOrDefaultAsync(x => x.SkillID == request.SkillID && x.SkillGroupID == request.SkillGroupID);
+                    var existing = await _dbContext.resource_skill.FirstOrDefaultAsync(rs =>
+                                    rs.res_id == resource.res_id && rs.SkillSetID == result.SkillSetID);
+
+                    if (existing != null)
                     {
-                        ResourceID = resource.ResourceID,
+                        return BadRequest("Resource already has the requested skill group and skill.");
+                    }
+                    var resourceSkill = new NewResourceSkills
+                    {
+                        res_id = resource.res_id,
                         SkillSetID = result.SkillSetID
                     };
 
-                    _dbContext.resourceskills.Add(resourceSkill);
+                    _dbContext.resource_skill.Add(resourceSkill);
                     await _dbContext.SaveChangesAsync();
                 }
                     return Ok("{\"message\": \"Record Added Successfully\"}");
@@ -217,16 +195,33 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var existingSkillSet = await _dbContext.skillset.FindAsync(skill.SkillSetID);
+                var existingSkillSet = await _dbContext.skill_set.FindAsync(skill.SkillSetID);
                 if (existingSkillSet == null)
                 {
                     return NotFound();
                 }
                 existingSkillSet.SkillGroupID = skill.SkillGroupID;
+                var existing = (from rs in _dbContext.resource_skill.Where(r => r.res_id == skill.ResourceID)
+                                join ss in _dbContext.skill_set
+                                on rs.SkillSetID equals ss.SkillSetID
+                                into detail
+                                from m in detail.DefaultIfEmpty()
+                                select new SkillSetManager
+                                {
+                                    SkillGroupID = m.SkillGroupID,
+                                    SkillID = m.SkillID,
+                                }
+
+                                ).ToList().FirstOrDefault(x => x.SkillGroupID == existingSkillSet.SkillGroupID && x.SkillID == existingSkillSet.SkillID);
+                if (existing != null)
+                {
+                    return StatusCode(502, "Record is already present");
+  
+                }
                 _dbContext.Entry(existingSkillSet).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
 
-                var existingResourceSkill = await _dbContext.resourceskills.FindAsync(skill.ResourceSkillID);
+                var existingResourceSkill = await _dbContext.resource_skill.FindAsync(skill.ResourceSkillID);
                 if (existingResourceSkill == null)
                 {
                     return NotFound();
@@ -243,17 +238,17 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpDelete, Authorize]
-        [Route("DeleteSkill")]
-        public async Task<IActionResult> DeleteSkill([FromBody]ResourceSkillManager skill)
+        [Route("DeleteResourceSkill/{id}")]
+        public async Task<IActionResult> DeleteResourceSkill(int id)
         {
             try
             {
-                var skillToDelete = await _dbContext.skill.FindAsync(skill.SkillID);
-                if (skillToDelete == null)
+                var existing = await _dbContext.resource_skill.FindAsync(id);
+                if (existing == null)
                 {
                     return NotFound();
                 }
-                _dbContext.skill.Remove(skillToDelete);
+                _dbContext.resource_skill.Remove(existing);
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("{\"message\": \"Record Deleted Successfully\"}");

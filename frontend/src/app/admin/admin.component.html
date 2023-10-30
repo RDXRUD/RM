@@ -1,309 +1,604 @@
 <div style="height: 100%;">
   <mat-tab-group style="height: calc(100vh - 64px);">
-    <mat-tab label='Skill Groups'>
-      <div style="height: 100%; overflow-y: auto;">
-        <div style="height: 100%;">       
-          <table mat-table [dataSource]="skillGroups" matSort #matSorted="matSort">
-            <ng-container matColumnDef="skillGroupID">
-              <th mat-header-cell *matHeaderCellDef> ID</th>
-              <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroupID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="skillGroup">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
-              <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroup}} </td>
-            </ng-container>
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef> Action </th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary"
-                  (click)="DeleteSkillGroup(element.skillGroupID)">DELETE</button>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="action">
-              <td mat-footer-cell *matFooterCellDef colspan="3">
-                <div style="margin-top: 10px;">
-                  <form [formGroup]="addSkillgroup" (ngSubmit)="AddSkillGroup()">
-                    <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
-                      <mat-form-field fxFlex="80">
-                        <mat-label>SkillGroup</mat-label>
-                        <input formControlName="skillGroup" matInput>
-                      </mat-form-field>
-                      <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                          value="AddSkillGroup">Add</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsto; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsto;"></tr>
-            <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
-          </table>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="Skills">
+    <mat-tab label="Resource ">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort #sort="matSort">
-            <ng-container matColumnDef="skillSetID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-              <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillSetID}} </td>
+          <table mat-table [dataSource]="dataOfRes" matSort #sortRes="matSort" matSortDirection="asc">
+            <ng-container matColumnDef="res_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource ID </th>
+              <td mat-cell *matCellDef="let res"> {{res.res_id}} </td>
             </ng-container>
-            <ng-container matColumnDef="skillGroup">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
-              <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillGroup}} </td>
+            <ng-container matColumnDef="res_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource Name</th>
+              <td mat-cell *matCellDef="let  res"> {{ res.res_name}} </td>
             </ng-container>
-            <ng-container matColumnDef="skill">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill </th>
-              <td mat-cell *matCellDef="let skillSet"> {{skillSet.skill}} </td>
+            <ng-container matColumnDef="res_email_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.res_email_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.location}} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_user_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> User ID </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.res_user_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_create_date">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Create Date </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.res_create_date| date: 'dd MMM yyyy' }} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_last_modified">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Modified Date </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.res_last_modified| date: 'dd MMM yyyy' }} </td>
+            </ng-container>
+            <ng-container matColumnDef="role_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Role Assigned </th>
+              <td mat-cell *matCellDef="let  res"> {{ res.role_name}} </td>
             </ng-container>
             <ng-container matColumnDef="edit">
-              <th mat-header-cell *matHeaderCellDef> Action - Edit </th>
+              <th mat-header-cell *matHeaderCellDef> Action-Edit </th>
               <td mat-cell *matCellDef="let element">
                 <mat-dialog-actions>
-                  <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button>
+                  <button mat-raised-button color="primary" (click)="EditResource(element)"> Edit </button>
                 </mat-dialog-actions>
               </td>
             </ng-container>
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef> Action - Delete </th>
+            <ng-container matColumnDef="disable">
+              <th mat-header-cell *matHeaderCellDef> Action-Disable </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary" (click)="DeleteSkillset(element.skillSetID)">DELETE</button>
+                <mat-dialog-actions>
+                  <button mat-raised-button color="secondary" (click)="EditStatus(element.res_id)">Disable</button>
+                </mat-dialog-actions>
               </td>
             </ng-container>
-            <ng-container matColumnDef="action">
-              <td mat-footer-cell *matFooterCellDef colspan="5">
+            <ng-container class="footer" matColumnDef="action">
+              <td mat-footer-cell *matFooterCellDef colspan="10">
                 <div style="margin-top: 10px;">
-                  <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
+                  <form [formGroup]="addResource" (ngSubmit)="AddResource()">
                     <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
                       <mat-form-field fxFlex="45">
-                        <mat-label>SKILL GROUP</mat-label>
-                        <mat-select formControlName="skillGroupID" single>
-                          <mat-option *ngFor="let select of apiData"
-                            [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+                        <mat-label>Resource Name</mat-label>
+                        <input formControlName="res_name" matInput>
+                      </mat-form-field>
+                      <mat-form-field fxFlex="45">
+                        <mat-label>User ID</mat-label>
+                        <input formControlName="res_user_id" matInput>
+                      </mat-form-field>
+                      <mat-form-field fxFlex="45">
+                        <mat-label>Email ID</mat-label>
+                        <input formControlName="res_email_id" matInput>
+                      </mat-form-field>
+                      <mat-form-field fxFlex="45">
+                        <mat-label>Location</mat-label>
+                        <mat-select input formControlName="location">
+                          <mat-option *ngFor="let loc of locations" [value]="loc.location">
+                            {{loc.location}}
+                          </mat-option>
                         </mat-select>
                       </mat-form-field>
-
                       <mat-form-field fxFlex="45">
-                        <mat-label>SKILL</mat-label>
-                        <input formControlName="skill" matInput>
+                        <mat-label>Role</mat-label>
+                        <mat-select formControlName="role_name">
+                          <mat-option *ngFor="let rol of roles" [value]="rol.role_name">
+                            {{rol.role_name}}
+                          </mat-option>
+                        </mat-select>
                       </mat-form-field>
-
-                      <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                        <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                          value="AddSkill">Add</button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="dsp; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: dsp;"></tr>
-            <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
-          </table>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="Resource Skills">
-      <div style="height: 100%; overflow-y: auto;">
-        <div style="height: 100%;">
-          <table mat-table [dataSource]="dataOfSkills" matSort #sortedData="matSort" matSortDirection="asc">
-            <ng-container matColumnDef="empID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee ID </th>
-              <td mat-cell *matCellDef="let resSkill"> {{resSkill.empID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="resourceName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
-              <td mat-cell *matCellDef="let resSkill"> {{resSkill.resourceName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="emailID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
-              <td mat-cell *matCellDef="let resSkill"> {{resSkill.emailID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="details">
-              <th mat-header-cell *matHeaderCellDef> Action </th>
-              <td mat-cell *matCellDef="let element">
-                <mat-dialog-actions>
-                  <button mat-raised-button color="primary" (click)="getResourceSkills(element.emailID)">Get
-                    Details</button>
-                </mat-dialog-actions>
-              </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="Upload Resource Plan">
-      <div class="container">
-        <div class="box">
-          <h2>Upload File Here</h2>
-          <form [formGroup]="forms" (ngSubmit)="OnFile()">
-            <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
-              <mat-form-field fxFlex="10">
-                <ngx-mat-file-input formControlName="planFile" matInput>
-                </ngx-mat-file-input>
-                <mat-icon></mat-icon>
-              </mat-form-field>
-              <div class="button-container">
-                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                  value="OnFile">Upload</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="scrollable-table">
-        <div class="table-container">
-          <table mat-table [dataSource]="dataOfResources" matSort #sorted="matSort" matSortDirection="asc">
-            <ng-container matColumnDef="empID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee ID</th>
-              <td mat-cell *matCellDef="let user"> {{user.empID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="resourceName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
-              <td mat-cell *matCellDef="let user"> {{user.resourceName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="emailID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
-              <td mat-cell *matCellDef="let user"> {{user.emailID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="taskName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Task Name</th>
-              <td mat-cell *matCellDef="let user"> {{user.taskName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="start">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
-              <td mat-cell *matCellDef="let user"> {{user.start |date:'dd MMM yyyy'}} </td>
-            </ng-container>
-            <ng-container matColumnDef="finish">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
-              <td mat-cell *matCellDef="let user"> {{user.finish |date:'dd MMM yyyy'}} </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsOfemp; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsOfemp;"></tr>
-          </table>
-        </div>
-      </div>
-    </mat-tab>
-
-    <mat-tab label="Upload Resource Skill">
-      <div class="container">
-        <div class="box">
-          <h2>Upload Skills File Here</h2>
-          <form [formGroup]="formsOfSkills" (ngSubmit)="OnSkillFile()">
-            <div fxLayout="column wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="30px grid">
-              <mat-form-field fxFlex="10">
-                <ngx-mat-file-input formControlName="planFile" matInput>
-                </ngx-mat-file-input>
-                <mat-icon></mat-icon>
-              </mat-form-field>
-              <div class="button-container">
-                <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                  value="OnFile">Upload</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="table-container">
-        <h2>Mapping Table</h2>
-        <table mat-table [dataSource]="dataOfSkillList" matSort #sortedSkillData="matSort" matSortDirection="asc">
-
-          <ng-container matColumnDef="columnLists">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Column Lists</th>
-            <td mat-cell *matCellDef="let user" class="column-cell">
-              {{ user.columnLists }}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="selectors">
-            <th mat-header-cell *matHeaderCellDef>Selectors</th>
-            <td mat-cell *matCellDef="let user" class="column-cell">
-              <mat-form-field>
-                <mat-label>Select</mat-label>
-                <mat-select [(value)]="user.selectors">
-
-                  <mat-option value="not imported">Not Imported</mat-option>
-                  <mat-option value="skill Group">Skill Group</mat-option>
-                  <mat-option value="Email">Email</mat-option>
-                </mat-select>
-                
-              </mat-form-field>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumnsOfLists; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumnsOfLists;"></tr>
-        </table>
-      </div>
-      <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="submitMappingData(dataOfSkillsFile)">Submit</button>
-    </mat-tab>
-
-    <mat-tab label="Users">
-      <div style="height: 100%; overflow-y: auto;">
-        <div style="height: 100%;">
-          <table mat-table [dataSource]="user" class="UserTable">
-            <ng-container matColumnDef="userID">
-              <th mat-header-cell *matHeaderCellDef>USER ID </th>
-              <td mat-cell *matCellDef="let user"> {{user.userID}} </td>
-            </ng-container>
-            <ng-container matColumnDef="userName">
-              <th mat-header-cell *matHeaderCellDef> User Name</th>
-              <td mat-cell *matCellDef="let user"> {{user.userName}} </td>
-            </ng-container>
-            <ng-container matColumnDef="fullName">
-              <th mat-header-cell *matHeaderCellDef> Full Name </th>
-              <td mat-cell *matCellDef="let user"> {{user.fullName}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="delete">
-              <th mat-header-cell *matHeaderCellDef> Action </th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary" (click)="deleteUser(element.userID)">DELETE</button>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="action">
-              <td mat-footer-cell *matFooterCellDef colspan="3">
-                <div style="margin-top: 10px;">
-                  <form [formGroup]="userForm" (ngSubmit)="OnUser()">
-                    <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
-
-                      <mat-form-field fxFlex="30">
-                        <mat-label>UserName</mat-label>
-                        <input type="text" formControlName="userName" matInput>
-                      </mat-form-field>
-
-                      <mat-form-field fxFlex="30">
-                        <mat-label>FullName</mat-label>
-                        <input type="text" formControlName="fullName" matInput>
-                      </mat-form-field>
-                      <mat-form-field fxFlex="30">
+                      <mat-form-field fxFlex="45">
                         <mat-label>Password</mat-label>
-                        <input type="password" formControlName="password" matInput>
-
+                        <input type="password" formControlName="password" [type]="hide ? 'password' : 'text'" matInput>
+                        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' :'visibility_off'}}</mat-icon>
                       </mat-form-field>
                       <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
                         <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                          value="OnUser">Add</button>
+                          value="addResource">Add</button>
                       </div>
-
                     </div>
                   </form>
                 </div>
               </td>
             </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumnss; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedResourceColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedResourceColumns;"></tr>
             <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
           </table>
         </div>
       </div>
+    </mat-tab>
+    <mat-tab label="SKILL CONFIG ">
+      <mat-tab-group style="height: calc(92vh - 64px);">
+        <mat-tab label='Skill Groups'>
+          <div style="height: 100%; overflow-y: auto;">
+            <div style="height: 100%;">
+              <table mat-table [dataSource]="skillGroups" matSort #matSorted="matSort">
+                <ng-container matColumnDef="skillGroupID">
+                  <th mat-header-cell *matHeaderCellDef> ID</th>
+                  <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroupID}} </td>
+                </ng-container>
+                <ng-container matColumnDef="skillGroup">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
+                  <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.skillGroup}} </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Skill Group Description</th>
+                  <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.description}} </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                  <td mat-cell *matCellDef="let skillGrp"> {{skillGrp.status}} </td>
+                </ng-container>
+                <ng-container matColumnDef="action_dis">
+                  <th mat-header-cell *matHeaderCellDef>Action - Enable / Disable</th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-raised-button align="start" color="basic"
+                      (click)="updateSkillGroupStatus(element.skillGroupID)" cdkFocusInitial>{{element.status ===
+                      'ACTIVE' ?
+                      'Disable' : 'Enable' }}</button>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <td mat-footer-cell *matFooterCellDef colspan="5">
+                    <div style="margin-top: 10px;">
+                      <form [formGroup]="addSkillgroup" (ngSubmit)="AddSkillGroup()">
+                        <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
+                          <mat-form-field fxFlex="40">
+                            <mat-label>Skill Group</mat-label>
+                            <input formControlName="skillGroup" matInput>
+                          </mat-form-field>
+                          <mat-form-field fxFlex="40">
+                            <mat-label>Skill Group Description</mat-label>
+                            <input formControlName="description" matInput>
+                          </mat-form-field>
+                          <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                            <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                              value="AddSkillGroup">Add</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsto; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsto;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Skills">
+          <div style="height: 100%; overflow-y: auto;">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>Filters</mat-panel-title>
+              </mat-expansion-panel-header>
+              <form [formGroup]="filterSkills" (ngSubmit)="OnSubmitSkill()">
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+                  <mat-form-field fxFlex="20">
+                    <mat-label>Skill Group</mat-label>
+                    <mat-select formControlName="skillGroup" multiple>
+                      <mat-option *ngFor="let skillSet of apiData" [value]="skillSet.skillGroup">{{skillSet.skillGroup}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="20">
+                    <mat-label>Skill</mat-label>
+                    <mat-select formControlName="skill" multiple>
+                      <mat-option *ngFor="let skillSet of skillData" [value]="skillSet.skill">{{skillSet.skill}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="20">
+                    <mat-label>Skill Description</mat-label>
+                    <input type="text" formControlName="skillDescription" matInput>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="20">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="skillStatus" single>
+                      <mat-option *ngFor="let status of Status" [value]="status">{{status}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                      value="OnSubmit">Submit</button>
+                  </div>
+                  <div fxFlex="10" fxFlexFill>
+                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                      (click)="OnResetSkill()">Reset</button>
+                  </div>
+                </div>
+              </form>
+            </mat-expansion-panel>
+            <div style="height: 100%;">
+              <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort #sort="matSort">
+                <ng-container matColumnDef="skillSetID">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                  <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillSetID}} </td>
+                </ng-container>
+                <ng-container matColumnDef="skillGroup">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Group</th>
+                  <td mat-cell *matCellDef="let skillSet"> {{skillSet.skillGroup}} </td>
+                </ng-container>
+                <ng-container matColumnDef="skill">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill </th>
+                  <td mat-cell *matCellDef="let skillSet"> {{skillSet.skill}} </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Description</th>
+                  <td mat-cell *matCellDef="let skillSet"> {{skillSet.description}} </td>
+                </ng-container>
+                <ng-container matColumnDef="edit">
+                  <th mat-header-cell *matHeaderCellDef> Action - Edit </th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-dialog-actions>
+                      <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button>
+                    </mat-dialog-actions>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="disable">
+                  <th mat-header-cell *matHeaderCellDef> Action - Enable / Disable </th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-dialog-actions>
+                      <button mat-raised-button align="start" color="basic"
+                        (click)="EditSkillStatus(element.skillSetID)">{{
+                        element.status === 'ACTIVE' ? 'Disable' : 'Enable' }}</button>
+                    </mat-dialog-actions>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef> Status</th>
+                  <td mat-cell *matCellDef="let skillSet">{{skillSet.status}}
+                  </td>
+                </ng-container>
+                <ng-container class="footer" matColumnDef="action">
+                  <td mat-footer-cell *matFooterCellDef colspan="7">
+                    <div style="margin-top: 10px;">
+                      <form [formGroup]="addskill" (ngSubmit)="AddSkill()">
+                        <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
+                          <mat-form-field fxFlex="45">
+                            <mat-label>Skill Group</mat-label>
+                            <mat-select formControlName="skillGroupID" single>
+                              <mat-option [matTooltip]="select.description" matTooltipPosition="above"
+                                *ngFor="let select of apiData" [value]="select.skillGroupID">{{select.skillGroup}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field fxFlex="45">
+                            <mat-label>Skill</mat-label>
+                            <input formControlName="skill" matInput>
+                          </mat-form-field>
+                          <mat-form-field fxFlex="45">
+                            <mat-label>Skill Description</mat-label>
+                            <input formControlName="description" matInput>
+                          </mat-form-field>
+                          <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                            <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                              value="AddSkill">Add</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="dsp; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: dsp;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Resource Skills">
+          <div style="height: 100%; overflow-y: auto;">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>Filters</mat-panel-title>
+              </mat-expansion-panel-header>
+              <form [formGroup]="filterResource" (ngSubmit)="OnSubmit()">
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+                  <mat-form-field fxFlex="30">
+                    <mat-label>Resource Name</mat-label>
+                    <input formControlName="res_name" matInput>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="30">
+                    <mat-label>Email ID</mat-label>
+                    <input formControlName="res_email_id" matInput t>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="20">
+                    <mat-label>Skill Count</mat-label>
+                    <input type="text" formControlName="skill_count" matInput>
+                  </mat-form-field>
+                  <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                      value="OnSubmit">Submit</button>
+                  </div>
+                  <div fxFlex="10" fxFlexFill>
+                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                      (click)="OnReset()">
+                      Reset</button>
+                  </div>
+                </div>
+              </form>
+            </mat-expansion-panel>
+            <div style="height: 100%;">
+              <table mat-table [dataSource]="dataOfResskill" matSort #rescoskill="matSort" matSortDirection="asc">
+                `
+                <ng-container matColumnDef="res_id">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource ID </th>
+                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_id}} </td>
+                </ng-container>
+                <ng-container matColumnDef="res_name">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="res_email_id">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
+                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_email_id}} </td>
+                </ng-container>
+                <ng-container matColumnDef="skill_count">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Count </th>
+                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.skill_count}} </td>
+                </ng-container>
+                <ng-container matColumnDef="details">
+                  <th mat-header-cell *matHeaderCellDef> Action </th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-dialog-actions>
+                      <button mat-raised-button color="primary" (click)="getResourceSkills(element.res_email_id)">Get
+                        Details</button>
+                    </mat-dialog-actions>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-tab>
+    <mat-tab label="Others ">
+      <mat-tab-group style="height: calc(92vh - 64px);">
+        <mat-tab label="Client ">
+          <div style="height: 100%; overflow-y: auto;">
+
+            <table mat-table [dataSource]="dataOfClient" matSort #sortedClientData="matSort" matSortDirection="asc">
+              <ng-container matColumnDef="client_id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client ID </th>
+                <td mat-cell *matCellDef="let cli"> {{cli.client_id}} </td>
+              </ng-container>
+              <ng-container matColumnDef="client_name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Client Name</th>
+                <td mat-cell *matCellDef="let  cli"> {{ cli.client_name}} </td>
+              </ng-container>
+              <ng-container matColumnDef="partner_incharge">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Partner In Charge </th>
+                <td mat-cell *matCellDef="let  cli"> {{ cli.partner_incharge}} </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                <td mat-cell *matCellDef="let  cli"> {{ cli.status}} </td>
+              </ng-container>
+              <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef> Action-Edit </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-dialog-actions>
+                    <button mat-raised-button color="primary" (click)="UpdateClient(element)"> Edit </button>
+                  </mat-dialog-actions>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="action_dis">
+                <th mat-header-cell *matHeaderCellDef>Action - Enable / Disable</th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-raised-button align="start" color="basic"(click)="UpdateClientStatus(element.client_id)" cdkFocusInitial
+                  >{{element.status === 'ACTIVE' ?
+                    'Disable' : 'Enable' }}</button>
+                </td>
+              </ng-container>
+              <ng-container class="footer" matColumnDef="action">
+                <td mat-footer-cell *matFooterCellDef colspan="6">
+                  <div style="margin-top: 10px;">
+                    <form [formGroup]="addClient" (ngSubmit)="AddClient()">
+                      <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
+                        <mat-form-field fxFlex="45">
+                          <mat-label>Client Name</mat-label>
+                          <input formControlName="client_name" matInput>
+                        </mat-form-field>
+                        <mat-form-field fxFlex="45">
+                          <mat-label>Partner In Charge</mat-label>
+                          <input formControlName="partner_incharge" matInput>
+                        </mat-form-field>
+                        <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                          <button fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                            value="addClient">Add</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedClientColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedClientColumns;"></tr>
+              <tr mat-footer-row *matFooterRowDef="['action']; sticky: true" class="action-footer"></tr>
+            </table>
+          </div>
+        </mat-tab>
+        <mat-tab label="Project Allocation">
+          <div style="height: 100%; overflow-y: auto;">
+            <table mat-table class="tbl" [dataSource]="dataOfClient" multiTemplateDataRows matSort #sortedClientData="matSort"
+              matSortDirection="asc">
+              <ng-container matColumnDef="client_id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Client ID </th>
+                <td mat-cell *matCellDef="let element"> {{element.client_id}} </td>
+              </ng-container>
+              <ng-container matColumnDef="client_name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Name</th>
+                <td mat-cell *matCellDef="let element"> {{element.client_name}} </td>
+              </ng-container>
+              <ng-container matColumnDef="partner_incharge">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Partner In Charge </th>
+                <td mat-cell *matCellDef="let element"> {{element.partner_incharge}} </td>
+              </ng-container>
+              <ng-container style="text-align: end;" matColumnDef="expand">
+                <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+                  <mat-dialog-actions>
+                    <button mat-raised-button color="primary" (click)="AddProject(clientExtensionData)"> Add Project
+                    </button>
+                  </mat-dialog-actions>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button aria-label="expand row">
+                    <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                    <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedClientExtensionColumns.length + 2">
+                  <!-- expanded content here -->
+                  <div class="example-element-detail"
+                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <!-- First Level of Nesting -->
+                    <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+                      <table mat-table #innerTables1="matSort" multiTemplateDataRows [dataSource]="dataOfProjects"
+                        matSort>
+                        <!-- first-level nested table columns -->
+                        <ng-container matColumnDef="project_id">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Project ID </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.project_id}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="project_name">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Project Name </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.project_name}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="res_name">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Project Manager </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.res_name}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="start_date">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.start_date}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="end_date">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.end_date}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="type">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Project Type </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.type}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="status">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Project Status </th>
+                          <td mat-cell *matCellDef="let subElement"> {{subElement.status}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="edit">
+                          <th mat-header-cell *matHeaderCellDef> Action-Edit </th>
+                          <td mat-cell *matCellDef="let element">
+                            <mat-dialog-actions>
+                              <button mat-raised-button color="primary" (click)="UpdateProject(element)"> Edit </button>
+                            </mat-dialog-actions>
+                          </td>
+                        </ng-container>
+                        <ng-container  matColumnDef="inner_expand">
+                          <th mat-header-cell *matHeaderCellDef aria-label="row actions"><mat-dialog-actions>
+                              <button mat-raised-button color="primary" (click)="AddProjectResource(dataOfProjects)"> Add Resource
+                              </button>
+                            </mat-dialog-actions></th>
+                          <td mat-cell *matCellDef="let subElement">
+                            <button mat-icon-button aria-label="expand row">
+                              <mat-icon *ngIf="subExpandedElement !== subElement">keyboard_arrow_down</mat-icon>
+                              <mat-icon *ngIf="subExpandedElement === subElement">keyboard_arrow_up</mat-icon>
+                            </button>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="expandedDetail1">
+                          <td mat-cell *matCellDef="let subElement"
+                            [attr.colspan]="displayedProjectExpansionColumns.length + 2">
+                            <!-- second-level expanded content here -->
+                            <div class="example-element-detail"
+                              [@detailExpand]="subElement == subExpandedElement ? 'expanded' : 'collapsed'">
+                              <!-- Second Level of Nesting -->
+                              <div class="innerin-table mat-elevation-z8" *ngIf="subExpandedElement">
+                                <table mat-table #innerTables2="matSort" [dataSource]="allocatedResources" matSort>
+                                  <!-- second-level nested table columns -->
+                                  <ng-container matColumnDef="res_name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource Name </th>
+                                    <td mat-cell *matCellDef="let subSubElement"> {{subSubElement.res_name}} </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="skill">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+                                    <td mat-cell *matCellDef="let subSubElement"> {{subSubElement.skill}} </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="allocation_perc">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Allocation
+                                    </th>
+                                    <td mat-cell *matCellDef="let subSubElement"> {{subSubElement.allocation_perc*100}}%
+                                    </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="start_date">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date
+                                    </th>
+                                    <td mat-cell *matCellDef="let subSubElement"> {{subSubElement.start_date}}
+                                    </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="end_date">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date
+                                    </th>
+                                    <td mat-cell *matCellDef="let subSubElement"> {{subSubElement.end_date}}
+                                    </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="edit">
+                                    <th mat-header-cell *matHeaderCellDef> Action-Edit </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      <mat-dialog-actions>
+                                        <button mat-raised-button color="primary" (click)="UpdateAllocatedResource(element)"> Edit
+                                        </button>
+                                      </mat-dialog-actions>
+                                    </td>
+                                  </ng-container>
+                                  <ng-container matColumnDef="delete">
+                                    <th mat-header-cell *matHeaderCellDef> Action-Delete </th>
+                                    <td mat-cell *matCellDef="let element">
+                                      <mat-dialog-actions>
+                                        <button mat-raised-button color="secondary" (click)="DeleteResource(element)"> Delete
+                                        </button>
+                                      </mat-dialog-actions>
+                                    </td>
+                                  </ng-container>
+                                  <tr mat-header-row
+                                    *matHeaderRowDef="displayedAllocatedResourceExpansionColumns;sticky: true">
+                                  </tr>
+                                  <tr mat-row class="rounded-row"
+                                    *matRowDef="let subSubElement; columns: displayedAllocatedResourceExpansionColumns">
+                                  </tr>
+                                </table>
+                              </div>
+                            </div>
+                          </td>
+                        </ng-container>
+                        
+                        <!-- the header and row templates for the first-level nested table -->
+                        <tr mat-header-row *matHeaderRowDef="displayedProjectExpansionColumns;sticky: true"></tr>
+                        <tr mat-row [class.exp]="true" class="mat-elevation-z8"
+                          *matRowDef="let subElement; columns: displayedProjectExpansionColumns"
+                          class="example-element-row" [class.example-expanded-row]="subExpandedElement === subElement"
+                          (click)="(subExpandedElement = subExpandedElement === subElement ? null : subElement); $event.stopPropagation();getAllocatedResources(subElement.project_id)">
+                        </tr>
+                        <tr mat-row *matRowDef="let row1; columns: ['expandedDetail1']" class="example-detail-row"></tr>
+                      </table>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedClientExtensionColumns; "></tr>
+              <tr mat-row *matRowDef="let element; columns: displayedClientExtensionColumns;"
+                class="example-element-row" [class.example-expanded-row]="expandedElement === element"
+                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation();getProjects(element.client_id)">
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </mat-tab>
   </mat-tab-group>
 </div>

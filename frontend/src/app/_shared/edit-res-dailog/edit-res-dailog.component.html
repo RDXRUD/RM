@@ -1,0 +1,37 @@
+<div mat-dialog-title>
+    <h1>Edit Resource Details - {{dataofresource.element.res_name}}</h1>
+</div>
+<form [formGroup]="resourceDetails" (ngSubmit)="UpdateResource(dataofresource.element.res_id)">
+    <div mat-dialog-content>
+        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+            <mat-form-field fxFlex="50">
+                <mat-label>Resource Name</mat-label>
+                <input formControlName="res_name" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>Email ID</mat-label>
+                <input formControlName="res_email_id" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="33.33">
+                <mat-label>User ID</mat-label>
+                <input formControlName="res_user_id" matInput>
+            </mat-form-field>
+            <mat-form-field fxFlex="33.33">
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role_name">
+                    <mat-option *ngFor="let rol of roles" [value]="rol.role_name">{{rol.role_name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="33.34">
+                <mat-label>Location</mat-label>
+                <mat-select formControlName="location">
+                    <mat-option *ngFor="let loc of locations" [value]="loc.location">{{loc.location}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div mat-dialog-actions align="end">
+            <button mat-raised-button color="primary">Update</button>
+            <button mat-raised-button color="primary" mat-dialog-close="false">Cancel</button>
+        </div>
+    </div>
+</form>

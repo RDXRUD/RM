@@ -3,4 +3,5 @@ export interface addSkill{
     skillSetID:number;
     skillGroupID:number;
     skill:string;
+    description:string;
 }

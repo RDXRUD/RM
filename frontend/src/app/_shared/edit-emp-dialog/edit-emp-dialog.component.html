@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Edit Resoure Details - {{dataofresource.emailID}} </h1>
+<form [formGroup]="resourceDetails" (ngSubmit)="UpdateRes()">
+  <div mat-dialog-content>
+    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+      <mat-form-field fxFlex="45">
+        <mat-label>FullName</mat-label>
+        <input formControlName="resourceName" matInput>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="45">
+        <mat-label>Email ID</mat-label>
+        <input type="email" formControlName="emailID" matInput>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="45">
+        <mat-label>User ID</mat-label>
+        <input type="text" formControlName="userID" matInput>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="45">
+        <mat-label>Location</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let location of locations" [value]="location.value">{{location.viewValue}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button value="UpdateRes" (click)="UpdateRes()">{{dataofresource ? 'Update': 'Save'}}</button>
+    <button mat-button mat-dialog-close="false" cdkFocusInitial>Cancel</button>
+  </div>
+</form>

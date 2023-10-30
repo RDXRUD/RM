@@ -3,5 +3,6 @@ export interface skillsetupdate {
   skillGroupID: number,
   skillID: number,
   skillGroup: string,
-  skill: string
+  skill: string,
+  Description:string
 }

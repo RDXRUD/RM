@@ -13,4 +13,14 @@ namespace ResourceManagerAPI.Models
         [ForeignKey("SkillID")]
         public int SkillID { get; set; }
     }
+    public partial class NewSkillSet
+    {
+        [Key]
+        public int SkillSetID { get; set; }
+        [ForeignKey("SkillGroupID")]
+        public int SkillGroupID { get; set; }
+        [ForeignKey("SkillID")]
+        public int SkillID { get; set; }
+        public string status { get; set; }
+    }
 }

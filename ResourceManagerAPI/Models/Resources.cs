@@ -8,5 +8,6 @@ namespace ResourceManagerAPI.Models
         [Key]
         public int ResourceID { get; set; }    
         public string? EmailID { get; set; }
+
     }
 }

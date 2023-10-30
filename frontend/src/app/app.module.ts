@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,8 +36,19 @@ import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ViewTasknameDialogComponent } from './_shared/view-taskname-dialog/view-taskname-dialog.component';
-
-
+import { EditEmpDialogComponent } from './_shared/edit-emp-dialog/edit-emp-dialog.component';
+import { EditResDailogComponent } from './_shared/edit-res-dailog/edit-res-dailog.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ResetPasswordDailogComponent } from './_shared/reset-password-dailog/reset-password-dailog.component';
+import { UpdateProfileDialogComponent } from './_shared/update-profile-dialog/update-profile-dialog.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { EditClientDialogComponent } from './_shared/edit-client-dialog/edit-client-dialog.component';
+import {AsyncPipe, NgFor, NgIf} from '@angular/common';
+import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AddProjectDialogComponent } from './_shared/add-project-dialog/add-project-dialog.component';
+import { AddResourceProjectDialogComponent } from './_shared/add-resource-project-dialog/add-resource-project-dialog.component';
+import { EditProjectDialogComponent } from './_shared/edit-project-dialog/edit-project-dialog.component';
+import { EditProjectResourceDialogComponent } from './_shared/edit-project-resource-dialog/edit-project-resource-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,7 +58,17 @@ import { ViewTasknameDialogComponent } from './_shared/view-taskname-dialog/view
     LoginComponent,
     EditEmpSkillDialogComponent,
     EditSkillDialogComponent,
-    ViewTasknameDialogComponent
+    ViewTasknameDialogComponent,
+    EditEmpDialogComponent,
+    EditResDailogComponent,
+    UserProfileComponent,
+    ResetPasswordDailogComponent,
+    UpdateProfileDialogComponent,
+    EditClientDialogComponent,
+    AddProjectDialogComponent,
+    AddResourceProjectDialogComponent,
+    EditProjectDialogComponent,
+    EditProjectResourceDialogComponent
   ],
   imports: [
     MatSortModule,
@@ -74,6 +95,16 @@ import { ViewTasknameDialogComponent } from './_shared/view-taskname-dialog/view
     NgxMatFileInputModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    NgFor, MatButtonModule, NgIf, MatIconModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    NgFor,
+    AsyncPipe,
 
     RouterModule.forRoot(routes),
     JwtModule.forRoot({

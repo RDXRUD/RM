@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace ResourceManagerAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class FileController : Controller
     {
         private readonly IFileUpload _fileupload;
