@@ -22,6 +22,9 @@ namespace ResourceManagerAPI.DBContext
         public virtual DbSet<ProjectType> project_type { get; set; }
         public virtual DbSet<ProjectMaster> project_master { get; set; }
         public virtual DbSet<ProjectResAllocation> project_res_allocation { get; set; }
+        public virtual DbSet<DateMaster> date_master { get; set; }
+        public virtual DbSet<CrossViewData> cross_view_data { get; set; }
+        public virtual DbSet<CrossJoin> cross_view_join { get; set; }
 
 
 

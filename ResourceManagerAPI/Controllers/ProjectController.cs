@@ -113,16 +113,16 @@ namespace ResourceManagerAPI.Controllers
                 {
                     return StatusCode(502, "Project Name already exist");
                 }
-                projStatus =  _dbContext.project_status.Where(ps => ps.project_status == "Ongoing").FirstOrDefault();
+                //projStatus =  _dbContext.project_status.Where(ps => ps.project_status == "Ongoing").FirstOrDefault();
 
-                var testPM= _dbContext.project_master.Where(project => project.project_manager==newProject.project_manager && 
-                                                    project.project_status==projStatus.id &&
-                                                    newProject.project_status==projStatus.id
-                                                    ).FirstOrDefault();
-                if (testPM != null)
-                {
-                    return StatusCode(502, "PM is already alloted to an ongoing project ");
-                }
+                //var testPM= _dbContext.project_master.Where(project => project.project_manager==newProject.project_manager && 
+                //                                    project.project_status==projStatus.id &&
+                //                                    newProject.project_status==projStatus.id
+                //                                    ).FirstOrDefault();
+                //if (testPM != null)
+                //{
+                //    return StatusCode(502, "PM is already alloted to an ongoing project ");
+                //}
                 if (newProject.start_date > newProject.end_date)
                 {
                     return StatusCode(502, "End date can't be before start date");
@@ -177,16 +177,16 @@ namespace ResourceManagerAPI.Controllers
                     return StatusCode(502, "Project Name already exist");
                 }
    
-               projStatus = _dbContext.project_status.FirstOrDefault(ps => ps.project_status == "Ongoing");
+               //projStatus = _dbContext.project_status.FirstOrDefault(ps => ps.project_status == "Ongoing");
 
-                var testPM = _dbContext.project_master.FirstOrDefault(project => project.project_manager == updatedProject.project_manager &&
-                                                         project.project_status == projStatus.id &&
-                                                         updatedProject.project_status == projStatus.id
-                                                         );
-                if (testPM != null)
-                {
-                    return StatusCode(502, "PM is already alloted to an ongoing project ");
-                }
+               // var testPM = _dbContext.project_master.FirstOrDefault(project => project.project_manager == updatedProject.project_manager &&
+               //                                          project.project_status == projStatus.id &&
+               //                                          updatedProject.project_status == projStatus.id
+               //                                          );
+               // if (testPM != null)
+               // {
+               //     return StatusCode(502, "PM is already alloted to an ongoing project ");
+               // }
 
                 var existingResource = _dbContext.project_res_allocation.FirstOrDefault(r => r.res_id == existingProject.project_manager &&
                                                                                     r.project_id == existingProject.project_id
@@ -308,45 +308,45 @@ namespace ResourceManagerAPI.Controllers
                     return StatusCode(503, "time period is out of project duration");
                 }
 
-                var Records = (from r in _dbContext.project_res_allocation
-                                         join p in _dbContext.project_master
-                                         on r.project_id equals p.project_id into pDetails
-                                         from ps in pDetails.DefaultIfEmpty()
-                                         join s in _dbContext.project_status
-                                         on ps.project_status equals s.id into psDetails
-                                         from det in psDetails.Where(d => d.project_status != "Completed").DefaultIfEmpty()
-                                         select new ProjectResAllocation
-                                         {
-                                             id = r.id,
-                                             project_id=r.project_id,
-                                             res_id=r.res_id,
-                                             allocation_perc=r.allocation_perc,
-                                             end_date=r.end_date,
-                                             skill_id=r.skill_id,
-                                             start_date=r.start_date
+                //var Records = (from r in _dbContext.project_res_allocation
+                //                         join p in _dbContext.project_master
+                //                         on r.project_id equals p.project_id into pDetails
+                //                         from ps in pDetails.DefaultIfEmpty()
+                //                         join s in _dbContext.project_status
+                //                         on ps.project_status equals s.id into psDetails
+                //                         from det in psDetails.Where(d => d.project_status != "Completed").DefaultIfEmpty()
+                //                         select new ProjectResAllocation
+                //                         {
+                //                             id = r.id,
+                //                             project_id=r.project_id,
+                //                             res_id=r.res_id,
+                //                             allocation_perc=r.allocation_perc,
+                //                             end_date=r.end_date,
+                //                             skill_id=r.skill_id,
+                //                             start_date=r.start_date
 
-                                         }).ToList();
+                //                         }).ToList();
 
-                var status = (from p in _dbContext.project_master.Where(p => p.project_id == resource.project_id)
-                              join ps in _dbContext.project_status
-                              on p.project_status equals ps.id into detail
-                              from d in detail
-                              select d.project_status).FirstOrDefault();
+                //var status = (from p in _dbContext.project_master.Where(p => p.project_id == resource.project_id)
+                //              join ps in _dbContext.project_status
+                //              on p.project_status equals ps.id into detail
+                //              from d in detail
+                //              select d.project_status).FirstOrDefault();
 
-                 var allocatedRecords= _dbContext.project_res_allocation.Where(r => r.res_id == resource.res_id &&
-                             r.start_date <= resource.end_date &&
-                             r.end_date >= resource.start_date&&status!="Completed").ToList();
+                // var allocatedRecords= _dbContext.project_res_allocation.Where(r => r.res_id == resource.res_id &&
+                //             r.start_date <= resource.end_date &&
+                //             r.end_date >= resource.start_date&&status!="Completed").ToList();
 
-                float allocPerc = allocatedRecords.Sum(perc => perc.allocation_perc);
+                //float allocPerc = allocatedRecords.Sum(perc => perc.allocation_perc);
 
-                if (allocPerc == 1)
-                {
-                    return StatusCode(503, "Resource is already 100% allocated"); 
-                }
-                if (allocPerc + resource.allocation_perc > 1)
-                {
-                    return StatusCode(503, "Resource does not have enough allocation left");
-                }
+                //if (allocPerc == 1)
+                //{
+                //    return StatusCode(503, "Resource is already 100% allocated"); 
+                //}
+                //if (allocPerc + resource.allocation_perc > 1)
+                //{
+                //    return StatusCode(503, "Resource does not have enough allocation left");
+                //}
 
                 _dbContext.project_res_allocation.Add(resource);
                 _dbContext.SaveChanges();
@@ -383,45 +383,45 @@ namespace ResourceManagerAPI.Controllers
                     return StatusCode(503, "time period is out of project duration");
                 }
 
-                var Records = (from r in _dbContext.project_res_allocation
-                               join p in _dbContext.project_master
-                               on r.project_id equals p.project_id into pDetails
-                               from ps in pDetails.DefaultIfEmpty()
-                               join s in _dbContext.project_status
-                               on ps.project_status equals s.id into psDetails
-                               from det in psDetails.Where(d => d.project_status != "Completed").DefaultIfEmpty()
-                               select new ProjectResAllocation
-                               {
-                                   id = r.id,
-                                   project_id = r.project_id,
-                                   res_id = r.res_id,
-                                   allocation_perc = r.allocation_perc,
-                                   end_date = r.end_date,
-                                   skill_id = r.skill_id,
-                                   start_date = r.start_date
+                //var Records = (from r in _dbContext.project_res_allocation
+                //               join p in _dbContext.project_master
+                //               on r.project_id equals p.project_id into pDetails
+                //               from ps in pDetails.DefaultIfEmpty()
+                //               join s in _dbContext.project_status
+                //               on ps.project_status equals s.id into psDetails
+                //               from det in psDetails.Where(d => d.project_status != "Completed").DefaultIfEmpty()
+                //               select new ProjectResAllocation
+                //               {
+                //                   id = r.id,
+                //                   project_id = r.project_id,
+                //                   res_id = r.res_id,
+                //                   allocation_perc = r.allocation_perc,
+                //                   end_date = r.end_date,
+                //                   skill_id = r.skill_id,
+                //                   start_date = r.start_date
 
-                               }).ToList();
+                //               }).ToList();
 
-                var status = (from p in _dbContext.project_master.Where(p => p.project_id == updatedResource.project_id)
-                              join ps in _dbContext.project_status
-                              on p.project_status equals ps.id into detail
-                              from d in detail
-                              select d.project_status).FirstOrDefault();
+                //var status = (from p in _dbContext.project_master.Where(p => p.project_id == updatedResource.project_id)
+                //              join ps in _dbContext.project_status
+                //              on p.project_status equals ps.id into detail
+                //              from d in detail
+                //              select d.project_status).FirstOrDefault();
 
-                var allocatedRecords = _dbContext.project_res_allocation.Where(r => r.res_id == updatedResource.res_id &&
-                            r.start_date <= updatedResource.end_date &&
-                            r.end_date >= updatedResource.start_date && status != "Completed"&&r.id!=id).ToList();
+                //var allocatedRecords = _dbContext.project_res_allocation.Where(r => r.res_id == updatedResource.res_id &&
+                //            r.start_date <= updatedResource.end_date &&
+                //            r.end_date >= updatedResource.start_date && status != "Completed"&&r.id!=id).ToList();
 
-                float allocPerc = allocatedRecords.Sum(perc => perc.allocation_perc);
+                //float allocPerc = allocatedRecords.Sum(perc => perc.allocation_perc);
 
-                if (allocPerc == 1)
-                {
-                    return StatusCode(503, "Resource is already 100% allocated");
-                }
-                if (allocPerc + updatedResource.allocation_perc > 1)
-                {
-                    return StatusCode(503, "Resource does not have enough allocation left");
-                }
+                //if (allocPerc == 1)
+                //{
+                //    return StatusCode(503, "Resource is already 100% allocated");
+                //}
+                //if (allocPerc + updatedResource.allocation_perc > 1)
+                //{
+                //    return StatusCode(503, "Resource does not have enough allocation left");
+                //}
 
                 existingResource.res_id = updatedResource.res_id;
                 existingResource.start_date = updatedResource.start_date;
