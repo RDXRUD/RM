@@ -26,7 +26,7 @@ import { skillSetFilter } from '../_model/skillSetFilter';
 import { ClientService } from '../_services/client.service';
 import { Client } from '../_model/client';
 import { EditClientDialogComponent } from '../_shared/edit-client-dialog/edit-client-dialog.component';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ProjectService } from '../_services/project.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -86,47 +86,49 @@ export class AdminComponent implements OnInit, AfterViewInit {
   deleteskillgroup: any;
   displayedResourceColumns: string[] = ['res_id', 'res_name', 'res_user_id', 'res_email_id', 'location', 'res_create_date', 'res_last_modified', 'role_name', 'edit', 'disable'];
   displayedColumns: string[] = ['res_id', 'res_name', 'res_email_id', 'skill_count', 'details'];
-  dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'description', 'status', 'edit','disable'];
+  dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'description', 'status', 'edit', 'disable'];
   dc: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish', 'edit'];
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
   displayedColumnsto: string[] = ['skillGroupID', 'skillGroup', 'description', 'status', 'action_dis'];
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   displayedColumnsOfLists: string[] = ['columnLists', 'selectors'];
-  displayedClientColumns:string[]=['client_id','client_name','partner_incharge','status','edit','action_dis'];
-  displayedClientExtensionColumns:string[]=['client_id','client_name','expand'];//,'partner_incharge'
-  displayedProjectExpansionColumns:string[]=['project_id','project_name','res_name','start_date','end_date','type','status','edit','inner_expand']
-  displayedProjectResourceExpansionColumns:string[]=['client_id','client_name','partner_incharge','start_date','end_date','edit'];
-  displayedAllocatedResourceExpansionColumns:string[]=['res_name','skill','allocation_perc','start_date','end_date','edit','delete'];
+  displayedClientColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'status', 'edit', 'action_dis'];
+  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand'];//,'partner_incharge'
+  displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit', 'inner_expand']
+  displayedProjectResourceExpansionColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'start_date', 'end_date', 'edit'];
+  displayedAllocatedResourceExpansionColumns: string[] = ['res_name', 'skill', 'allocation_perc', 'start_date', 'end_date', 'edit', 'delete'];
 
   expandedElement!: null;
   subExpandedElement!: null;
   addResource!: FormGroup;
   addRes!: addNewResource;
-  addCli!:Client;
+  addCli!: Client;
   locations!: any[];
   roles!: any[];
   hide = true;
   filterResource!: FormGroup;
   filterSkills!: FormGroup;
-  addClient!:FormGroup;
-  addProject!:FormGroup;
-  addProjectResource!:FormGroup;
+  filterProject!: FormGroup;
+  addClient!: FormGroup;
+  addProject!: FormGroup;
+  addProjectResource!: FormGroup;
   isChecked: boolean = true;
   filterData!: resFilter;
-  filterSkillData!:skillSetFilter;
+  filterSkillData!: skillSetFilter;
   filteredData: any;
   dataSource!: MatTableDataSource<any>;
   skillData!: any[];
   Status: string[] = ["ACTIVE", "INACTIVE"];
-  clientStatus:string[] = ["ACTIVE", "INACTIVE"];
-  panelOpenState=false;
-  dataOfClient:any;
-  clientExtensionData!:any[];
-  resexpansionid:any;
+  clientStatus: string[] = ["ACTIVE", "INACTIVE"];
+  panelOpenState = false;
+  dataOfClient: any;
+  clientExtensionData!: any[];
+  resexpansionid: any;
+  dataProject!: any[];
   // resourceExtensionData!:any[];
-  dataOfProjects!:any[];
-  allocatedResources!:any;
-  temp:any;
+  dataOfProjects!: any[];
+  allocatedResources!: any;
+  temp: any;
 
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   project_manager = new FormControl();
@@ -157,8 +159,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private skillSetService: SkillsetService,
     private skillService: SkillsService,
-    private clientService:ClientService,
-    private projectService:ProjectService
+    private clientService: ClientService,
+    private projectService: ProjectService
   ) {
     this.addResource = frmbuilder.group({
       res_name: new FormControl(),
@@ -206,12 +208,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
       skillDescription: new FormControl(),
       skillStatus: new FormControl(),
     });
-    this.addClient=frmbuilder.group({
+    this.addClient = frmbuilder.group({
       client_name: new FormControl(),
       partner_incharge: new FormControl(),
-      //status: new FormControl()
     });
-    this.addProject=frmbuilder.group({
+    this.addProject = frmbuilder.group({
       project_id: new FormControl(),
       client_name: new FormControl(),
       project_name: new FormControl(),
@@ -222,41 +223,31 @@ export class AdminComponent implements OnInit, AfterViewInit {
       project_status: new FormControl()
     })
     this.filteredResOptions = this.resourceExtensionData;
-    this.addProjectResource=frmbuilder.group({
+    this.addProjectResource = frmbuilder.group({
       res_name: new FormControl(),
       res_skill_set: new FormControl(),
       project_name: new FormControl(),
-      allocation:new FormControl(),
+      allocation: new FormControl(),
       start_date: new FormControl(),
       end_date: new FormControl(),
-      
     })
+    this.filterProject = frmbuilder.group({
+      client_name: new FormControl(),
+      project_name: new FormControl(),
+    });
   }
   ngAfterViewInit(): void {
   }
   ngOnInit() {
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
-      this.resourceExtensionData=data;
-      // console.log(data);
+      this.resourceExtensionData = data;
       this.dataOfRes = new MatTableDataSource(this.data);
       this.dataOfRes.sort = this.sortRes;
     })
     this.resources_Service.GetLocations().subscribe(data => {
       this.locations = data;
-      // console.log(this.locations);
     })
-    // this.employee_Service.getEmployees().subscribe(data => {
-    //   this.data = data;
-    //   // console.log(data);
-    //   this.dataOfSkills = new MatTableDataSource(this.data);
-    //   this.dataOfSkills.sort = this.sortedData;
-    // })
-    // this.employee_Service.getEmployeesPlan().subscribe(datasofemployees => {
-    //   this.datasofemployees = datasofemployees;
-    //   this.dataOfResources = new MatTableDataSource(this.datasofemployees);
-    //   this.dataOfResources.sort = this.sorted;
-    // })
     this.skillSetService.getSkillGroups().subscribe(sg => {
       this.apiData = sg;
     })
@@ -282,37 +273,17 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.skillSetService.getSkills().subscribe(dataOfSkill => {
       this.skillData = dataOfSkill;
     });
-    this.clientService.getClients().subscribe(data=>{
+    this.clientService.getClients().subscribe(data => {
       console.log(data);
-      this.clientExtensionData=data;
-      this.dataOfClient=data;
+      this.clientExtensionData = data;
+      this.dataOfClient = data;
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
-    })
-    
+    });
+    this.projectService.getProjects(1).subscribe(data =>{
+      this.dataProject = data;
+    });
   }
-  // getEmployeesPlan() {
-  //   this.employee_Service.getEmployeesPlan().subscribe(data => {
-  //     this.data = data;
-  //   })
-  // }
-  // OnFile() {
-  //   this.formdata = this.forms.value;
-  //   console.warn(this.formdata);
-  //   this._coreService.openSnackBar('Please wait, your file is uploading...');
-  //   this.usersService.loadFile(this.formdata).subscribe(
-  //     dataOffile => {
-  //       this._coreService.openSnackBar('File Loaded Successfully', 'done');
-  //       this.forms.reset();
-  //       this.getEmployeesPlan();
-  //     },
-  //     (error: HttpErrorResponse) => {
-  //       if (error.status == 400) {
-  //         this._coreService.openSnackBar('Please choose a file to upload', 'ok');
-  //       }
-  //     }
-  //   );
-  // }
   AddSkill() {
     console.log(this.addskill.value)
     this.skilldata = this.addskill.value;
@@ -344,14 +315,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     })
   }
-  // AddEmpDetails() {
-  //   this.addEmpDetails = this.AddDataOfEmployee.value;
-  //   this.employee_Service.AddEmpDetails(this.addEmpDetails).subscribe(addEmpDetails => {
-  //     this._coreService.openSnackBar('Record Added Successfully', 'done')
-  //     this.AddDataOfEmployee.reset();
-  //     this.ngOnInit();
-  //   })
-  // }
   getResourceSkills(emailID: string) {
     console.log(emailID)
     const dialogRef = this.dialog.open(EditResSkillDialogComponent, {
@@ -407,8 +370,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       );
     }
   }
-  EditSkillStatus(id: number){
-    const confirmation = confirm("Are you sure you want to update status?");   
+  EditSkillStatus(id: number) {
+    const confirmation = confirm("Are you sure you want to update status?");
     if (confirmation) {
       this.skillSetService.UpdateSkillSetStatus(id).subscribe(
         (res) => {
@@ -420,7 +383,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
           if (error.status === 400) {
             this._coreService.openSnackBar("Can't Update!");
           }
-          else if(error.status === 502) {
+          else if (error.status === 502) {
             this._coreService.openSnackBar("Skill is in use!");
           }
         }
@@ -509,9 +472,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
 
-  AddClient(){
-    //this.addCli.status='ACTIVE';
-    this.addCli=this.addClient.value;
+  AddClient() {
+    this.addCli = this.addClient.value;
     console.log(this.addCli)
     this.clientService.AddClient(this.addCli).subscribe(client => {
       this._coreService.openSnackBar('Client Added Successfully ', 'done');
@@ -521,9 +483,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   UpdateClient(element: any) {
     const dialogRef = this.dialog.open(EditClientDialogComponent, {
-      
-width: '500px',
-height: '300px',
+      width: '500px',
+      height: '300px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -543,7 +504,7 @@ height: '300px',
       });
     }
   }
-  UpdateProject(element: any){
+  UpdateProject(element: any) {
     console.log(element)
     const dialogRef = this.dialog.open(EditProjectDialogComponent, {
       width: '600px',
@@ -557,7 +518,7 @@ height: '300px',
       }
     });
   }
-  UpdateAllocatedResource(element: any){
+  UpdateAllocatedResource(element: any) {
     console.log(element)
     const dialogRef = this.dialog.open(EditProjectResourceDialogComponent, {
       width: '600px',
@@ -571,10 +532,8 @@ height: '300px',
       }
     });
   }
-  
 
-  AddProject(dataOfClient:any){
-
+  AddProject(dataOfClient: any) {
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
       width: '600px',
       height: '550px',
@@ -587,7 +546,7 @@ height: '300px',
       }
     });
   }
-  AddProjectResource(dataOfProjects:any){
+  AddProjectResource(dataOfProjects: any) {
     console.log(dataOfProjects)
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
@@ -601,14 +560,14 @@ height: '300px',
       }
     });
   }
-  getProjects(id:number){
-    this.projectService.getProjects(id).subscribe(data=>{
-      this.dataOfProjects=data;
+  getProjects(id: number) {
+    this.projectService.getProjects(id).subscribe(data => {
+      this.dataOfProjects = data;
     })
   }
-  getAllocatedResources(id:number){
-    this.projectService.getAllocatedResources(id).subscribe(data=>{
-      this.allocatedResources=data;
+  getAllocatedResources(id: number) {
+    this.projectService.getAllocatedResources(id).subscribe(data => {
+      this.allocatedResources = data;
     })
   }
   filterRes(): void {
@@ -618,12 +577,11 @@ height: '300px',
     console.log(this.filteredResOptions)
 
     console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
-    this.resexpansionid=this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
+    this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
 
   }
-  DeleteResource(element:any){
+  DeleteResource(element: any) {
     console.log(element)
-    
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
       this.projectService.DeleteResource(element.id).subscribe((deletedata: any) => {
@@ -632,6 +590,4 @@ height: '300px',
       });
     }
   }
-
-  
 }

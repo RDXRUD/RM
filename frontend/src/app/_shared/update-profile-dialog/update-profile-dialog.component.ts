@@ -4,8 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { resource } from 'src/app/_model/resource';
 import { ResourcesService } from 'src/app/_services/resources.service';
 import { CoreService } from 'src/app/_services/core.service';
-import { MatDialog } from '@angular/material/dialog';
-import { editResource } from 'src/app/_model/editResource';
 @Component({
   selector: 'app-update-profile-dialog',
   templateUrl: './update-profile-dialog.component.html',

@@ -1,5 +1,4 @@
-﻿using File = ResourceManagerAPI.Models.File;
-
+﻿
 namespace ResourceManagerAPI.IRepository
 {
     public interface IUserInput

@@ -33,7 +33,12 @@ export class AddResourceProjectDialogComponent {
   skillData!:any[];
   allocation:any[]=[0.25,0.5,0.75,1];
 
-  constructor(private projectService: ProjectService,private skillsetService: SkillsetService,private skillSetService: SkillsetService,private resources_Service: ResourcesService, private _coreService: CoreService, private fb: FormBuilder,
+  constructor(
+    private projectService: ProjectService,
+    private skillsetService: SkillsetService,
+    private skillSetService: SkillsetService,
+    private _coreService: CoreService, 
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddResourceProjectDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfProjects: any,
   ) {
@@ -45,8 +50,8 @@ export class AddResourceProjectDialogComponent {
       start_date: new FormControl(),
       end_date: new FormControl()
     }),
-      this.dataofProj = dataOfProjects;
-    console.log(this.dataofProj);
+    this.dataofProj = dataOfProjects;
+      console.log(this.dataofProj);
   }
   ngOnInit() {
     this.skillSetService.getActiveSkillSets().subscribe(datas => {

@@ -44,62 +44,7 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-		//[HttpGet, Authorize]
-  //      [Route("/api/AllUser")]
-  //      public async Task<IEnumerable<Users>> Get()
-  //      {
-  //          try
-  //          {
-  //              return await _dbContext.users.ToListAsync();
-  //          }
-  //          catch (Exception ex)
-  //          {
-  //              return (IEnumerable<Users>)StatusCode(500, ex.Message);
-  //          }
-  //      }
 
-        //[HttpPost, Authorize]
-        //[Route("/api/AddUser")]
-        //public IActionResult AddUser([FromBody] Users user)
-        //{
-        //    try
-        //    {
-        //        return Ok(_account.AddUser(user));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
-        
-        //[HttpDelete, Authorize]
-        //[Route("/api/DeleteUser")]
-        //public IActionResult DeleteUser([FromBody] Users user)
-        //{
-        //    try
-        //    {
-        //        return Ok(_account.DeleteUser(user));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
-        //[NonAction]
-        //[HttpDelete, Authorize]
-        //[Route("DeleteUser")]
-        //public async Task<IActionResult> Delete([FromBody] Users userToDelete)
-        //{
-        //    var id = userToDelete.UserID;
-        //    if (id < 1)
-        //        return BadRequest();
-        //    var user = await _dbContext.users.FindAsync(id);
-        //    if (user == null)
-        //        return NotFound();
-        //    _dbContext.users.Remove(user);
-        //    await _dbContext.SaveChangesAsync();
-        //    return Ok();
-        //}
 
         [HttpPost("Login")]
         
@@ -159,52 +104,6 @@ namespace ResourceManagerAPI.Controllers
 
 
 
-        //[HttpPost("Login")]
-        //[NonAction]
-        //public async Task<IActionResult> pst([FromBody] Users _userData)
-        //{
-        //    if (_userData != null && _userData.UserName != null && _userData.Password != null)
-        //    {
-        //        var users = await _dbContext.users.ToListAsync();
-        //        var user = users.FirstOrDefault(u => u.UserName == _userData.UserName && Decrypt(u.Password) == _userData.Password);
-        //        if (user != null)
-        //        {
-        //            var claims = new[] {
-        //                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-        //                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        //                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-        //                new Claim("UserID",user.UserID.ToString()),
-        //                new Claim("UserName", user.UserName),
-        //                new Claim("FullName", user.FullName)
-        //            };
-        //            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        //            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        //            var token = new JwtSecurityToken(
-        //                _configuration["Jwt:Issuer"],
-        //                _configuration["Jwt:Audience"],
-        //                claims,
-        //                expires: DateTime.UtcNow.AddDays(1),
-        //                signingCredentials: signIn);
-        //            var jwtToken = new JwtToken
-        //            {
-        //                UserID = user.UserID,
-        //                UserName = user.UserName,
-        //                Token = new JwtSecurityTokenHandler().WriteToken(token)
-        //            };
-        //            userName = _userData.UserName;
-        //            var jsonResponse = JsonSerializer.Serialize(jwtToken);
-        //            return Content(jsonResponse, "application/json");
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Invalid Credentials");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("Username Or Password Missing");
-        //    }
-        //}
         private string Decrypt(string cipherText)
         {
             string encryptionKey = "MAKV2SPBNI99212";

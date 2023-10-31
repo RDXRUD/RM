@@ -92,8 +92,8 @@ namespace ResourceManagerAPI.Controllers
                                      role_name = roleM.role_name
 
                                  }
-                                ).ToList();//await _dbContext.resource_master.ToListAsync();
-                //resources = resources.OrderBy(r => r.res_user_id).ToList();
+                                ).ToList();
+               
                 return Ok(resources); // Return a 200 OK response with the data
             }
             catch (Exception ex)
@@ -315,35 +315,7 @@ namespace ResourceManagerAPI.Controllers
         }
 
 
-        //[HttpDelete, Authorize]
-        //[Route("DeleteEmployee/{id}")]
-        //[NonAction]
-        //public async Task<IActionResult> DeleteEmployee(int id)
-        //{
-        //    try
-        //    {
-        //        var employeeToDelete = await _dbContext.employees.FindAsync(id);
-
-        //        if (employeeToDelete == null)
-        //        {
-        //            return NotFound($"Employee with ID {id} not found.");
-        //        }
-
-        //        _dbContext.employees.Remove(employeeToDelete);
-        //        await _dbContext.SaveChangesAsync();
-
-        //        return NoContent();
-        //    }
-        //    catch (DbUpdateException ex)
-        //    {
-        //        // Handle the exception as needed
-        //        return StatusCode(500, "An error occurred while deleting the employee.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        
 
         [HttpGet, Authorize]
         [Route("GetLocations")]

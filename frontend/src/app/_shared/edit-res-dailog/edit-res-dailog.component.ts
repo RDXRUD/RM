@@ -16,7 +16,9 @@ export class EditResDailogComponent {
   roles:any;
   locations: any;
   formdata!:editResource;
-  constructor(private resource_service: ResourcesService ,private _coreService: CoreService,private fb: FormBuilder,
+  constructor(private resource_service: ResourcesService ,
+    private _coreService: CoreService,
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditResDailogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataofresource: any,
     ){

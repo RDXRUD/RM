@@ -83,5 +83,4 @@ export class SkillsetService {
     let url = `${environment.apiUrl}/Filters/FilterSkill`;
     return this.http.post<skillgroupdata[]>(url, filter);
   }
-  // UpdateSkillGroupStatus()
 }
