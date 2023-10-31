@@ -7,13 +7,13 @@ import { CoreService } from 'src/app/_services/core.service';
 import { ProjectService } from 'src/app/_services/project.service';
 import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
-
+ 
 @Component({
   selector: 'app-edit-project-resource-dialog',
   templateUrl: './edit-project-resource-dialog.component.html',
   styleUrls: ['./edit-project-resource-dialog.component.scss']
 })
-
+ 
 export class EditProjectResourceDialogComponent {
   [x: string]: any;
   updateResource!: FormGroup;
@@ -22,7 +22,7 @@ export class EditProjectResourceDialogComponent {
   formdata!: Client;
   resExpansion!:any[];
   isRoleSelected: boolean = false;
-
+ 
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   res_id = new FormControl();
   resourceExtensionData!: any[];
@@ -32,7 +32,7 @@ export class EditProjectResourceDialogComponent {
   temp: any;
   skillData!:any[];
   allocation:any[]=[0.25,0.5,0.75,1];
-
+ 
   constructor(private projectService: ProjectService,private skillsetService: SkillsetService,private skillSetService: SkillsetService,private resources_Service: ResourcesService, private _coreService: CoreService, private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditProjectResourceDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfProjects: any,
@@ -49,7 +49,7 @@ export class EditProjectResourceDialogComponent {
     console.log(this.dataofProj);
   }
   ngOnInit() {
-
+ 
     this.updateResource.setValue({
       project_id:this.dataOfProjects.element.project_id,
       res_id: this.dataOfProjects.element.res_id,
@@ -62,21 +62,22 @@ export class EditProjectResourceDialogComponent {
       console.log(datas)
       this.skillData = datas;
     })
-
+    this.skillsetService.getResourceAsPerSkillSet(this.dataOfProjects.element.skill_id).subscribe(data => {
+      this.resourceExtensionData=data;})
   }
-
+ 
   UpdateResource(element:any) {
-
+ 
     console.log(element)
     console.log(this.updateResource.value);
     this.temp = this.updateResource.value
-    if(this.resexpansionid=='undefined'){
-      this.temp.res_id=element.res_id
-
-    }
-    else{
-      this.temp.res_id = this.resexpansionid
-    }
+    // if(this.resexpansionid=='undefined'){
+    //   this.temp.res_id=element.res_id
+ 
+    // }
+    // else{
+    //   this.temp.res_id = this.resexpansionid
+    // }
     console.log(this.temp)
     this.projectService.UpdateResource(element.id,this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Updated Successfully ', 'done');
@@ -94,16 +95,17 @@ export class EditProjectResourceDialogComponent {
     else{
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
     console.log(this.filteredResOptions)
-
+ 
     console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
     }
   }
   onSkillSetSelection(){
-    
+   
     const skillSetID = Number(this.updateResource.get('skill_id')?.value);
     this.skillsetService.getResourceAsPerSkillSet(skillSetID).subscribe(data => {
       this.resourceExtensionData=data;
+      console.log("kl",this.resourceExtensionData)
     });
   }
   }

@@ -4,20 +4,26 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Client } from 'src/app/_model/client';
 import { ClientService } from 'src/app/_services/client.service';
 import { CoreService } from 'src/app/_services/core.service';
-
+import { ResourcesService } from 'src/app/_services/resources.service';
+ 
 @Component({
   selector: 'app-edit-client-dialog',
   templateUrl: './edit-client-dialog.component.html',
   styleUrls: ['./edit-client-dialog.component.scss']
 })
-
+ 
 export class EditClientDialogComponent {
   [x: string]: any;
   clientDetails: FormGroup;
   clientStatus:string[] = ["ACTIVE", "INACTIVE"];
   formdata!:Client;
-
-  constructor(private clientService: ClientService ,private _coreService: CoreService,private fb: FormBuilder,
+  resourceExtensionData!: any[];
+ 
+  constructor(
+    private resources_Service:ResourcesService,
+    private clientService: ClientService ,
+    private _coreService: CoreService,
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditClientDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfClient: any,
     ){
@@ -33,6 +39,9 @@ export class EditClientDialogComponent {
       partner_incharge: this.dataOfClient.element.partner_incharge,
       status: this.dataOfClient.element.status
     });
+    this.resources_Service.getResources().subscribe(data => {
+      this.resourceExtensionData=data;
+    })
   }
   UpdateClient(client_id:number) {
     this.formdata = this.clientDetails.value;

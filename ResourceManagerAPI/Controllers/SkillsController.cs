@@ -17,42 +17,42 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-        [HttpGet, Authorize]
-        [Route("GetSetOfSkill")]
-        public async Task<IActionResult> GetSkill()
-        {
-            try
-            {
-                var skills = (from r in _dbContext.resources
-                              join rs in _dbContext.resourceskills
-                              on r.ResourceID equals rs.ResourceID
-                              join ss in _dbContext.skillset
-                              on rs.SkillSetID equals ss.SkillSetID
-                              join sg in _dbContext.skillgroup
-                              on ss.SkillGroupID equals sg.SkillGroupID
-                              join s in _dbContext.skill
-                              on ss.SkillID equals s.SkillID
-                              into detail
-                              from m in detail.DefaultIfEmpty()
-                              select new ResourceSkillManager
-                              {
-                                  ResourceID = r.ResourceID,
-                                  SkillID = ss.SkillID,
-                                  ResourceSkillID=rs.ResourceSkillID,
-                                  SkillSetID=rs.SkillSetID,
-                                  SkillGroupID=sg.SkillGroupID,
-                                  EmailID = r.EmailID,
-                                  SkillGroup = sg.SkillGroup,
-                                  Skill = m.Skill
-                              }
-                                ).ToList();
-                return Ok(skills);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //[HttpGet, Authorize]
+        //[Route("GetSetOfSkill")]
+        //public async Task<IActionResult> GetSkill()
+        //{
+        //    try
+        //    {
+        //        //var skills = (from r in _dbContext.resources
+        //                      join rs in _dbContext.resourceskills
+        //                      on r.ResourceID equals rs.ResourceID
+        //                      join ss in _dbContext.skillset
+        //                      on rs.SkillSetID equals ss.SkillSetID
+        //                      join sg in _dbContext.skillgroup
+        //                      on ss.SkillGroupID equals sg.SkillGroupID
+        //                      join s in _dbContext.skill
+        //                      on ss.SkillID equals s.SkillID
+        //                      into detail
+        //                      from m in detail.DefaultIfEmpty()
+        //                      select new ResourceSkillManager
+        //                      {
+        //                          ResourceID = r.ResourceID,
+        //                          SkillID = ss.SkillID,
+        //                          ResourceSkillID=rs.ResourceSkillID,
+        //                          SkillSetID=rs.SkillSetID,
+        //                          SkillGroupID=sg.SkillGroupID,
+        //                          EmailID = r.EmailID,
+        //                          SkillGroup = sg.SkillGroup,
+        //                          Skill = m.Skill
+        //                      }
+        //                        ).ToList();
+        //        return Ok(skills);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
         [HttpGet, Authorize]
         [Route("SkillByEmail/{email}")]
@@ -96,42 +96,42 @@ namespace ResourceManagerAPI.Controllers
                 return resourceskills;
         }
 
-        [HttpPost, Authorize]
-        [Route("AddNewSetOfSkill")]
-        public async Task<IActionResult> AddNewSkill(ResourceSkillManager skill)
-        {
-            try
-            {
-                var skillgroup = new SkillGroups
-                {
-                    SkillGroup = skill.SkillGroup,
-                };
-                _dbContext.skillgroup.Add(skillgroup);
-                await _dbContext.SaveChangesAsync();
+        //[HttpPost, Authorize]
+        //[Route("AddNewSetOfSkill")]
+        //public async Task<IActionResult> AddNewSkill(ResourceSkillManager skill)
+        //{
+        //    try
+        //    {
+        //        var skillgroup = new SkillGroups
+        //        {
+        //            SkillGroup = skill.SkillGroup,
+        //        };
+        //        _dbContext.skillgroup.Add(skillgroup);
+        //        await _dbContext.SaveChangesAsync();
 
-                var resources = new Resources
-                {
-                    ResourceID = skill.ResourceID,
-                    EmailID= skill.EmailID
+        //        var resources = new Resources
+        //        {
+        //            ResourceID = skill.ResourceID,
+        //            EmailID= skill.EmailID
                    
-                };
-                _dbContext.resources.Add(resources);
-                await _dbContext.SaveChangesAsync();
+        //        };
+        //        _dbContext.resources.Add(resources);
+        //        await _dbContext.SaveChangesAsync();
 
-                var skills = new Skills
-                {
-                    Skill = skill.Skill
-                };
-                _dbContext.skill.Add(skills);
-                await _dbContext.SaveChangesAsync();
+        //        var skills = new Skills
+        //        {
+        //            Skill = skill.Skill
+        //        };
+        //        _dbContext.skill.Add(skills);
+        //        await _dbContext.SaveChangesAsync();
 
-                return Ok("{\"message\": \"Record Added Successfully\"}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //        return Ok("{\"message\": \"Record Added Successfully\"}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
         [HttpPost, Authorize]
         [Route("AddSkillToSkillGroup")]

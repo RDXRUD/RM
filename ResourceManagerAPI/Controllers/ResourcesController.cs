@@ -7,6 +7,7 @@ using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using System.Diagnostics;
+using System.Globalization;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 using Resources = ResourceManagerAPI.Models.Resources;
 
@@ -128,9 +129,9 @@ namespace ResourceManagerAPI.Controllers
                     return StatusCode(502, "UserID already exist");
                 }
                 resLoc.res_id = await _dbContext.resource_master.MaxAsync(r => r.res_id) + 1;
-                res.ResourceID = await _dbContext.resources.MaxAsync(r => r.ResourceID) + 1;
                 res.EmailID = resLoc.res_email_id;
-                resource.res_name = resLoc.res_name;
+                resource.res_name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(resLoc.res_name);
+
                 resource.res_user_id = resLoc.res_user_id.ToLower();
                 resource.res_email_id = resLoc.res_email_id.ToLower();
                 //resource.sso_flag = resLoc.sso_flag;
@@ -144,7 +145,6 @@ namespace ResourceManagerAPI.Controllers
                 user.UserID = resLoc.res_user_id;
                 user.Password = resLoc.password;
                 resource.password = _account.ResourcePass(user);
-                _dbContext.resources.Add(res);
                 _dbContext.resource_master.Add(resource);
                 _dbContext.resource_role.Add(resRole);
                 await _dbContext.SaveChangesAsync();
@@ -200,7 +200,7 @@ namespace ResourceManagerAPI.Controllers
                 }
 
                 // Update employee details
-                existingResource.res_name = updatedResource.res_name;
+                existingResource.res_name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(updatedResource.res_name);
                 existingResource.res_user_id = updatedResource.res_user_id;
                 var temp = _dbContext.location_master.FirstOrDefault(l => l.location == updatedResource.location);
                 existingResource.location_id = temp.id;
@@ -315,35 +315,35 @@ namespace ResourceManagerAPI.Controllers
         }
 
 
-        [HttpDelete, Authorize]
-        [Route("DeleteEmployee/{id}")]
-        [NonAction]
-        public async Task<IActionResult> DeleteEmployee(int id)
-        {
-            try
-            {
-                var employeeToDelete = await _dbContext.employees.FindAsync(id);
+        //[HttpDelete, Authorize]
+        //[Route("DeleteEmployee/{id}")]
+        //[NonAction]
+        //public async Task<IActionResult> DeleteEmployee(int id)
+        //{
+        //    try
+        //    {
+        //        var employeeToDelete = await _dbContext.employees.FindAsync(id);
 
-                if (employeeToDelete == null)
-                {
-                    return NotFound($"Employee with ID {id} not found.");
-                }
+        //        if (employeeToDelete == null)
+        //        {
+        //            return NotFound($"Employee with ID {id} not found.");
+        //        }
 
-                _dbContext.employees.Remove(employeeToDelete);
-                await _dbContext.SaveChangesAsync();
+        //        _dbContext.employees.Remove(employeeToDelete);
+        //        await _dbContext.SaveChangesAsync();
 
-                return NoContent();
-            }
-            catch (DbUpdateException ex)
-            {
-                // Handle the exception as needed
-                return StatusCode(500, "An error occurred while deleting the employee.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //        return NoContent();
+        //    }
+        //    catch (DbUpdateException ex)
+        //    {
+        //        // Handle the exception as needed
+        //        return StatusCode(500, "An error occurred while deleting the employee.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
         [HttpGet, Authorize]
         [Route("GetLocations")]

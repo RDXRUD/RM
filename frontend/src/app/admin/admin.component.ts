@@ -14,8 +14,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../_services/skillset.service';
-import { EmployeeService } from '../_services/employee.service';
-import { UsersService } from '../_services/users.service';
 import { SkillData } from '../_model/SkillData';
 //import { EditEmpDialogComponent } from '../_shared/edit-emp-dialog/edit-emp-dialog.component';
 import { ResourcesService } from '../_services/resources.service';
@@ -154,12 +152,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   element: any;
   constructor(
     private resources_Service: ResourcesService,
-    private employee_Service: EmployeeService,
     private frmbuilder: FormBuilder,
     private _coreService: CoreService,
     private dialog: MatDialog,
     private skillSetService: SkillsetService,
-    private usersService: UsersService,
     private skillService: SkillsService,
     private clientService:ClientService,
     private projectService:ProjectService
@@ -213,7 +209,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.addClient=frmbuilder.group({
       client_name: new FormControl(),
       partner_incharge: new FormControl(),
-      status: new FormControl()
+      //status: new FormControl()
     });
     this.addProject=frmbuilder.group({
       project_id: new FormControl(),
@@ -250,17 +246,17 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.locations = data;
       // console.log(this.locations);
     })
-    this.employee_Service.getEmployees().subscribe(data => {
-      this.data = data;
-      // console.log(data);
-      this.dataOfSkills = new MatTableDataSource(this.data);
-      this.dataOfSkills.sort = this.sortedData;
-    })
-    this.employee_Service.getEmployeesPlan().subscribe(datasofemployees => {
-      this.datasofemployees = datasofemployees;
-      this.dataOfResources = new MatTableDataSource(this.datasofemployees);
-      this.dataOfResources.sort = this.sorted;
-    })
+    // this.employee_Service.getEmployees().subscribe(data => {
+    //   this.data = data;
+    //   // console.log(data);
+    //   this.dataOfSkills = new MatTableDataSource(this.data);
+    //   this.dataOfSkills.sort = this.sortedData;
+    // })
+    // this.employee_Service.getEmployeesPlan().subscribe(datasofemployees => {
+    //   this.datasofemployees = datasofemployees;
+    //   this.dataOfResources = new MatTableDataSource(this.datasofemployees);
+    //   this.dataOfResources.sort = this.sorted;
+    // })
     this.skillSetService.getSkillGroups().subscribe(sg => {
       this.apiData = sg;
     })
@@ -275,9 +271,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.dataOfResskill = new MatTableDataSource(this.resourcesWithSkillCount);
       this.dataOfResskill.sort = this.rescoskill;
     });
-    this.usersService.getUsers().subscribe(user => {
-      this.user = user;
-    })
     this.skillSetService.getSkillGroup().subscribe(skgroups => {
       this.skgroups = skgroups;
       this.skillGroups = new MatTableDataSource(this.skgroups);
@@ -298,36 +291,28 @@ export class AdminComponent implements OnInit, AfterViewInit {
     })
     
   }
-  getEmployeesPlan() {
-    this.employee_Service.getEmployeesPlan().subscribe(data => {
-      this.data = data;
-    })
-  }
-  OnFile() {
-    this.formdata = this.forms.value;
-    console.warn(this.formdata);
-    this._coreService.openSnackBar('Please wait, your file is uploading...');
-    this.usersService.loadFile(this.formdata).subscribe(
-      dataOffile => {
-        this._coreService.openSnackBar('File Loaded Successfully', 'done');
-        this.forms.reset();
-        this.getEmployeesPlan();
-      },
-      (error: HttpErrorResponse) => {
-        if (error.status == 400) {
-          this._coreService.openSnackBar('Please choose a file to upload', 'ok');
-        }
-      }
-    );
-  }
-  OnUser() {
-    this.formdatas = this.userForm.value;
-    this.usersService.addUser(this.formdatas).subscribe(userdata => {
-      this._coreService.openSnackBar("User Added Successfully", "ok")
-      this.userForm.reset();
-      this.ngOnInit();
-    })
-  }
+  // getEmployeesPlan() {
+  //   this.employee_Service.getEmployeesPlan().subscribe(data => {
+  //     this.data = data;
+  //   })
+  // }
+  // OnFile() {
+  //   this.formdata = this.forms.value;
+  //   console.warn(this.formdata);
+  //   this._coreService.openSnackBar('Please wait, your file is uploading...');
+  //   this.usersService.loadFile(this.formdata).subscribe(
+  //     dataOffile => {
+  //       this._coreService.openSnackBar('File Loaded Successfully', 'done');
+  //       this.forms.reset();
+  //       this.getEmployeesPlan();
+  //     },
+  //     (error: HttpErrorResponse) => {
+  //       if (error.status == 400) {
+  //         this._coreService.openSnackBar('Please choose a file to upload', 'ok');
+  //       }
+  //     }
+  //   );
+  // }
   AddSkill() {
     console.log(this.addskill.value)
     this.skilldata = this.addskill.value;
@@ -359,14 +344,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     })
   }
-  AddEmpDetails() {
-    this.addEmpDetails = this.AddDataOfEmployee.value;
-    this.employee_Service.AddEmpDetails(this.addEmpDetails).subscribe(addEmpDetails => {
-      this._coreService.openSnackBar('Record Added Successfully', 'done')
-      this.AddDataOfEmployee.reset();
-      this.ngOnInit();
-    })
-  }
+  // AddEmpDetails() {
+  //   this.addEmpDetails = this.AddDataOfEmployee.value;
+  //   this.employee_Service.AddEmpDetails(this.addEmpDetails).subscribe(addEmpDetails => {
+  //     this._coreService.openSnackBar('Record Added Successfully', 'done')
+  //     this.AddDataOfEmployee.reset();
+  //     this.ngOnInit();
+  //   })
+  // }
   getResourceSkills(emailID: string) {
     console.log(emailID)
     const dialogRef = this.dialog.open(EditResSkillDialogComponent, {
@@ -458,15 +443,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       );
     }
   }
-  deleteUser(userID: number) {
-    const confirmation = confirm("Are you sure you want to delete?");
-    if (confirmation) {
-      this.usersService.deleteUser(userID).subscribe((deletedata: any) => {
-        this._coreService.openSnackBar("User Record deleted", "ok")
-        this.ngOnInit();
-      });
-    }
-  }
   updateSkillGroupStatus(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to update status?");
     if (confirmation) {
@@ -483,48 +459,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       );
     }
   }
-  
-  OnSkillFile() {
-    this.formdata = this.formsOfSkills.value;
-    this._coreService.openSnackBar('Please wait, your file is uploading...', 'ok');
-    this.usersService.loadSkillFile(this.formdata, this.formdata.columnLists).subscribe(
-      (dataOfSkillsFile) => {
-        this._coreService.openSnackBar('File Loaded Successfully', 'done');
-        this.formsOfSkills.reset();
-        this.dataOfSkillList = new MatTableDataSource<any>(dataOfSkillsFile);
-        this.dataOfSkillList.sort = this.sortedSkillData;
-        this.dataOfSkillsFile = dataOfSkillsFile;
-      },
-      (error: HttpErrorResponse) => {
-        if (error.status == 400) {
-          this._coreService.openSnackBar('Please choose a file to upload', 'ok');
-        }
-      }
-    );
-  }
-  submitMappingData(dataOfSkillsFile: any[]) {
-    console.log(dataOfSkillsFile);
-    const transformedData = dataOfSkillsFile.reduce((result, user) => {
-      result[user.columnLists] = user.selectors;
-      return result;
-    }, {});
-    const jsonString = JSON.stringify(transformedData);
-    const skillData: SkillData = {
-      inputData: jsonString,
-      PlanFile: this.formdata.planFile,
-    };
-    console.log('SkillData:', skillData);
-    this._coreService.openSnackBar('Please wait,Mapping in progress', 'ok');
-    this.usersService.mappedSkills(skillData).subscribe(
-      (response) => {
-        this._coreService.openSnackBar('Mapped Successfully', 'done');
-        this.ngOnInit();
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-      }
-    );
-  }
+
   AddResource() {
     this.addRes = this.addResource.value;
     console.log(this.addRes);
@@ -575,6 +510,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
 
   AddClient(){
+    //this.addCli.status='ACTIVE';
     this.addCli=this.addClient.value;
     console.log(this.addCli)
     this.clientService.AddClient(this.addCli).subscribe(client => {
@@ -585,8 +521,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   UpdateClient(element: any) {
     const dialogRef = this.dialog.open(EditClientDialogComponent, {
-      width: '600px',
-      height: '380px',
+      
+width: '500px',
+height: '300px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -609,6 +546,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   UpdateProject(element: any){
     console.log(element)
     const dialogRef = this.dialog.open(EditProjectDialogComponent, {
+      width: '600px',
+      height: '550px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -621,6 +560,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   UpdateAllocatedResource(element: any){
     console.log(element)
     const dialogRef = this.dialog.open(EditProjectResourceDialogComponent, {
+      width: '600px',
+      height: '500px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -635,6 +576,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   AddProject(dataOfClient:any){
 
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
+      width: '600px',
+      height: '550px',
       data: { dataOfClient, }
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -647,6 +590,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   AddProjectResource(dataOfProjects:any){
     console.log(dataOfProjects)
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
+      width: '600px',
+      height: '500px',
       data: { dataOfProjects, }
     });
     dialogRef.afterClosed().subscribe((result) => {

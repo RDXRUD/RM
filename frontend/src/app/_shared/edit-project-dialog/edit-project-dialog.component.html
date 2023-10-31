@@ -4,7 +4,7 @@
 <form [formGroup]="updateProject" (ngSubmit)="UpdateProject(this.dataOfClient.element)">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
                 <mat-label>Client Name</mat-label>
                 <mat-select formControlName="client_id">
                     <mat-option *ngFor="let cn of data" [value]="cn.client_id">
@@ -12,33 +12,19 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
                 <mat-label>Project Name</mat-label>
                 <input formControlName="project_name" matInput>
             </mat-form-field>
-            <mat-form-field fxFlex="30">
+            <mat-form-field fxFlex="50">
                 <mat-label>Project Manager</mat-label>
-                <input #input type="text" placeholder="Pick one" matInput [formControl]="project_manager"
-                    [matAutocomplete]="auto" (input)="filterRes()" (focus)="filterRes()">
-                <mat-autocomplete requireSelection #auto="matAutocomplete">
-                    <mat-option [matTooltip]="option.client_id" matTooltipPosition="above" *ngFor="let option of filteredResOptions" [value]="option.res_name">
-                        {{option.res_name}}
+                <mat-select formControlName="project_manager">
+                    <mat-option *ngFor="let cn of resourceExtensionData" [value]="cn.res_id">
+                        {{cn.res_name}}
                     </mat-option>
-                </mat-autocomplete>
+                </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="30">
-                <mat-label>Start Date</mat-label>
-                <input formControlName="start_date" matInput [matDatepicker]="one">
-                <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
-                <mat-datepicker #one></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field fxFlex="30">
-                <mat-label>End Date</mat-label>
-                <input formControlName="end_date" matInput [matDatepicker]="two">
-                <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
-                <mat-datepicker #two></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
                 <mat-label>Project Type</mat-label>
                 <mat-select formControlName="project_type">
                     <mat-option *ngFor="let pt of projectType" [value]="pt.project_type_id">
@@ -46,7 +32,20 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
+                <mat-label>Start Date</mat-label>
+                <input formControlName="start_date" matInput [matDatepicker]="one">
+                <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
+                <mat-datepicker #one></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>End Date</mat-label>
+                <input formControlName="end_date" matInput [matDatepicker]="two">
+                <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
+                <mat-datepicker #two></mat-datepicker>
+            </mat-form-field>
+           
+            <mat-form-field fxFlex="50">
                 <mat-label>Project Status</mat-label>
                 <mat-select formControlName="project_status">
                     <mat-option *ngFor="let ps of projectStatus" [value]="ps.id">

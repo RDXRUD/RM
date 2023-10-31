@@ -26,9 +26,9 @@ var connectionString = builder.Configuration.GetConnectionString("EmployeeDB");
 builder.Services.AddDbContextPool<PGDBContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Ef_Postgres_Db")));
 // Add services to the container.
 builder.Services.AddTransient<IAccount, Account>();
-builder.Services.AddTransient<IFileUpload, FileUpload>();
-builder.Services.AddTransient<IFileUploadForSkills, FileUploadForSkill>();
-builder.Services.AddTransient<IUserInput, UserInput>();
+//builder.Services.AddTransient<IFileUpload, FileUpload>();
+//builder.Services.AddTransient<IFileUploadForSkills, FileUploadForSkill>();
+//builder.Services.AddTransient<IUserInput, UserInput>();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(opt =>
 {

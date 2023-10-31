@@ -10,15 +10,15 @@ import { ProjectService } from 'src/app/_services/project.service';
   templateUrl: './edit-project-dialog.component.html',
   styleUrls: ['./edit-project-dialog.component.scss']
 })
-
+ 
 export class EditProjectDialogComponent {
   [x: string]: any;
   updateProject!: FormGroup;
   projectStatus!:any[];
   projectType!:any[];
   formdata!:Client;
-
-
+ 
+ 
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   project_manager = new FormControl();
   resourceExtensionData!: any[];
@@ -27,7 +27,7 @@ export class EditProjectDialogComponent {
   dataofProj!:any[];
   temp:any;
   data!:any[];
-
+ 
   constructor(private projectService: ProjectService,private clientService:ClientService ,private _coreService: CoreService,private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditProjectDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfClient: any,
@@ -63,19 +63,19 @@ export class EditProjectDialogComponent {
     })
     this.projectService.getProjectStatus().subscribe(data=>
       this.projectStatus=data
-      )
-      this.projectService.getProjectType().subscribe(data=>
-        this.projectType=data
-        )
-
+    )
+    this.projectService.getProjectType().subscribe(data=>
+      this.projectType=data
+    )
+ 
   }
  
   UpdateProject(element:any) {
-
+ 
     this.temp=this.updateProject.value
     if(this.resexpansionid=='undefined'){
       this.temp.project_manager=element.project_manager
-
+ 
     }
     else{
       this.temp.project_manager=this.resexpansionid
@@ -97,10 +97,10 @@ export class EditProjectDialogComponent {
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
     console.log(this.filteredResOptions)
     console.log(this.resourceExtensionData)
-
-
+ 
+ 
     console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid=this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
-
+ 
   }
 }

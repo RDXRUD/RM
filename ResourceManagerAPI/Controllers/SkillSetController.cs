@@ -469,30 +469,30 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        [HttpPut, Authorize]
-        [Route("UpdateSkill")]
-        public async Task<IActionResult> UpdateSkill(Skills skill)
-        {
-            try
-            {
-                var existingSkill = await _dbContext.skill.FindAsync(skill.SkillID);
+        //[HttpPut, Authorize]
+        //[Route("UpdateSkill")]
+        //public async Task<IActionResult> UpdateSkill(Skills skill)
+        //{
+        //    try
+        //    {
+        //        var existingSkill = await _dbContext.skill.FindAsync(skill.SkillID);
 
-                if (existingSkill == null)
-                {
-                    return NotFound();
-                }
+        //        if (existingSkill == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-                existingSkill.Skill = skill.Skill;
+        //        existingSkill.Skill = skill.Skill;
 
-                _dbContext.Entry(existingSkill).State = EntityState.Modified;
-                await _dbContext.SaveChangesAsync();
-                return Ok("{\"message\": \"Record Updated Successfully\"}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //        _dbContext.Entry(existingSkill).State = EntityState.Modified;
+        //        await _dbContext.SaveChangesAsync();
+        //        return Ok("{\"message\": \"Record Updated Successfully\"}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
         [HttpPost, Authorize]
         [Route("GetSkillAsPerSkillGroup")]
@@ -503,7 +503,7 @@ namespace ResourceManagerAPI.Controllers
                 var employee = await (from ss in _dbContext.skill_set.Where(st=>st.status=="ACTIVE")
                                       join s in _dbContext._skill
                                       on ss.SkillID equals s.SkillID
-                                      join sg in _dbContext.skillgroup
+                                      join sg in _dbContext.skill_group
                                       on ss.SkillGroupID equals sg.SkillGroupID
                                       into detail
                                       from m in detail.DefaultIfEmpty()

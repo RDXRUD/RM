@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { EmployeeService } from 'src/app/_services/employee.service';
 import { CoreService } from 'src/app/_services/core.service';
 import { ResourcesService } from 'src/app/_services/resources.service';
 interface Location {
@@ -31,7 +30,7 @@ export class EditEmpDialogComponent implements OnInit{
 
   ];
 
-  constructor(private resource_service: ResourcesService ,private _coreService: CoreService,private employee_Service: EmployeeService,
+  constructor(private resource_service: ResourcesService ,private _coreService: CoreService,
     public dialogRef: MatDialogRef<EditEmpDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataofresource: any,
     ){

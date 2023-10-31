@@ -4,17 +4,7 @@
 <form [formGroup]="updateResource" (ngSubmit)="UpdateResource(dataOfProjects.element)">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-            <mat-form-field fxFlex="30">
-                <mat-label>Resource Name</mat-label>
-                <input #input  type="text" placeholder="Pick one" matInput [formControl]="res_id"
-                    [matAutocomplete]="auto" (input)="filterRes()" (focus)="filterRes()" >
-                <mat-autocomplete requireSelection #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredResOptions" [value]="option.res_name">
-                        {{option.res_name}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
                 <mat-label>Role</mat-label>
                 <mat-select formControlName="skill_id" single (selectionChange)="onSkillSetSelection()">
                     <mat-option *ngFor="let sd of skillData" [value]="sd.skillSetID">
@@ -22,7 +12,27 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="45">
+            <mat-form-field fxFlex="50">
+                <mat-label>Resource Name</mat-label>
+                <mat-select formControlName="res_id">
+                    <mat-option *ngFor="let cd of resourceExtensionData" [value]="cd.res_id">
+                        {{cd.res_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>Start Date</mat-label>
+                <input formControlName="start_date" matInput [matDatepicker]="one">
+                <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
+                <mat-datepicker #one></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>End Date</mat-label>
+                <input formControlName="end_date" matInput [matDatepicker]="two">
+                <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
+                <mat-datepicker #two></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
                 <mat-label>Allocation Percentage</mat-label>
                 <mat-select formControlName="allocation_perc">
                     <mat-option *ngFor="let ap of allocation" [value]="ap">
@@ -30,19 +40,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="30">
-                <mat-label>Start Date</mat-label>
-                <input formControlName="start_date" matInput [matDatepicker]="one">
-                <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
-                <mat-datepicker #one></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field fxFlex="30">
-                <mat-label>End Date</mat-label>
-                <input formControlName="end_date" matInput [matDatepicker]="two">
-                <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
-                <mat-datepicker #two></mat-datepicker>
-            </mat-form-field>
-
+ 
         </div>
         <div mat-dialog-actions align="end">
             <button mat-raised-button color="primary">Update</button>

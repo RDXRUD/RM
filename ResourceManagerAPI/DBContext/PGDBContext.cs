@@ -25,17 +25,17 @@ namespace ResourceManagerAPI.DBContext
 
 
 
-        //bellow is linked to TeamTracker Tables
-        public virtual DbSet<EmployeeTasks> employeetasks { get; set; }
-        public virtual DbSet<Employee> employees { get; set; }
-        public virtual DbSet<ResourceSkills> resourceskills { get; set; }
-        public virtual DbSet<Resources> resources { get; set; }
-        public virtual DbSet<Users> users { get; set; }
-        public virtual DbSet<SkillSet> skillset { get; set; }
-        public virtual DbSet<SkillGroups> skillgroup { get; set; }
-        public virtual DbSet<Skills> skill { get; set; }
-        public virtual DbSet<PlanUploadRecord> uploadrecord { get; set; }
-        public virtual DbSet<SharePointUploadRecord> skillsuploadrecord { get; set; }
-        public virtual DbSet<ColumnLists> columnlistrecord { get; set; }
+        ////bellow is linked to TeamTracker Tables
+        //public virtual DbSet<EmployeeTasks> employeetasks { get; set; }
+        //public virtual DbSet<Employee> employees { get; set; }
+        //public virtual DbSet<ResourceSkills> resourceskills { get; set; }
+        //public virtual DbSet<Resources> resources { get; set; }
+        //public virtual DbSet<Users> users { get; set; }
+        //public virtual DbSet<SkillSet> skillset { get; set; }
+        //public virtual DbSet<SkillGroups> skillgroup { get; set; }
+        //public virtual DbSet<Skills> skill { get; set; }
+        //public virtual DbSet<PlanUploadRecord> uploadrecord { get; set; }
+        //public virtual DbSet<SharePointUploadRecord> skillsuploadrecord { get; set; }
+        //public virtual DbSet<ColumnLists> columnlistrecord { get; set; }
     }
 }
