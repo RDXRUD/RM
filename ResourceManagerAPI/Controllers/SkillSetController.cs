@@ -258,10 +258,8 @@ namespace ResourceManagerAPI.Controllers
             _dbContext.SaveChanges();
 
             NewSkillSet skillSetForAdd = new NewSkillSet();
-            //int? intSkillsetId = _dbContext.skillset.Max(r => (int?)r.SkillSetID);
-            //int skillsetID = (intSkillsetId is null) ? 1 : (int)intSkillsetId;
+            
             skillSetForAdd.SkillGroupID = newSet.SkillGroupID;
-            //skillSetForAdd.SkillSetID = _dbContext.skill_set.Max(r => r.SkillSetID) + 1;
             skillSetForAdd.SkillID = skillForAdd.SkillID;
             skillSetForAdd.status = "ACTIVE";
             _dbContext.skill_set.Add(skillSetForAdd);
@@ -352,12 +350,11 @@ namespace ResourceManagerAPI.Controllers
                     var temp = masterSkillSet
                     .Where(mg => resMasterId.Contains((int)mg.res_id) && mg.SkillSetID == id)
                          .ToList();
-                    //var temp = resMasterId.ToList().Where(rm => rm.res_id == masterSkillGroup.res_id)
+                   
 
                     if (temp.Count() != 0)
                     {
-                        return StatusCode(502,"Skill is in use by Resource");
-                        //return BadRequest("SkillGroup is being used and cannot be disabled.");
+                        return StatusCode(502, "Skill is in use by Resource");
 
                     }
 
@@ -374,7 +371,6 @@ namespace ResourceManagerAPI.Controllers
                         return BadRequest("{\"message\":\"Skill Group is INACTIVE\"}");
                 }
 
-                //_dbContext.Entry(existingSkillGroup).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
                 return Ok(existingSkillSet);
             }
@@ -384,54 +380,7 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        //[HttpDelete, Authorize]
-        //[Route("DeleteSkillSet")]
-        //public async Task<IActionResult> DeleteSkillSet(SkillSet skill)
-        //{
-        //    var skills = (from r in _dbContext.resources
-        //                  join rs in _dbContext.resourceskills
-        //                  on r.ResourceID equals rs.ResourceID
-        //                  join ss in _dbContext.skillset
-        //                  on rs.SkillSetID equals ss.SkillSetID
-        //                  join sg in _dbContext.skillgroup
-        //                  on ss.SkillGroupID equals sg.SkillGroupID
-        //                  join s in _dbContext.skill
-        //                  on ss.SkillID equals s.SkillID
-        //                  into detail
-        //                  from m in detail.DefaultIfEmpty()
-        //                  select new ResourceSkillManager
-        //                  {
-        //                      ResourceID = r.ResourceID,
-        //                      SkillID = ss.SkillID,
-        //                      ResourceSkillID = rs.ResourceSkillID,
-        //                      SkillSetID = rs.SkillSetID,
-        //                      SkillGroupID = sg.SkillGroupID,
-        //                      EmailID = r.EmailID,
-        //                      SkillGroup = sg.SkillGroup,
-        //                      Skill = m.Skill
-        //                  }
-        //                        ).ToList();
-
-        //    if (!skills.Any(s => s.SkillSetID == skill.SkillSetID))
-        //    {
-        //        var skillSetToDelete = await _dbContext.skillset.FindAsync(skill.SkillSetID);
-        //        if (skillSetToDelete != null)
-        //        {
-        //            _dbContext.skillset.RemoveRange(skillSetToDelete);
-        //            _dbContext.SaveChanges();
-        //            Skills skillSet = new Skills();
-        //            skillSet.SkillID = skillSetToDelete.SkillID;
-        //            _dbContext.skill.RemoveRange(skillSet);
-        //            _dbContext.SaveChanges();
-        //            }
-        //            return Ok("{\"message\": \"Record Deleted Successfully\"}");
-
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("{\"message\":\"This field is used in another process, you can't delete it\"}");
-        //    }
-        //}
+        
 
         [HttpGet, Authorize]
         [Route("GetSkill")]
@@ -469,31 +418,7 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        //[HttpPut, Authorize]
-        //[Route("UpdateSkill")]
-        //public async Task<IActionResult> UpdateSkill(Skills skill)
-        //{
-        //    try
-        //    {
-        //        var existingSkill = await _dbContext.skill.FindAsync(skill.SkillID);
-
-        //        if (existingSkill == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        existingSkill.Skill = skill.Skill;
-
-        //        _dbContext.Entry(existingSkill).State = EntityState.Modified;
-        //        await _dbContext.SaveChangesAsync();
-        //        return Ok("{\"message\": \"Record Updated Successfully\"}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
-
+ 
         [HttpPost, Authorize]
         [Route("GetSkillAsPerSkillGroup")]
         public async Task<IEnumerable<Skills>> GetSkill([FromBody] NewSkillGroup skillGroup)
@@ -560,22 +485,6 @@ namespace ResourceManagerAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        //[HttpDelete, Authorize]
-        //[Route("DeleteSkill")]
-        //public async Task<IActionResult> DeleteSkill(Skills skill)
-        //{
-        //    try
-        //    {
-        //        SkillSet skillSet = new SkillSet();
-        //        skillSet.SkillID = skill.SkillID;
-        //        _dbContext.skillset.RemoveRange(skillSet);
-        //        _dbContext.SaveChanges();
-        //        return Ok("{\"message\": \"Record Deleted Successfully\"}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+       
     }
 }

@@ -18,28 +18,12 @@ namespace ResourceManagerAPI.Repository
         {
             _dbContext = connection;
         }
-        //public string AddUser(Users user)
-        //{
-        //    Users objUser = new Users();
-        //    objUser.UserName = user.UserName;
-        //    objUser.FullName = user.FullName;
-        //    objUser.Password = Encrypt(user.Password);
-        //    _dbContext.users.Add(objUser);
-        //    _dbContext.SaveChanges();
-        //    return "{\"message\": \"Record Added Successfully\"}";
-        //}
+        
         public string ResourcePass(Login user)
         {
             return Encrypt(user.Password);
         }
-        //public string DeleteUser(Users user)
-        //{
-        //    Users objUser = new Users();
-        //    objUser.UserID = user.UserID;
-        //    _dbContext.users.RemoveRange(objUser);
-        //    _dbContext.SaveChanges();
-        //    return "{\"message\": \"Record Deleted Successfully\"}";
-        //}
+        
         public string Encrypt(string clearText)
         {
             string encryptionKey = "MAKV2SPBNI99212";

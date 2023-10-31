@@ -46,6 +46,75 @@ namespace ResourceManagerAPI.Migrations
                     b.ToTable("client_master");
                 });
 
+            modelBuilder.Entity("ResourceManagerAPI.Models.CrossJoin", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<float>("allocation_perc")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("day")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("res_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("cross_view_join");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.CrossViewData", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<float>("allocation_perc")
+                        .HasColumnType("real");
+
+                    b.Property<int>("date_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("res_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("cross_view_data");
+                });
+
+            modelBuilder.Entity("ResourceManagerAPI.Models.DateMaster", b =>
+                {
+                    b.Property<int>("date_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("date_id"));
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("day")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("date_id");
+
+                    b.ToTable("date_master");
+                });
+
             modelBuilder.Entity("ResourceManagerAPI.Models.LocationMaster", b =>
                 {
                     b.Property<int>("id")

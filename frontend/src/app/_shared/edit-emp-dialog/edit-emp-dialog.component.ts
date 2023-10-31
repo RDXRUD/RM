@@ -30,7 +30,7 @@ export class EditEmpDialogComponent implements OnInit{
 
   ];
 
-  constructor(private resource_service: ResourcesService ,private _coreService: CoreService,
+  constructor(
     public dialogRef: MatDialogRef<EditEmpDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataofresource: any,
     ){

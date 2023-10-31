@@ -28,7 +28,10 @@ export class EditProjectDialogComponent {
   temp:any;
   data!:any[];
  
-  constructor(private projectService: ProjectService,private clientService:ClientService ,private _coreService: CoreService,private fb: FormBuilder,
+  constructor(private projectService: ProjectService,
+    private clientService:ClientService ,
+    private _coreService: CoreService,
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditProjectDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfClient: any,
     ){
@@ -89,7 +92,6 @@ export class EditProjectDialogComponent {
       this.dialogRef.close('success');
       this.ngOnInit();
     })
-    // element=this.temp
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
@@ -97,8 +99,6 @@ export class EditProjectDialogComponent {
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
     console.log(this.filteredResOptions)
     console.log(this.resourceExtensionData)
- 
- 
     console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid=this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
  

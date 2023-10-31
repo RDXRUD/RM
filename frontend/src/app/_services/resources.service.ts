@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-//import { addResource } from '../_model/addResource';
 import { resource } from '../_model/resource';
 import { addNewResource } from '../_model/addNewResource';
 import { locations } from '../_model/locations';

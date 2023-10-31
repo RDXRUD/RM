@@ -17,9 +17,8 @@ export class EditSkillDialogComponent {
   datas: any;
   skills: FormGroup;
   formdata!: skillsetupdate;
-  constructor(private frmbuilder: FormBuilder, 
+  constructor(frmbuilder: FormBuilder, 
     public dialogRef: MatDialogRef<EditSkillDialogComponent>,
-    private fb: FormBuilder, 
     private skillsetService: SkillsetService,
     private _coreService:CoreService,
     @Inject(MAT_DIALOG_DATA) public dataofskills: any) {
