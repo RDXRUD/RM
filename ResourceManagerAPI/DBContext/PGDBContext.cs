@@ -1,6 +1,6 @@
 ﻿using ResourceManagerAPI.Models;
 using Microsoft.EntityFrameworkCore;
- 
+
 namespace ResourceManagerAPI.DBContext
 {
     public class PGDBContext : DbContext
@@ -25,6 +25,6 @@ namespace ResourceManagerAPI.DBContext
         public virtual DbSet<DateMaster> date_master { get; set; }
         public virtual DbSet<CrossViewData> cross_view_data { get; set; }
         public virtual DbSet<CrossJoin> cross_view_join { get; set; }
- 
+
     }
 }
