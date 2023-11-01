@@ -22,7 +22,16 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpGet]
-        [Route("dates")]
+        [Route("Dates")]
+        public ActionResult<IEnumerable<DateMaster>> GetDates()
+        {
+            
+            return _dbContext.date_master;
+            //return datesWithDays;
+        }
+
+        [HttpGet]
+        [Route("CrossViewData")]
         public ActionResult<IEnumerable<CrossTabResult>> GetDates(DateTime startDate, DateTime endDate,int id)
         {
             if (startDate > endDate)
@@ -119,9 +128,6 @@ namespace ResourceManagerAPI.Controllers
         .ToList();
 
             return crosstab;
-
-
-
             //return datesWithDays;
         }
     }
