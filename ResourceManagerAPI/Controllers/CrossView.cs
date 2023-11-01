@@ -30,8 +30,8 @@ namespace ResourceManagerAPI.Controllers
             //return datesWithDays;
         }
 
-        [HttpGet]
-        [Route("CrossViewData")]
+        [HttpPost]
+        [Route("CrossViewData/{startDate}/{endDate}/{id}")]
         public ActionResult<IEnumerable<CrossTabResult>> GetDates(DateTime startDate, DateTime endDate,int id)
         {
             if (startDate > endDate)

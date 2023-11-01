@@ -57,7 +57,7 @@
   </mat-expansion-panel>
   <div class="mat-elevation-z8 list-table">
     <div class="table-container">
-      <!-- <table mat-table [dataSource]="dataSource" matSort>
+      <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="res_ID">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource ID</th>
           <td mat-cell *matCellDef="let user"> {{user.res_ID}} </td>
@@ -66,33 +66,13 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
           <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
         </ng-container>
-        ng-container *ngFor="let col of columns" [matColumnDef]="allocation">
-          <th mat-header-cell *matHeaderCellDef>{{ col }}</th>
-          <td mat-cell *matCellDef="let element">{{ element[col] }}</td>
-        </ng-container>
         <ng-container *ngFor="let col of columns" [matColumnDef]="col">
           <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
           <td mat-cell *matCellDef="let user"> {{ user[col] }} </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table> -->
-      <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="crosstabData">
-          <ng-container *ngFor="let column of displayedColumn" [matColumnDef]="column">
-            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-            <td mat-cell *matCellDef="let element">{{ element[column] || 'N/A' }}</td>
-          </ng-container>
-      
-          <ng-container matColumnDef="ResName">
-            <th mat-header-cell *matHeaderCellDef>Resource Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.ResName }}</td>
-          </ng-container>
-      
-          <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumn"></tr>
-        </table>
-      </div>
+      </table>
     </div>
   </div>
 </div>
