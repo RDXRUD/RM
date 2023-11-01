@@ -8,7 +8,9 @@ import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { employeeFilters } from '../_model/employeefilters';
 import { tasks } from '../_model/tasks';
-import { elementAt } from 'rxjs';
+import { CrossViewService } from '../_services/cross-view.service';
+import { SkillsetService } from '../_services/skillset.service';
+// import { AllocationService } from './allocation.service';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -43,11 +45,39 @@ export class HomeComponent implements OnInit {
   skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
-  displayedColumns: string[] = ['res_ID', 'res_name', 'allocation'];
+
+  columns: string[] = ['Date_1', 'Date_2', 'Date_3'];
+  dataOfAllocation = [
+    { res_ID: 1, res_name: 'Resource 1', Date_1: 80, Date_2: 60, Date_3: 90 },
+    { res_ID: 2, res_name: 'Resource 2', Date_1: 70, Date_2: 50, Date_3: 85 },
+    { res_ID: 3, res_name: 'Resource 3', Date_1: 80, Date_2: 60, Date_3: 90 },
+    { res_ID: 4, res_name: 'Resource 4', Date_1: 70, Date_2: 50, Date_3: 85 },
+  ]; 
+  crosstabData = [
+    {
+      "ResName": "Resource A",
+      "2023-10-01": 80.5,
+      "2023-10-02": 75.2,
+      "2023-10-03": 90.8
+    },
+    {
+      "ResName": "Resource B",
+      "2023-10-01": 65.0,
+      "2023-10-02": 75.2,
+      "2023-10-03": 70.2
+    },
+    // Add more data here
+  ];
+  displayedColumn = Object.keys(this.crosstabData[0]);
+  displayedColumns = ['res_ID', 'res_name', ...this.columns];  
+  // crosstabData!:any[];
+  // displayedColumn!: any[];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
   constructor(
-    frmbuilder: FormBuilder
+    frmbuilder: FormBuilder,
+    private allocationService: CrossViewService,
+    private skillSetService: SkillsetService,
   ) {
     this.filteringForm = frmbuilder.group({
       name: new FormControl(),
@@ -58,39 +88,35 @@ export class HomeComponent implements OnInit {
       assignedTo: new FormControl(),
       availableFrom: new FormControl()
     });
+    this.dataSource = new MatTableDataSource(this.dataOfAllocation);
   }
   ngOnInit() {
+    this.skillSetService.getSkills().subscribe(dataOfSkill => {
+      this.skillData = dataOfSkill;
+    });
+    
 
+    // Extract column names (dates) from the data
+    
+    console.log(this.displayedColumn  );
+  
+    // this.allocationService.getCrossView().subscribe((response: any) => {
+    //   // Extract column headings from the API response
+    //   this.columns = Object.keys(response[0]);
+
+    //   // Use the API response as the table data
+    //   this.dataOfAllocation = response;
+    // });
   }
   applySortToDataSource() {
-    if (this.dataSource) {
-      this.dataSource.sort = this.sort;
-    }
+    // if (this.dataSource) {
+    //   this.dataSource.sort = this.sort;
+    // }
   }
   OnSubmit() {
   }
   OnReset() {
-    this.filteringForm.reset();
-    this.applySortToDataSource();
-  }
-
-  array:any=[
-    {
-      Name: "A",
-      Address: "Add1",
-    },
-    {
-      Name: "B",
-      Address: "Add2",
-    }
-  ]
-  tabKey:any = [];
-  tabValue:any = [];
-
-  getdat(){
-    this.array.forEach((element:any)=>{
-      this.tabKey = Object.keys(element);
-      this.tabValue.push(Object.values(element));
-    })
+    // this.filteringForm.reset();
+    // this.applySortToDataSource();
   }
 }

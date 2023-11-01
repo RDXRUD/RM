@@ -43,11 +43,12 @@ import { UpdateProfileDialogComponent } from './_shared/update-profile-dialog/up
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { EditClientDialogComponent } from './_shared/edit-client-dialog/edit-client-dialog.component';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
-import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AddProjectDialogComponent } from './_shared/add-project-dialog/add-project-dialog.component';
 import { AddResourceProjectDialogComponent } from './_shared/add-resource-project-dialog/add-resource-project-dialog.component';
 import { EditProjectDialogComponent } from './_shared/edit-project-dialog/edit-project-dialog.component';
 import { EditProjectResourceDialogComponent } from './_shared/edit-project-resource-dialog/edit-project-resource-dialog.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +97,7 @@ import { EditProjectResourceDialogComponent } from './_shared/edit-project-resou
     MatSnackBarModule,
     MatSlideToggleModule,
     MatTableModule,
+    MatPaginatorModule,
     NgFor, MatButtonModule, NgIf, MatIconModule,
     FormsModule,
     MatFormFieldModule,

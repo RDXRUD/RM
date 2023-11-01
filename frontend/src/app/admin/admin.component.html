@@ -210,7 +210,7 @@
                 </div>
               </form>
             </mat-expansion-panel>
-            <div style="height: 100%;">
+            <div style="height: 100%;" >
               <table mat-table [dataSource]="dataOfempSkill" class="SkillsTable" matSort #sort="matSort">
                 <ng-container matColumnDef="skillSetID">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -425,7 +425,7 @@
           </div>
         </mat-tab>
         <mat-tab label="Project Allocation">
-          <div style="height: 100%; overflow-y: auto;">
+          <div style="height: 100%; overflow-y: auto;" class="mat-elevation-z8 list-table">
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>Filters</mat-panel-title>
@@ -457,7 +457,8 @@
                 </div>
               </form>
             </mat-expansion-panel>
-            <table mat-table class="tbl" [dataSource]="dataOfClient" multiTemplateDataRows matSort #sortedClientData="matSort"
+            <div style="height: 100%;" >
+              <table mat-table class="tbl" [dataSource]="dataOfClient" multiTemplateDataRows matSort #sortedClientData="matSort"
               matSortDirection="asc">
               <ng-container matColumnDef="client_id">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Client ID </th>
@@ -629,6 +630,7 @@
               </tr>
               <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
             </table>
+          </div>
           </div>
         </mat-tab>
       </mat-tab-group>

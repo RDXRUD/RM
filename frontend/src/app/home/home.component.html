@@ -7,7 +7,7 @@
     </mat-expansion-panel-header>
     <form [formGroup]="filteringForm" (ngSubmit)="OnSubmit()">
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-        <mat-form-field fxFlex="20">
+        <!-- <mat-form-field fxFlex="20">
           <mat-label>Resource Name</mat-label>
           <input formControlName="name" matInput>
         </mat-form-field>
@@ -18,37 +18,37 @@
         <mat-form-field fxFlex="20">
           <mat-label>Task Name</mat-label>
           <input type="text" formControlName="taskName" matInput>
-        </mat-form-field>
-        <mat-form-field fxFlex="20">
+        </mat-form-field> -->
+        <mat-form-field fxFlex="25">
           <mat-label>Skill</mat-label>
           <mat-select formControlName="skill" multiple>
             <mat-option *ngFor="let val of skillData" [value]="val.skill">{{val.skill}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
-          <mat-label>Assigned From</mat-label>
+        <mat-form-field fxFlex="25">
+          <mat-label>Start Date</mat-label>
           <input formControlName="assignedFrom" matInput [matDatepicker]="one">
           <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
           <mat-datepicker #one></mat-datepicker>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
-          <mat-label>Assigned To</mat-label>
+        <mat-form-field fxFlex="25">
+          <mat-label>End Date</mat-label>
           <input formControlName="assignedTo" matInput [matDatepicker]="two">
           <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
           <mat-datepicker #two></mat-datepicker>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <!-- <mat-form-field fxFlex="20">
           <mat-label>Available From</mat-label>
           <input formControlName="availableFrom" matInput [matDatepicker]="three">
           <mat-datepicker-toggle matIconSuffix [for]="three"></mat-datepicker-toggle>
           <mat-datepicker #three></mat-datepicker>
-        </mat-form-field>
-        <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+        </mat-form-field> -->
+        <div fxFlex="12.5" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
           <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
             value="OnSubmit">Submit</button>
         </div>
-        <div fxFlex="20" fxFlexFill>
+        <div fxFlex="12.5" fxFlexFill>
           <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">
             Reset</button>
         </div>
@@ -57,7 +57,7 @@
   </mat-expansion-panel>
   <div class="mat-elevation-z8 list-table">
     <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort>
+      <!-- <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="res_ID">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource ID</th>
           <td mat-cell *matCellDef="let user"> {{user.res_ID}} </td>
@@ -66,14 +66,33 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
           <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
         </ng-container>
-        <ng-container matColumnDef="allocation">
-          <th mat-header-cell *matHeaderCellDef="let alo of tabKey"   mat-sort-header>{{alo}}</th>
-          <td mat-cell *matCellDef="let user of tabValue"> {{user}} </td>
+        ng-container *ngFor="let col of columns" [matColumnDef]="allocation">
+          <th mat-header-cell *matHeaderCellDef>{{ col }}</th>
+          <td mat-cell *matCellDef="let element">{{ element[col] }}</td>
         </ng-container>
-        
+        <ng-container *ngFor="let col of columns" [matColumnDef]="col">
+          <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
+          <td mat-cell *matCellDef="let user"> {{ user[col] }} </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+      </table> -->
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="crosstabData">
+          <ng-container *ngFor="let column of displayedColumn" [matColumnDef]="column">
+            <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+            <td mat-cell *matCellDef="let element">{{ element[column] || 'N/A' }}</td>
+          </ng-container>
+      
+          <ng-container matColumnDef="ResName">
+            <th mat-header-cell *matHeaderCellDef>Resource Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.ResName }}</td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumn"></tr>
+        </table>
+      </div>
     </div>
   </div>
 </div>
