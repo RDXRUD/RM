@@ -3,6 +3,19 @@
     <form [formGroup]="filteringForm" sticky>
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
         <mat-form-field fxFlex="20">
+          <mat-label>Resource Name</mat-label>
+          <mat-select formControlName="res_name" multiple>
+            <mat-option *ngFor="let select of data" [value]="select.data">{{select.res_name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="20">
+          <mat-label>Location</mat-label>
+          <mat-select input formControlName="location">
+            <mat-option *ngFor="let loc of locations" [value]="loc.location">{{loc.location}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="20">
           <mat-label>Skill Group</mat-label>
           <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
             <mat-option *ngFor="let select of DataofSkillGroup" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
@@ -26,13 +39,16 @@
           <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
           <mat-datepicker #two></mat-datepicker>
         </mat-form-field>
-        <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+        <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
           <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnSubmit()"
             value="OnSubmit">Submit</button>
         </div>
-        <div fxFlex="10" fxFlexFill>
+        <div fxFlex="20" fxFlexFill>
           <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">
             Reset</button>
+        </div>
+        <div fxFlex="20" fxFlexFill>
+          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="exportToExcel()">Export to Excel</button>
         </div>
       </div>
     </form>

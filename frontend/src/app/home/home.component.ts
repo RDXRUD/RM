@@ -11,6 +11,9 @@ import { tasks } from '../_model/tasks';
 import { CrossViewService } from '../_services/cross-view.service';
 import { SkillsetService } from '../_services/skillset.service';
 import { SkillGroups } from '../_model/SkillGroups';
+import { ResourcesService } from '../_services/resources.service';
+import * as XLSX from 'xlsx';
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -41,6 +44,7 @@ export class HomeComponent implements OnInit {
   tasks!: tasks;
   dataOfSkill: any;
   data: any;
+  locations!: any[];
   skillData!: any[];
   skillDataSorted!: any[];
   formdata!: employeeFilters;
@@ -51,6 +55,7 @@ export class HomeComponent implements OnInit {
   columns: string[] = [];
   dataOfAllocation = [];
   displayedColumns = [ ...this.columns];
+  fileName = 'ExportExce.xlsx';
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
   temp: any;
@@ -58,6 +63,7 @@ export class HomeComponent implements OnInit {
     frmbuilder: FormBuilder,
     private allocationService: CrossViewService,
     private skillSetService: SkillsetService,
+    private resources_Service: ResourcesService,
   ) {
     this.filteringForm = frmbuilder.group({
       skillGroupID: new FormControl(),
@@ -69,6 +75,13 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.skillSetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
+    });
+    this.resources_Service.GetLocations().subscribe(data => {
+      this.locations = data;
+    });
+    this.resources_Service.getResources().subscribe(data => {
+      this.data = data;
+      // this.resourceExtensionData = data;
     })
   }
       applySortToDataSource() {
@@ -138,4 +151,45 @@ export class HomeComponent implements OnInit {
       this.skillData = res;
     });
   }
+  // exportToExcel(): void {
+  //   // Create an array to hold the data
+  //   const data = [];
+
+  //   // Add headers to the data array
+  //   const headers = ['Resource Name', ...this.columns];
+  //   data.push(headers);
+
+  //   // Add data rows to the data array
+  //   this.dataOfAllocation.forEach((item) => {
+  //     const row = [item.res_name];
+
+  //     this.columns.forEach((col) => {
+  //       row.push(item.allocationData[col] || 0); // Use 0 if allocationData is undefined
+  //     });
+
+  //     data.push(row);
+  //   });
+
+  //   // Create a worksheet from the data
+  //   const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+
+  //   // Create a workbook and add the worksheet
+  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'Data');
+
+  //   // Generate the Excel file in memory
+  //   const excelBlob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
+
+  //   // Save the Excel file to the user's device using file-saver
+  //   saveAs(excelBlob, 'table_data.xlsx');
+  // }
+  exportToExcel(): void {
+    /* pass here the table id */
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataOfAllocation);
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    /* save to file */
+    XLSX.writeFile(wb, this.fileName);
+}
 }
