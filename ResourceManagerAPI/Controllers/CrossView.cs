@@ -114,20 +114,42 @@ namespace ResourceManagerAPI.Controllers
 
             var data = _dbContext.cross_view_join.ToList();
 
-            var crosstab = data
-        .GroupBy(d => new { d.res_name, d.date })
-        .Select(g => new CrossTabResult
-        {
-            res_name = g.Key.res_name,
-            allocationData = g.GroupBy(d => d.date).ToDictionary(
-                group => group.Key,
-                group => group.Sum(item => item.allocation_perc)
-            )
-        })
-        .OrderBy(c => c.res_name) // Sort by ResName
-        .ToList();
+            var groupedData = data.GroupBy(d => d.res_name);
+
+            var crosstab = new List<CrossTabResult>();
+
+            foreach (var group in groupedData)
+            {
+                var resName = group.Key;
+                var allocationData = group.GroupBy(item => item.date)
+                    .ToDictionary(
+                        dateGroup => dateGroup.Key,
+                        dateGroup => dateGroup.Sum(item => item.allocation_perc)
+                    );
+
+                crosstab.Add(new CrossTabResult
+                {
+                    res_name = resName,
+                    allocationData = allocationData
+                });
+            }
 
             return crosstab;
+
+            //    var crosstab = data
+            //.GroupBy(d => new { d.res_name, d.date })
+            //.Select(g => new CrossTabResult
+            //{
+            //    res_name = g.Key.res_name,
+            //    allocationData = g.GroupBy(d => d.date).ToDictionary(
+            //        group => group.Key,
+            //        group => group.Sum(item => item.allocation_perc)
+            //    )
+            //})
+            //.OrderBy(c => c.res_name) // Sort by ResName
+            //.ToList();
+
+            //    return crosstab;
             //return datesWithDays;
         }
     }

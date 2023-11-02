@@ -45,16 +45,15 @@ export class HomeComponent implements OnInit {
   formdata!: employeeFilters;
   filteringForm: FormGroup;
   dates!: any[];
-
-  columns: string[] = ['Date_1','Date_2','Date_3','Date_4'];
+  columns: string[] = [];
   dataOfAllocation = [
-    { res_ID: 1, res_name: 'Resource 1', Date_1: 80, Date_2: 60, Date_3: 90 },
-    { res_ID: 2, res_name: 'Resource 2', Date_1: 70, Date_2: 50, Date_3: 85 },
-    { res_ID: 3, res_name: 'Resource 3', Date_1: 80, Date_2: 60, Date_3: 90 },
-    { res_ID: 4, res_name: 'Resource 4', Date_1: 70, Date_2: 50, Date_3: 85 },
+    // { res_ID: 1, res_name: 'Resource 1', Date_1: 80, Date_2: 60, Date_3: 90 },
+    // { res_ID: 2, res_name: 'Resource 2', Date_1: 70, Date_2: 50, Date_3: 85 },
+    // { res_ID: 3, res_name: 'Resource 3', Date_1: 80, Date_2: 60, Date_3: 90 },
+    // { res_ID: 4, res_name: 'Resource 4', Date_1: 70, Date_2: 50, Date_3: 85 },
   ];
   
-  displayedColumns = ['res_ID', 'res_name', ...this.columns];
+  displayedColumns = ['res_name', ...this.columns];
   // dataOfAllocation: any[] = []; // Initialize dataOfAllocation as an empty array
   // displayedColumns: string[] = []; 
   dataSource!: MatTableDataSource<any>;
@@ -73,7 +72,7 @@ export class HomeComponent implements OnInit {
       assignedTo: new FormControl(),
       availableFrom: new FormControl()
     });
-    this.dataSource = new MatTableDataSource(this.dataOfAllocation);
+    // this.dataSource = new MatTableDataSource(this.dataOfAllocation);
   }
   ngOnInit() {
     this.skillSetService.getSkills().subscribe(dataOfSkill => {
@@ -87,7 +86,7 @@ export class HomeComponent implements OnInit {
 
     const startDate = new Date('2023-11-01');
     const startDateString = startDate.toISOString();
-    const endDate = new Date('2023-11-30');
+    const endDate = new Date('2023-11-09');
     const endDateString = endDate.toISOString();
     this.allocationService.getCrossView(startDateString, endDateString, 6).subscribe((response: any) => {
       // Your code to handle the response goes here
@@ -96,27 +95,30 @@ export class HomeComponent implements OnInit {
       // Use the API response as the table data
       this.dataOfAllocation = response;
       console.log(this.dataOfAllocation);
-      // this.displayedColumns = ['res_ID', 'res_name', ...this.columns];
-
-    });
-    this.allocationService.getDates().subscribe(date=> {
-      this.dates = date;
-      console.log("date:", date);
-
-      // console.log("date:", date.day);
-      for (const date of this.dates) {
-        console.log("Date:", date.date);
-        console.log("Day:", date.day);
-        this.columns.push(date.date);
-      }
-      // this.columns = date
-      console.log(this.columns);
       
+      // this.displayedColumns = ['res_ID', 'res_name', ...this.columns];
+      this.allocationService.getDates().subscribe(date=> {
+        this.dates = date;
+        console.log("date:", date);
+  
+        // console.log("date:", date.day);
+        for (const date of this.dates) {
+          console.log("Date:", date.date);
+          console.log("Day:", date.day);
+          this.columns.push(date.date);
+          this.displayedColumns.push(date.date)
+        }
+        // this.columns = date
+        console.log("col:",this.columns);
+        
+      });
     });
+    // this.displayedColumns=this.columns
+    console.log("uniqueDates",this.displayedColumns);
 
 
   }
-  applySortToDataSource() {
+      applySortToDataSource() {
     // if (this.dataSource) {
     //   this.dataSource.sort = this.sort;
     // }
