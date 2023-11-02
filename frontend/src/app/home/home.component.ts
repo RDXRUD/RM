@@ -10,6 +10,7 @@ import { employeeFilters } from '../_model/employeefilters';
 import { tasks } from '../_model/tasks';
 import { CrossViewService } from '../_services/cross-view.service';
 import { SkillsetService } from '../_services/skillset.service';
+import { SkillGroups } from '../_model/SkillGroups';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -44,79 +45,31 @@ export class HomeComponent implements OnInit {
   skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
+  DataofSkillGroup!: any[];
+  skillSetID:any;
   dates!: any[];
   columns: string[] = [];
-  dataOfAllocation = [
-    // { res_ID: 1, res_name: 'Resource 1', Date_1: 80, Date_2: 60, Date_3: 90 },
-    // { res_ID: 2, res_name: 'Resource 2', Date_1: 70, Date_2: 50, Date_3: 85 },
-    // { res_ID: 3, res_name: 'Resource 3', Date_1: 80, Date_2: 60, Date_3: 90 },
-    // { res_ID: 4, res_name: 'Resource 4', Date_1: 70, Date_2: 50, Date_3: 85 },
-  ];
-  
-  displayedColumns = ['res_name', ...this.columns];
-  // dataOfAllocation: any[] = []; // Initialize dataOfAllocation as an empty array
-  // displayedColumns: string[] = []; 
+  dataOfAllocation = [];
+  displayedColumns = [ ...this.columns];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
+  temp: any;
   constructor(
     frmbuilder: FormBuilder,
     private allocationService: CrossViewService,
     private skillSetService: SkillsetService,
   ) {
     this.filteringForm = frmbuilder.group({
-      name: new FormControl(),
-      emailID: new FormControl(),
-      taskName: new FormControl(),
-      skill: new FormControl(),
-      assignedFrom: new FormControl(),
-      assignedTo: new FormControl(),
-      availableFrom: new FormControl()
+      skillGroupID: new FormControl(),
+      skillID: new FormControl(),
+      startDate: new FormControl(),
+      endDate: new FormControl(),
     });
-    // this.dataSource = new MatTableDataSource(this.dataOfAllocation);
   }
   ngOnInit() {
-    this.skillSetService.getSkills().subscribe(dataOfSkill => {
-      this.skillData = dataOfSkill;
-    });
-
-
-    // Extract column names (dates) from the data
-
-    // console.log(this.displayedColumns);
-
-    const startDate = new Date('2023-11-01');
-    const startDateString = startDate.toISOString();
-    const endDate = new Date('2023-11-09');
-    const endDateString = endDate.toISOString();
-    this.allocationService.getCrossView(startDateString, endDateString, 6).subscribe((response: any) => {
-      // Your code to handle the response goes here
-      // this.columns = Object.keys(response[0]);
-
-      // Use the API response as the table data
-      this.dataOfAllocation = response;
-      console.log(this.dataOfAllocation);
-      
-      // this.displayedColumns = ['res_ID', 'res_name', ...this.columns];
-      this.allocationService.getDates().subscribe(date=> {
-        this.dates = date;
-        console.log("date:", date);
-  
-        // console.log("date:", date.day);
-        for (const date of this.dates) {
-          console.log("Date:", date.date);
-          console.log("Day:", date.day);
-          this.columns.push(date.date);
-          this.displayedColumns.push(date.date)
-        }
-        // this.columns = date
-        console.log("col:",this.columns);
-        
-      });
-    });
-    // this.displayedColumns=this.columns
-    console.log("uniqueDates",this.displayedColumns);
-
-
+    this.skillSetService.getSkillGroups().subscribe(res => {
+      this.DataofSkillGroup = res;
+    })
   }
       applySortToDataSource() {
     // if (this.dataSource) {
@@ -124,9 +77,65 @@ export class HomeComponent implements OnInit {
     // }
   }
   OnSubmit() {
+    this.displayedColumns=["res_name"]
+    this.columns=[]
+    this.skillSetService.getSkillSets().subscribe(datas => {
+      const temp=datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
+      console.log(temp[0]);
+      this.skillSetID=temp[0].skillSetID;
+      console.log("ss",temp[0].skillSetID);
+      
+    
+
+    const startDate = new Date(this.filteringForm.get('startDate')?.value.format('YYYY-MM-DD'));
+    const startDateString = startDate.toISOString();
+    const endDate = new Date(this.filteringForm.get('endDate')?.value.format('YYYY-MM-DD'));
+    const endDateString = endDate.toISOString();
+    console.log("asdfghjkl:",startDateString, endDateString, this.skillSetID);
+    
+    this.allocationService.getCrossView(startDateString, endDateString, this.skillSetID).subscribe((response: any) => {
+      this.dataOfAllocation = response;
+      console.log(this.dataOfAllocation);
+      this.allocationService.getDates().subscribe(date=> {
+        this.dates = date;
+        console.log("date:", date);
+
+        for (const date of this.dates) {
+          console.log("Date:", date.date);
+          console.log("Day:", date.day);
+          this.columns.push(date.date);
+          this.displayedColumns.push(date.date)
+        }
+        // console.log("col:",this.columns);
+        
+      });
+    });
+  })
   }
+  getCellStyle(value: number): any {
+    if(value > 1){
+      return  { 'background-color': 'red',color: 'white' };
+  }else if (value < 1&&value>-1){
+    return  { 'background-color': 'lightgreen' };
+  }else{
+    return {}
+  } 
+  }
+
   OnReset() {
-    // this.filteringForm.reset();
+    this.filteringForm.reset();
+    this.displayedColumns=[]
+    this.columns=[]
     // this.applySortToDataSource();
+  }
+  onSkillGroupSelection() {
+    const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
+    const skillGroup: SkillGroups = {
+      skillGroupID: skillGroupID,
+      skillGroup: ''
+    };
+    this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+      this.skillData = res;
+    });
   }
 }

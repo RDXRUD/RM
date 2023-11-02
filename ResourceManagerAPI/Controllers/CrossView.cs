@@ -88,24 +88,26 @@ namespace ResourceManagerAPI.Controllers
                             select new CrossJoin
                             {
                                 res_name = grouped.Key.res_name,
-                                allocation_perc = grouped.Sum(p => p.allocation_perc),
+                                allocation_perc = grouped.Key.day == "Saturday" || grouped.Key.day == "Sunday"
+                                    ? -1 // Set allocation_perc to -1 for Saturday and Sunday
+                                    : grouped.Sum(p => p.allocation_perc),
                                 date = grouped.Key.date,
                                 day = grouped.Key.day
                             };
+
             var tempQuery = from rm in _dbContext.resource_master
                             join cvd in _dbContext.cross_view_data on rm.res_id equals cvd.res_id
                             join dm in _dbContext.date_master on cvd.date_id equals dm.date_id
                             join pra in _dbContext.project_res_allocation on cvd.res_id equals pra.res_id into allocationGroup
                             from allocation in allocationGroup.DefaultIfEmpty() // Left join
-                            //where ((allocation.start_date <= dm.date && allocation.end_date >= dm.date))
-                            //group allocation by new { rm.res_name, cvd.res_id, dm.date, dm.day } into grouped
                             select new CrossJoin
                             {
                                 res_name = rm.res_name,
-                                allocation_perc = cvd.allocation_perc,
+                                allocation_perc = (dm.day == "Saturday" || dm.day == "Sunday") ? -1 : cvd.allocation_perc,
                                 date = dm.date,
                                 day = dm.day
                             };
+
 
             var combinedQuery = joinQuery.Union(tempQuery);
 

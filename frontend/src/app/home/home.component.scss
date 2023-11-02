@@ -97,14 +97,25 @@
 	font-size: larger;
 }
 
-// .mat-column-res_ID{
-// 	width: 7%;
-// }
 
-// .mat-column-res_name{
-// 	width: 150%;
-// }
+.mat-column-res_name{
+	width: 400px;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-// .mat-column-col{
-// 	width: 10%;
-// }
+th,table{
+	border-bottom: .01px solid black;
+}
+
+td{
+	min-width: 150px;
+	border-right: .01px solid black;
+	border-bottom: .01px solid black ;
+}
+
+.uppar{
+	margin: 20px ;
+	margin-bottom: 0;
+}

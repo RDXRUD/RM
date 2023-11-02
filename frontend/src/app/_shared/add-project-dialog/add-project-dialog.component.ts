@@ -61,10 +61,11 @@ export class AddProjectDialogComponent {
   }
 
   AddProject() {
-
-    this.temp = this.addProject.value
+    console.log( "P",this.addProject.value);
+    
+    this.temp = this.addProject.value;
     this.temp.project_manager = this.resexpansionid
-    console.log(this.temp)
+    console.log("Project",this.temp);
     this.projectService.AddProject(this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Added Successfully ', 'done');
       this.addProject.reset();

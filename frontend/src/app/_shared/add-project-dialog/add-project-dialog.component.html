@@ -27,6 +27,14 @@
                 </mat-autocomplete>
             </mat-form-field>
             <mat-form-field fxFlex="50">
+                <mat-label>Project Type</mat-label>
+                <mat-select formControlName="project_type">
+                    <mat-option *ngFor="let pt of projectType" [value]="pt.project_type_id">
+                        {{pt.type}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
                 <mat-label>Start Date</mat-label>
                 <input formControlName="start_date" matInput [matDatepicker]="one">
                 <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
@@ -37,14 +45,6 @@
                 <input formControlName="end_date" matInput [matDatepicker]="two">
                 <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
                 <mat-datepicker #two></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field fxFlex="50">
-                <mat-label>Project Type</mat-label>
-                <mat-select formControlName="project_type">
-                    <mat-option *ngFor="let pt of projectType" [value]="pt.project_type_id">
-                        {{pt.type}}
-                    </mat-option>
-                </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="50">
                 <mat-label>Project Status</mat-label>
