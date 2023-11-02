@@ -184,12 +184,21 @@ export class HomeComponent implements OnInit {
   //   saveAs(excelBlob, 'table_data.xlsx');
   // }
   exportToExcel(): void {
-    /* pass here the table id */
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.dataOfAllocation);
-    /* generate workbook and add the worksheet */
+    // Get the table element by its id
+    const element = document.getElementById('table_data');
+    
+    // Convert the table to an Excel worksheet
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  
+    // Create a new workbook and add the worksheet
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    /* save to file */
-    XLSX.writeFile(wb, this.fileName);
-}
+  
+    // Define the filename for the exported Excel file
+    const fileName = 'exported_data.xlsx';
+  
+    // Generate the Excel file in memory
+    XLSX.writeFile(wb, fileName);
+  }
+  
 }
