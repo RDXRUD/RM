@@ -55,8 +55,9 @@ export class HomeComponent implements OnInit {
   columns: string[] = [];
   dataOfAllocation = [];
   displayedColumns = [...this.columns];
-  fileName = 'ExportExce.xlsx';
+  // fileName = 'ExportExce.xlsx';
   startDateString !: any;
+  Resnames!: any[];
   endDateString!: any;
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -68,6 +69,8 @@ export class HomeComponent implements OnInit {
     private resources_Service: ResourcesService,
   ) {
     this.filteringForm = frmbuilder.group({
+      res_name: new FormControl(),
+      location: new FormControl(),
       skillGroupID: new FormControl(),
       skillID: new FormControl(),
       startDate: new FormControl(),
@@ -83,7 +86,6 @@ export class HomeComponent implements OnInit {
     });
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
-      // this.resourceExtensionData = data;
     })
   }
   applySortToDataSource() {
@@ -96,36 +98,28 @@ export class HomeComponent implements OnInit {
     this.columns = []
     this.skillSetService.getSkillSets().subscribe(datas => {
       const temp = datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
-      console.log(temp[0]);
       this.skillSetID = temp[0].skillSetID;
-      console.log("ss", temp[0].skillSetID);
-
-
+      const names = this.data.filter(((res: any) => this.filteringForm.value.res_name.includes(res.res_id)))
+      this.Resnames = [...new Set(names.map((data: any) => data.res_name))]
 
       const startDate = new Date(this.filteringForm.get('startDate')?.value.format('YYYY-MM-DD'));
       this.startDateString = startDate.toISOString();
-      console.log(startDate);
+
 
       const endDate = new Date(this.filteringForm.get('endDate')?.value.format('YYYY-MM-DD'));
       this.endDateString = endDate.toISOString();
 
-      console.log("asdfghjkl:", this.startDateString, this.endDateString, this.skillSetID);
 
       this.allocationService.getCrossView(this.startDateString, this.endDateString, this.skillSetID).subscribe((response: any) => {
         this.dataOfAllocation = response;
-        console.log(this.dataOfAllocation);
         this.allocationService.getDates().subscribe(date => {
           this.dates = date;
-          console.log("date:", date);
+
 
           for (const date of this.dates) {
-            console.log("Date:", date.date);
-            console.log("Day:", date.day);
             this.columns.push(date.date);
             this.displayedColumns.push(date.date)
           }
-          // console.log("col:",this.columns);
-
         });
       });
     })
@@ -166,27 +160,28 @@ export class HomeComponent implements OnInit {
       'Resource Name', 'Location', 'Skill Group', 'Skill', 'Start Date', 'End Date'
     ];
 
+    const StartDate = this.startDateString.split('T')[0];
+    const EndDate = this.endDateString.split('T')[0];
+  
     const formDataArray: any[] = [
       [
-        formData.res_name ? formData.res_name.join(', ') : '',
-        formData.location || '',
-        formData.skillGroupID || '',
-        formData.skillID || '',
-        this.startDateString.split('T')[0],
-        this.endDateString.split('T')[0],
+        this.Resnames.join(', '),
+        this.locations.filter(loc => loc.id == formData.location)[0].location || '',
+        this.DataofSkillGroup.filter(sg => sg.skillGroupID == formData.skillGroupID)[0].skillGroup || '',
+        this.skillData.filter(sg => sg.skillID == formData.skillID)[0].skill || '',
+        StartDate,
+        EndDate,
       ]
     ];
-
     const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
-    const dataToExport: any[] = [headerRow, ...formDataArray, ...tableDataArray];
+    const dataToExport: any[] = [headerRow, ...formDataArray, "", ...tableDataArray];
 
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataToExport);
 
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    const fileName = 'exported_data.xlsx';
-
+    const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
 

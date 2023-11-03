@@ -5,13 +5,13 @@
         <mat-form-field fxFlex="20">
           <mat-label>Resource Name</mat-label>
           <mat-select formControlName="res_name" multiple>
-            <mat-option *ngFor="let select of data" [value]="select.data">{{select.res_name}}</mat-option>
+            <mat-option *ngFor="let select of data" [value]="select.res_id">{{select.res_name}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field fxFlex="20">
           <mat-label>Location</mat-label>
           <mat-select input formControlName="location">
-            <mat-option *ngFor="let loc of locations" [value]="loc.location">{{loc.location}}
+            <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
             </mat-option>
           </mat-select>
         </mat-form-field>
