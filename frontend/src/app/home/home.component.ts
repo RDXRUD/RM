@@ -55,7 +55,6 @@ export class HomeComponent implements OnInit {
   columns: string[] = [];
   dataOfAllocation = [];
   displayedColumns = [...this.columns];
-  // fileName = 'ExportExce.xlsx';
   startDateString !: any;
   Resnames!: any[];
   endDateString!: any;
@@ -73,7 +72,7 @@ export class HomeComponent implements OnInit {
       location: new FormControl(),
       skillGroupID: new FormControl(),
       skillID: new FormControl(),
-      startDate: new FormControl(),
+      startDate: new FormControl(new Date()),
       endDate: new FormControl(),
     });
   }
@@ -153,44 +152,33 @@ export class HomeComponent implements OnInit {
 
   exportToExcel(): void {
     const formData = this.filteringForm.value;
-
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
-    const headerRow = [
-      'Resource Name', 'Location', 'Skill Group', 'Skill', 'Start Date', 'End Date'
-    ];
-
+    
     const StartDate = this.startDateString.split('T')[0];
     const EndDate = this.endDateString.split('T')[0];
   
     const formDataArray: any[] = [
-      [
-        this.Resnames.join(', '),
-        this.locations.filter(loc => loc.id == formData.location)[0].location || '',
-        this.DataofSkillGroup.filter(sg => sg.skillGroupID == formData.skillGroupID)[0].skillGroup || '',
-        this.skillData.filter(sg => sg.skillID == formData.skillID)[0].skill || '',
-        StartDate,
-        EndDate,
-      ]
+      ['Resource Name', this.Resnames.join(', ')],
+      ['Location', this.locations.filter(loc => loc.id == formData.location)[0].location || ''],
+      ['Skill Group', this.DataofSkillGroup.filter(sg => sg.skillGroupID == formData.skillGroupID)[0].skillGroup || ''],
+      ['Skill', this.skillData.filter(sg => sg.skillID == formData.skillID)[0].skill || ''],
+      ['Start Date', StartDate],
+      ['End Date', EndDate],
     ];
+  
     const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
-    const dataToExport: any[] = [headerRow, ...formDataArray, "", ...tableDataArray];
-
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataToExport);
-
+    const verticalData = tableDataArray[0].map((col:any, i:any) => [ ...tableDataArray.map(row => row[i])]);
+  
+    const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(formDataArray);
+    const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(verticalData);
+  
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
+    XLSX.utils.book_append_sheet(wb, ws1, 'Criteria');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data');
+  
     const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
-
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const formattedMonth = month < 10 ? `0${month}` : month.toString();
-    const formattedDay = day < 10 ? `0${day}` : day.toString();
-    return `${year}-${formattedMonth}-${formattedDay}`;
-  }
+  
 }
