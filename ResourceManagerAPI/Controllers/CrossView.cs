@@ -6,6 +6,7 @@ using ResourceManagerAPI.Models;
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore; // Import the Entity Framework Core namespace
+using Microsoft.CodeAnalysis.Rename;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -31,10 +32,10 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPost]
-        [Route("CrossViewData/{startDate}/{endDate}/{id}")]
-        public ActionResult<IEnumerable<CrossTabResult>> GetDates(DateTime startDate, DateTime endDate,int id)
+        [Route("CrossViewData")]
+        public ActionResult<IEnumerable<CrossTabResult>> GetDates([FromBody] FilterViewModel filterData)
         {
-            if (startDate > endDate)
+            if (filterData.startDate > filterData.endDate)
             {
                 return BadRequest("Invalid date range. Start date should be before end date.");
             }
@@ -49,7 +50,7 @@ namespace ResourceManagerAPI.Controllers
 
             var datesWithDays = new List<DateMaster>();
 
-            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            for (DateTime date = filterData.startDate.Date; date <= filterData.endDate.Date; date = date.AddDays(1))
             {
                 var model = new DateMaster
                 {
@@ -61,7 +62,42 @@ namespace ResourceManagerAPI.Controllers
                 _dbContext.date_master.Add(model);
             }
             _dbContext.SaveChanges();
-            var resIds = _dbContext.resource_skill.Where(ss=>ss.SkillSetID==id).Select(resource => resource.res_id).ToList();
+
+            var locResIds = _dbContext.resource_master
+            .Where(rm => rm.location_id == filterData.location)
+            .Select(resource => resource.res_id)
+            .ToList();
+            
+
+            var skillResIds = _dbContext.resource_skill
+                .Where(ss => ss.SkillSetID == filterData.skillSetID)
+                .Select(resource => resource.res_id)
+                .ToList();
+
+            var nameResIds = filterData.res_name;
+
+            var temp = locResIds.Union(skillResIds).Union(nameResIds ?? Enumerable.Empty<int>());
+
+            if (filterData.location!=null)
+            {
+                temp = temp.Intersect(locResIds);
+            }
+
+            if (filterData.skillSetID!=null)
+            {
+                temp = temp.Intersect(skillResIds);
+            }
+            
+
+            if (nameResIds != null && nameResIds.Any())
+            {
+                temp = temp.Intersect(nameResIds);
+            }
+
+            var resIds = temp.ToList();
+            if(resIds.Count == 0) {
+                return StatusCode(502, "No Records Found");
+            }
             //var resIds = _dbContext.resource_master.Select(resource => resource.res_id).ToList();
             var dateIds = _dbContext.date_master.Select(date => date.date_id).ToList();
 

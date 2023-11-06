@@ -3,13 +3,11 @@ namespace ResourceManagerAPI.Models
 {
     public class FilterViewModel
     {
-        public string? Name { get; set; }
-        public string? EmailID { get; set; }
-        public string? TaskName { get; set; }
-        public DateTime? AssignedFrom { get; set; }
-        public DateTime? AssignedTo { get; set; }
-        public DateTime? AvailableFrom { get; set; }
-        public DateTime? AvailableTo { get; set; }
-        public string? Skill { get; set; }
+        public int[]? res_name { get; set; }
+        public int? location { get; set; }
+        public int? skillSetID { get; set; }
+        public DateTime startDate { get; set; }
+        public DateTime endDate { get; set; }
+
     }
 }
