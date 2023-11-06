@@ -58,6 +58,7 @@ export class HomeComponent implements OnInit {
   startDateString !: any;
   Resnames!: any[];
   endDateString!: any;
+  filter!: any;
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
   temp: any;
@@ -68,12 +69,12 @@ export class HomeComponent implements OnInit {
     private resources_Service: ResourcesService,
   ) {
     this.filteringForm = frmbuilder.group({
-      res_name: new FormControl(),
-      location: new FormControl(),
-      skillGroupID: new FormControl(),
-      skillID: new FormControl(),
-      startDate: new FormControl(new Date()),
-      endDate: new FormControl(),
+      res_name: new FormControl([]),
+      location: new FormControl(null),
+      skillGroupID: new FormControl(''),
+      skillID: new FormControl(''),
+      startDate: new FormControl(''),
+      endDate: new FormControl(''),
     });
   }
   ngOnInit() {
@@ -93,29 +94,60 @@ export class HomeComponent implements OnInit {
     }
   }
   OnSubmit() {
-    this.displayedColumns = ["res_name"]
+    this.displayedColumns = []
     this.columns = []
+    console.log(this.filteringForm.get('skillGroupID')?.value);
     this.skillSetService.getSkillSets().subscribe(datas => {
       const temp = datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
-      this.skillSetID = temp[0].skillSetID;
-      const names = this.data.filter(((res: any) => this.filteringForm.value.res_name.includes(res.res_id)))
-      this.Resnames = [...new Set(names.map((data: any) => data.res_name))]
+      if (temp.length > 0) {
+        this.skillSetID = temp[0].skillSetID;
+      } else {
+        this.skillSetID = null;
+      }
+      console.log("filter", this.filteringForm.value)
 
-      const startDate = new Date(this.filteringForm.get('startDate')?.value.format('YYYY-MM-DD'));
-      this.startDateString = startDate.toISOString();
+      const startDateValue = this.filteringForm.get('startDate')?.value;
+      let startDate;
+      if (startDateValue) {
+        startDate = new Date(startDateValue.format('YYYY-MM-DD'));
+      } else {
+        startDate = new Date();
+      }
+      const startDateString = startDate.toISOString();
 
+      const endDateValue = this.filteringForm.get('endDate')?.value;
+      let endDate;
+      if (endDateValue) {
+        endDate = new Date(endDateValue.format('YYYY-MM-DD'));
+      } else {
+        endDate = new Date(startDate);
+        endDate.setMonth(startDate.getMonth() + 1);
+      }
+      const endDateString = endDate.toISOString();
 
-      const endDate = new Date(this.filteringForm.get('endDate')?.value.format('YYYY-MM-DD'));
-      this.endDateString = endDate.toISOString();
+      console.log("asdfghjkl:", startDateString, endDateString, this.skillSetID);
 
+      this.filter = this.filteringForm.value
+      this.filter.startDate = startDateString
+      this.filter.endDate = endDateString
+      this.filter.skillSetID = this.skillSetID
 
-      this.allocationService.getCrossView(this.startDateString, this.endDateString, this.skillSetID).subscribe((response: any) => {
+      console.log("asdfilter", this.filter)
+      console.log(this.filteringForm.value)
+
+      this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
+        this.dataOfAllocation = []
+        this.displayedColumns = ["res_name"]
+        this.columns = []
         this.dataOfAllocation = response;
+        console.log(this.dataOfAllocation);
         this.allocationService.getDates().subscribe(date => {
           this.dates = date;
-
+          console.log("date:", date);
 
           for (const date of this.dates) {
+            console.log("Date:", date.date);
+            console.log("Day:", date.day);
             this.columns.push(date.date);
             this.displayedColumns.push(date.date)
           }
@@ -154,10 +186,10 @@ export class HomeComponent implements OnInit {
     const formData = this.filteringForm.value;
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
-    
+
     const StartDate = this.startDateString.split('T')[0];
     const EndDate = this.endDateString.split('T')[0];
-  
+
     const formDataArray: any[] = [
       ['Resource Name', this.Resnames.join(', ')],
       ['Location', this.locations.filter(loc => loc.id == formData.location)[0].location || ''],
@@ -166,19 +198,19 @@ export class HomeComponent implements OnInit {
       ['Start Date', StartDate],
       ['End Date', EndDate],
     ];
-  
+
     const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
-    const verticalData = tableDataArray[0].map((col:any, i:any) => [ ...tableDataArray.map(row => row[i])]);
-  
+    const verticalData = tableDataArray[0].map((col: any, i: any) => [...tableDataArray.map(row => row[i])]);
+
     const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(formDataArray);
     const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(verticalData);
-  
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws1, 'Criteria');
     XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data');
-  
+
     const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
-  
+
 }

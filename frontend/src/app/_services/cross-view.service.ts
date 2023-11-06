@@ -11,9 +11,9 @@ import { CrossDate } from '../_model/crossDates';
 export class CrossViewService {
 
   constructor(private http: HttpClient) { }
-  getCrossView(st:string,et:string,id:number): Observable<CrossTabResult[]> {
-    let url = `${environment.apiUrl}/CrossView/CrossViewData/${st}/${et}/${id}`;
-    return this.http.post<CrossTabResult[]>(url,id);
+  getCrossView(filterData:any): Observable<CrossTabResult[]> {
+    let url = `${environment.apiUrl}/CrossView/CrossViewData`;
+    return this.http.post<CrossTabResult[]>(url,filterData);
   }
   getDates(): Observable<CrossDate[]> {
     let url = `${environment.apiUrl}/CrossView/Dates`;
