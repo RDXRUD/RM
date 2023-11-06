@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOption } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { employeeFilters } from '../_model/employeefilters';
@@ -13,6 +13,9 @@ import { SkillsetService } from '../_services/skillset.service';
 import { SkillGroups } from '../_model/SkillGroups';
 import { ResourcesService } from '../_services/resources.service';
 import * as XLSX from 'xlsx';
+import { ClientService } from '../_services/client.service';
+import { ProjectService } from '../_services/project.service';
+import { MatSelectChange } from '@angular/material/select';
 
 export const MY_FORMATS = {
   parse: {
@@ -49,6 +52,7 @@ export class HomeComponent implements OnInit {
   skillDataSorted!: any[];
   formdata!: employeeFilters;
   filteringForm: FormGroup;
+  filteringDetails: FormGroup;
   DataofSkillGroup!: any[];
   skillSetID: any;
   dates!: any[];
@@ -59,14 +63,21 @@ export class HomeComponent implements OnInit {
   Resnames!: any[];
   endDateString!: any;
   filter!: any;
+  dataProject!: any[];
+  clientData: any;
+  DetailsdisplayedColumns: string[] = ['res_name','email_id','client_name','project_name','role','start_date','end_date'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('allSelected') private allSelected!: MatOption;
+
   temp: any;
   constructor(
     frmbuilder: FormBuilder,
     private allocationService: CrossViewService,
     private skillSetService: SkillsetService,
     private resources_Service: ResourcesService,
+    private clientService: ClientService,
+    private projectService: ProjectService,
   ) {
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
@@ -75,6 +86,12 @@ export class HomeComponent implements OnInit {
       skillID: new FormControl(''),
       startDate: new FormControl(''),
       endDate: new FormControl(''),
+    });
+    this.filteringDetails = frmbuilder.group({
+      res_name: new FormControl(null),
+      location: new FormControl(null),
+      client_name: new FormControl(''),
+      project_name: new FormControl(''),
     });
   }
   ngOnInit() {
@@ -86,7 +103,13 @@ export class HomeComponent implements OnInit {
     });
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
-    })
+    });
+    this.clientService.getActiveClients().subscribe(data => {
+      this.clientData = data;
+    });
+    this.projectService.getProjects(1).subscribe(data => {
+      this.dataProject = data;
+    });
   }
   applySortToDataSource() {
     if (this.dataSource) {
@@ -94,68 +117,81 @@ export class HomeComponent implements OnInit {
     }
   }
   OnSubmit() {
-    this.displayedColumns = []
-    this.columns = []
-    console.log(this.filteringForm.get('skillGroupID')?.value);
-    this.skillSetService.getSkillSets().subscribe(datas => {
-      const temp = datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
-      if (temp.length > 0) {
-        this.skillSetID = temp[0].skillSetID;
-        
-      } else {
-        this.skillSetID = null;
-      }
-      console.log("filter", this.filteringForm.value)
-      const names = this.data.filter(((res: any) => this.filteringForm.value.res_name.includes(res.res_id)))
-      this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
-      const startDateValue = this.filteringForm.get('startDate')?.value;
-      let startDate;
-      if (startDateValue) {
-        startDate = new Date(startDateValue.format('YYYY-MM-DD'));
-      } else {
-        startDate = new Date(); // Use the current date as a default
-      }
-      const startDateString = startDate.toISOString();
+    const skillGroupID = this.filteringForm.get('skillGroupID')?.value;
+    const skillID = this.filteringForm.get('skillID')?.value;
 
-      const endDateValue = this.filteringForm.get('endDate')?.value;
-      let endDate;
-      if (endDateValue) {
-        endDate = new Date(endDateValue.format('YYYY-MM-DD'));
-      } else {
-        endDate = new Date(startDate);
-        endDate.setMonth(startDate.getMonth() + 1);
-      }
-      const endDateString = endDate.toISOString();
+    if (skillGroupID && !skillID) {
+      window.alert('Please select both Skill Group and Skill to submit.');
+    }
+    else {
+      this.displayedColumns = [];
+      this.columns = [];
 
-      console.log("asdfghjkl:", startDateString, endDateString, this.skillSetID);
+      // Your form submission logic here
 
-      this.filter = this.filteringForm.value
-      this.filter.startDate = startDateString
-      this.filter.endDate = endDateString
-      this.filter.skillSetID = this.skillSetID
+      this.skillSetService.getSkillSets().subscribe(datas => {
+        const temp = datas.filter(data => data.skillGroupID === skillGroupID && data.skillID === skillID);
+        if (temp.length > 0) {
+          this.skillSetID = temp[0].skillSetID;
+        } else {
+          this.skillSetID = null;
+        }
 
-      console.log("asdfilter", this.filter)
-      console.log(this.filteringForm.value)
+        console.log("filter", this.filteringForm.value);
+        const names = Array.isArray(this.filteringForm.value.res_name) && this.filteringForm.value.res_name.length > 0 ? this.data.filter((res: any) => this.filteringForm.value.res_name.includes(res.res_id)) : this.data;
+        this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
+        const startDateValue = this.filteringForm.get('startDate')?.value;
+        let startDate;
+        if (startDateValue) {
+          startDate = new Date(startDateValue.format('YYYY-MM-DD'));
+        } else {
+          startDate = new Date(); // Use the current date as a default
+        }
+        const startDateString = startDate.toISOString();
 
-      this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
-        this.dataOfAllocation = []
-        this.displayedColumns = ["res_name"]
-        this.columns = []
-        this.dataOfAllocation = response;
-        console.log(this.dataOfAllocation);
-        this.allocationService.getDates().subscribe(date => {
-          this.dates = date;
-          console.log("date:", date);
+        const endDateValue = this.filteringForm.get('endDate')?.value;
+        let endDate;
+        if (endDateValue) {
+          endDate = new Date(endDateValue.format('YYYY-MM-DD'));
+        } else {
+          endDate = new Date(startDate);
+          endDate.setMonth(startDate.getMonth() + 1);
+        }
+        const endDateString = endDate.toISOString();
 
-          for (const date of this.dates) {
-            console.log("Date:", date.date);
-            console.log("Day:", date.day);
-            this.columns.push(date.date);
-            this.displayedColumns.push(date.date)
-          }
+        console.log("asdfghjkl:", startDateString, endDateString, this.skillSetID);
+
+        this.filter = this.filteringForm.value;
+        this.filter.startDate = startDateString;
+        this.filter.endDate = endDateString;
+        this.filter.skillSetID = this.skillSetID;
+
+        console.log("asdfilter", this.filter);
+        console.log(this.filteringForm.value);
+
+        this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
+          this.dataOfAllocation = [];
+          this.displayedColumns = ["res_name", "res_email_id"];
+          this.columns = [];
+          this.dataOfAllocation = response;
+          console.log(this.dataOfAllocation);
+          this.allocationService.getDates().subscribe(date => {
+            this.dates = date;
+            console.log("date:", date);
+
+            for (const date of this.dates) {
+              console.log("Date:", date.date);
+              console.log("Day:", date.day);
+              this.columns.push(date.date);
+              this.displayedColumns.push(date.date);
+            }
+          });
         });
       });
-    })
+    }
+  }
+  OnSearch(){
+    
   }
   getCellStyle(value: number): any {
     if (value > 1) {
@@ -169,6 +205,7 @@ export class HomeComponent implements OnInit {
 
   OnReset() {
     this.filteringForm.reset();
+    this.filteringDetails.reset();
     this.displayedColumns = []
     this.columns = []
     // this.applySortToDataSource();
@@ -195,7 +232,7 @@ export class HomeComponent implements OnInit {
     const formDataArray: any[] = [
       ['Resource Name', this.Resnames.join(', ')],
       ['Location', this.locations.find(loc => loc.id == formData.location)?.location || ''],
-      ['Skill Group', (this.DataofSkillGroup.find(sg => sg.skillGroupID == formData.skillGroupID) ?.skillGroup ?? '') || ''],
+      ['Skill Group', (this.DataofSkillGroup.find(sg => sg.skillGroupID == formData.skillGroupID)?.skillGroup ?? '') || ''],
       ['Skill', (this.skillData && this.skillData.length > 0 ? (this.skillData.find(sg => sg.skillID == formData.skillID) || {}).skill : '') || ''],
       ['Start Date', StartDate],
       ['End Date', EndDate],
@@ -215,4 +252,22 @@ export class HomeComponent implements OnInit {
     XLSX.writeFile(wb, fileName);
   }
 
+  toggleAllSelection() {
+    if (this.allSelected.selected) {
+      this.filteringForm.controls['res_name'].patchValue([...this.data.map((item: any) => item.key), 0]);
+    } else {
+      this.filteringForm.controls['res_name'].patchValue([]);
+    }
+  }
+  tosslePerOne(all: any) {
+    if (this.allSelected.selected) {
+      this.allSelected.deselect();
+      return false;
+    }
+    if (this.filteringForm.controls['res_name'].value.length == this.data.length)
+      this.allSelected.select();
+    return true;
+  }
+
+  // Return a default value or throw an exception if needed
 }

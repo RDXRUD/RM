@@ -1,16 +1,19 @@
-<div class="container">
+<!-- <div class="container">
   <div class="uppar">
     <form [formGroup]="filteringForm" sticky>
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
         <mat-form-field fxFlex="25">
           <mat-label>Resource Name</mat-label>
           <mat-select formControlName="res_name" multiple>
-            <mat-option *ngFor="let select of data" [value]="select.res_id">{{select.res_name}}</mat-option>
+            <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">Select All</mat-option>
+            <mat-option *ngFor="let select of data" [value]="select.res_id"
+              (click)="tosslePerOne(allSelected.value)">{{select.res_name}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field fxFlex="25">
           <mat-label>Location</mat-label>
           <mat-select input formControlName="location">
+            <mat-option>-- None --</mat-option>
             <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
             </mat-option>
           </mat-select>
@@ -18,6 +21,7 @@
         <mat-form-field fxFlex="25">
           <mat-label>Skill Group</mat-label>
           <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
+            <mat-option>--None --</mat-option>
             <mat-option *ngFor="let select of DataofSkillGroup"
               [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
           </mat-select>
@@ -60,9 +64,9 @@
   <div class="mat-elevation-z8 list-table">
     <div class="table-container">
       <table mat-table id="table_data" [dataSource]="dataOfAllocation" matSort>
-        <ng-container matColumnDef="res_ID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource ID</th>
-          <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
+        <ng-container matColumnDef="res_email_id" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+          <td mat-cell *matCellDef="let user"> {{user.res_email_id}} </td>
         </ng-container>
         <ng-container matColumnDef="res_name" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
@@ -72,10 +76,175 @@
           <th mat-header-cell *matHeaderCellDef sticky>{{ col | date: 'EEE' }} {{ col | date: 'dd-MMM-yyyy'}} </th>
           <td mat-cell *matCellDef="let user" [ngStyle]="getCellStyle(user.allocationData[col])"> {{
             user.allocationData[col]*100<0 ? "-" : user.allocationData[col]*100 + '%' }} </ng-container>
-              
+
               <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
   </div>
-</div>
+</div> -->
+
+
+<mat-tab-group>
+  <mat-tab label="Allocation Report">
+      <div class="uppar" sticky>
+        <form [formGroup]="filteringForm" sticky>
+          <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+            <mat-form-field fxFlex="25">
+              <mat-label>Resource Name</mat-label>
+              <mat-select formControlName="res_name" multiple>
+                <mat-option #allSelected (click)="toggleAllSelection()" [value]="0">Select All</mat-option>
+                <mat-option *ngFor="let select of data" [value]="select.res_id"
+                  (click)="tosslePerOne(allSelected.value)">{{select.res_name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="25">
+              <mat-label>Location</mat-label>
+              <mat-select input formControlName="location">
+                <mat-option>-- None --</mat-option>
+                <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="25">
+              <mat-label>Skill Group</mat-label>
+              <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
+                <mat-option>--None --</mat-option>
+                <mat-option *ngFor="let select of DataofSkillGroup"
+                  [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="25">
+              <mat-label>Skill</mat-label>
+              <mat-select formControlName="skillID" single>
+                <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="25">
+              <mat-label>Start Date</mat-label>
+              <input formControlName="startDate" matInput [matDatepicker]="one">
+              <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
+              <mat-datepicker #one></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field fxFlex="25">
+              <mat-label>End Date</mat-label>
+              <input formControlName="endDate" matInput [matDatepicker]="two">
+              <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
+              <mat-datepicker #two></mat-datepicker>
+            </mat-form-field>
+            <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+              <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                (click)="OnSubmit()" value="OnSubmit">Submit</button>
+            </div>
+            <div fxFlex="10" fxFlexFill>
+              <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                (click)="OnReset()">
+                Reset</button>
+            </div>
+          </div>
+          <div align="end">
+            <mat-icon class="icon" matTooltipPosition="above" matTooltip="Export to Excel" mat-icon-button
+              style="color: green;" (click)="exportToExcel()">description</mat-icon>
+          </div>
+        </form>  
+      </div>
+      <div class="mat-elevation-z8 list-table" >
+        <div class="table-container">
+          <table mat-table id="table_data" [dataSource]="dataOfAllocation" matSort>
+            <ng-container matColumnDef="res_email_id" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+              <td mat-cell *matCellDef="let user"> {{user.res_email_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_name" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+              <td mat-cell *matCellDef="let user"><a href="url">{{user.res_name}}</a>  </td>
+            </ng-container>
+            <ng-container *ngFor="let col of columns" [matColumnDef]="col">
+              <th mat-header-cell *matHeaderCellDef sticky>{{ col | date: 'EEE' }} {{ col | date: 'dd-MMM-yyyy'}} </th>
+              <td mat-cell *matCellDef="let user" [ngStyle]="getCellStyle(user.allocationData[col])"> {{user.allocationData[col]*100<0 ? "-" : user.allocationData[col]*100 + '%' }} 
+            </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+  </mat-tab>
+
+  <mat-tab label="Detail Report">
+    <div class="uppar">
+      <form [formGroup]="filteringDetails" sticky>
+        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+          <mat-form-field fxFlex="20">
+            <mat-label>Resource Name</mat-label>
+            <mat-select formControlName="res_name" multiple>
+              <mat-option *ngFor="let select of data" [value]="select.res_id">{{select.res_name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="20">
+            <mat-label>Location</mat-label>
+            <mat-select input formControlName="location">
+              <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="20">
+            <mat-label>Client</mat-label>
+            <mat-select formControlName="client_name" single (selectionChange)="onSkillGroupSelection()">
+              <mat-option *ngFor="let select of clientData" [value]="select.client_id">{{select.client_name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="20">
+            <mat-label>Project Name</mat-label>
+            <mat-select formControlName="project_name" single>
+              <mat-option *ngFor="let select of dataProject"
+                [value]="select.project_id">{{select.project_name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+            <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+              (click)="OnSearch()" value="OnSubmit">Submit</button>
+          </div>
+          <div fxFlex="10" fxFlexFill>
+            <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="mat-elevation-z8 list-table">
+      <div class="table-container">
+        <table mat-table matSort>
+          <ng-container matColumnDef="res_name" sticky>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+            <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="email_id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+            <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="client_name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+            <td mat-cell *matCellDef="let user"> {{user.client_name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="project_name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</th>
+            <td mat-cell *matCellDef="let user"> {{user.project_name}} </td>
+          </ng-container>
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+            <td mat-cell *matCellDef="let user"> {{user.role}} </td>
+          </ng-container>
+          <ng-container matColumnDef="start_date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
+            <td mat-cell *matCellDef="let user"> {{user.start_date}} </td>
+          </ng-container>
+          <ng-container matColumnDef="end_date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
+            <td mat-cell *matCellDef="let user"> {{user.end_date}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="DetailsdisplayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
