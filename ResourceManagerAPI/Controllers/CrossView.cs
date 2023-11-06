@@ -120,10 +120,11 @@ namespace ResourceManagerAPI.Controllers
                             join pra in _dbContext.project_res_allocation on cvd.res_id equals pra.res_id into allocationGroup
                             from allocation in allocationGroup.DefaultIfEmpty() // Left join
                             where ((allocation.start_date <= dm.date && allocation.end_date >= dm.date))
-                            group allocation by new { rm.res_name, cvd.res_id, dm.date, dm.day } into grouped
+                            group allocation by new { rm.res_name,rm.res_email_id, cvd.res_id, dm.date, dm.day } into grouped
                             select new CrossJoin
                             {
                                 res_name = grouped.Key.res_name,
+                                res_email_id=grouped.Key.res_email_id,
                                 allocation_perc = grouped.Key.day == "Saturday" || grouped.Key.day == "Sunday"
                                     ? -1 // Set allocation_perc to -1 for Saturday and Sunday
                                     : grouped.Sum(p => p.allocation_perc),
@@ -139,6 +140,7 @@ namespace ResourceManagerAPI.Controllers
                             select new CrossJoin
                             {
                                 res_name = rm.res_name,
+                                res_email_id = rm.res_email_id,
                                 allocation_perc = (dm.day == "Saturday" || dm.day == "Sunday") ? -1 : cvd.allocation_perc,
                                 date = dm.date,
                                 day = dm.day
@@ -152,13 +154,14 @@ namespace ResourceManagerAPI.Controllers
 
             var data = _dbContext.cross_view_join.ToList();
 
-            var groupedData = data.GroupBy(d => d.res_name);
+            var groupedData = data.GroupBy(d => new { d.res_name, d.res_email_id });
 
             var crosstab = new List<CrossTabResult>();
 
             foreach (var group in groupedData)
             {
-                var resName = group.Key;
+                var resName = group.Key.res_name;
+                var resEmailId = group.Key.res_email_id;
                 var allocationData = group.GroupBy(item => item.date)
                     .ToDictionary(
                         dateGroup => dateGroup.Key,
@@ -168,6 +171,7 @@ namespace ResourceManagerAPI.Controllers
                 crosstab.Add(new CrossTabResult
                 {
                     res_name = resName,
+                    res_email_id=resEmailId,
                     allocationData = allocationData
                 });
             }
