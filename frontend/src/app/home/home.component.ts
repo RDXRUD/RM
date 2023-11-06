@@ -101,17 +101,19 @@ export class HomeComponent implements OnInit {
       const temp = datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
       if (temp.length > 0) {
         this.skillSetID = temp[0].skillSetID;
+        
       } else {
         this.skillSetID = null;
       }
       console.log("filter", this.filteringForm.value)
-
+      const names = this.data.filter(((res: any) => this.filteringForm.value.res_name.includes(res.res_id)))
+      this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
       const startDateValue = this.filteringForm.get('startDate')?.value;
       let startDate;
       if (startDateValue) {
         startDate = new Date(startDateValue.format('YYYY-MM-DD'));
       } else {
-        startDate = new Date();
+        startDate = new Date(); // Use the current date as a default
       }
       const startDateString = startDate.toISOString();
 
@@ -187,14 +189,14 @@ export class HomeComponent implements OnInit {
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
 
-    const StartDate = this.startDateString.split('T')[0];
-    const EndDate = this.endDateString.split('T')[0];
+    const StartDate = formData.startDate.split('T')[0];
+    const EndDate = formData.endDate.split('T')[0];
 
     const formDataArray: any[] = [
       ['Resource Name', this.Resnames.join(', ')],
-      ['Location', this.locations.filter(loc => loc.id == formData.location)[0].location || ''],
-      ['Skill Group', this.DataofSkillGroup.filter(sg => sg.skillGroupID == formData.skillGroupID)[0].skillGroup || ''],
-      ['Skill', this.skillData.filter(sg => sg.skillID == formData.skillID)[0].skill || ''],
+      ['Location', this.locations.find(loc => loc.id == formData.location)?.location || ''],
+      ['Skill Group', (this.DataofSkillGroup.find(sg => sg.skillGroupID == formData.skillGroupID) ?.skillGroup ?? '') || ''],
+      ['Skill', (this.skillData && this.skillData.length > 0 ? (this.skillData.find(sg => sg.skillID == formData.skillID) || {}).skill : '') || ''],
       ['Start Date', StartDate],
       ['End Date', EndDate],
     ];
