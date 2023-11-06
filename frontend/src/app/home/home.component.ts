@@ -50,12 +50,15 @@ export class HomeComponent implements OnInit {
   formdata!: employeeFilters;
   filteringForm: FormGroup;
   DataofSkillGroup!: any[];
-  skillSetID:any;
+  skillSetID: any;
   dates!: any[];
   columns: string[] = [];
   dataOfAllocation = [];
-  displayedColumns = [ ...this.columns];
-  fileName = 'ExportExce.xlsx';
+  displayedColumns = [...this.columns];
+  startDateString !: any;
+  Resnames!: any[];
+  endDateString!: any;
+  filter!: any;
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
   temp: any;
@@ -66,10 +69,12 @@ export class HomeComponent implements OnInit {
     private resources_Service: ResourcesService,
   ) {
     this.filteringForm = frmbuilder.group({
-      skillGroupID: new FormControl(),
-      skillID: new FormControl(),
-      startDate: new FormControl(),
-      endDate: new FormControl(),
+      res_name: new FormControl([]),
+      location: new FormControl(null),
+      skillGroupID: new FormControl(''),
+      skillID: new FormControl(''),
+      startDate: new FormControl(''),
+      endDate: new FormControl(''),
     });
   }
   ngOnInit() {
@@ -81,64 +86,89 @@ export class HomeComponent implements OnInit {
     });
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
-      // this.resourceExtensionData = data;
     })
   }
-      applySortToDataSource() {
-    // if (this.dataSource) {
-    //   this.dataSource.sort = this.sort;
-    // }
+  applySortToDataSource() {
+    if (this.dataSource) {
+      this.dataSource.sort = this.sort;
+    }
   }
   OnSubmit() {
-    this.displayedColumns=["res_name"]
-    this.columns=[]
+    this.displayedColumns = []
+    this.columns = []
+    console.log(this.filteringForm.get('skillGroupID')?.value);
     this.skillSetService.getSkillSets().subscribe(datas => {
-      const temp=datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
-      console.log(temp[0]);
-      this.skillSetID=temp[0].skillSetID;
-      console.log("ss",temp[0].skillSetID);
-      
-    
+      const temp = datas.filter(data => data.skillGroupID === this.filteringForm.get('skillGroupID')?.value && data.skillID === this.filteringForm.get('skillID')?.value)
+      if (temp.length > 0) {
+        this.skillSetID = temp[0].skillSetID;
+      } else {
+        this.skillSetID = null;
+      }
+      console.log("filter", this.filteringForm.value)
 
-    const startDate = new Date(this.filteringForm.get('startDate')?.value.format('YYYY-MM-DD'));
-    const startDateString = startDate.toISOString();
-    const endDate = new Date(this.filteringForm.get('endDate')?.value.format('YYYY-MM-DD'));
-    const endDateString = endDate.toISOString();
-    console.log("asdfghjkl:",startDateString, endDateString, this.skillSetID);
-    
-    this.allocationService.getCrossView(startDateString, endDateString, this.skillSetID).subscribe((response: any) => {
-      this.dataOfAllocation = response;
-      console.log(this.dataOfAllocation);
-      this.allocationService.getDates().subscribe(date=> {
-        this.dates = date;
-        console.log("date:", date);
+      const startDateValue = this.filteringForm.get('startDate')?.value;
+      let startDate;
+      if (startDateValue) {
+        startDate = new Date(startDateValue.format('YYYY-MM-DD'));
+      } else {
+        startDate = new Date();
+      }
+      const startDateString = startDate.toISOString();
 
-        for (const date of this.dates) {
-          console.log("Date:", date.date);
-          console.log("Day:", date.day);
-          this.columns.push(date.date);
-          this.displayedColumns.push(date.date)
-        }
-        // console.log("col:",this.columns);
-        
+      const endDateValue = this.filteringForm.get('endDate')?.value;
+      let endDate;
+      if (endDateValue) {
+        endDate = new Date(endDateValue.format('YYYY-MM-DD'));
+      } else {
+        endDate = new Date(startDate);
+        endDate.setMonth(startDate.getMonth() + 1);
+      }
+      const endDateString = endDate.toISOString();
+
+      console.log("asdfghjkl:", startDateString, endDateString, this.skillSetID);
+
+      this.filter = this.filteringForm.value
+      this.filter.startDate = startDateString
+      this.filter.endDate = endDateString
+      this.filter.skillSetID = this.skillSetID
+
+      console.log("asdfilter", this.filter)
+      console.log(this.filteringForm.value)
+
+      this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
+        this.dataOfAllocation = []
+        this.displayedColumns = ["res_name"]
+        this.columns = []
+        this.dataOfAllocation = response;
+        console.log(this.dataOfAllocation);
+        this.allocationService.getDates().subscribe(date => {
+          this.dates = date;
+          console.log("date:", date);
+
+          for (const date of this.dates) {
+            console.log("Date:", date.date);
+            console.log("Day:", date.day);
+            this.columns.push(date.date);
+            this.displayedColumns.push(date.date)
+          }
+        });
       });
-    });
-  })
+    })
   }
   getCellStyle(value: number): any {
-    if(value > 1){
-      return  { 'background-color': 'red',color: 'white' };
-  }else if (value < 1&&value>-1){
-    return  { 'background-color': 'lightgreen' };
-  }else{
-    return {}
-  } 
+    if (value > 1) {
+      return { 'background-color': 'red', color: 'white' };
+    } else if (value < 1 && value > -1) {
+      return { 'background-color': 'lightgreen' };
+    } else {
+      return {}
+    }
   }
 
   OnReset() {
     this.filteringForm.reset();
-    this.displayedColumns=[]
-    this.columns=[]
+    this.displayedColumns = []
+    this.columns = []
     // this.applySortToDataSource();
   }
   onSkillGroupSelection() {
@@ -151,54 +181,36 @@ export class HomeComponent implements OnInit {
       this.skillData = res;
     });
   }
-  // exportToExcel(): void {
-  //   // Create an array to hold the data
-  //   const data = [];
 
-  //   // Add headers to the data array
-  //   const headers = ['Resource Name', ...this.columns];
-  //   data.push(headers);
-
-  //   // Add data rows to the data array
-  //   this.dataOfAllocation.forEach((item) => {
-  //     const row = [item.res_name];
-
-  //     this.columns.forEach((col) => {
-  //       row.push(item.allocationData[col] || 0); // Use 0 if allocationData is undefined
-  //     });
-
-  //     data.push(row);
-  //   });
-
-  //   // Create a worksheet from the data
-  //   const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
-
-  //   // Create a workbook and add the worksheet
-  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(wb, ws, 'Data');
-
-  //   // Generate the Excel file in memory
-  //   const excelBlob = XLSX.write(wb, { bookType: 'xlsx', type: 'blob' });
-
-  //   // Save the Excel file to the user's device using file-saver
-  //   saveAs(excelBlob, 'table_data.xlsx');
-  // }
   exportToExcel(): void {
-    // Get the table element by its id
-    const element = document.getElementById('table_data');
-    
-    // Convert the table to an Excel worksheet
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-  
-    // Create a new workbook and add the worksheet
+    const formData = this.filteringForm.value;
+    const tableElement = document.getElementById('table_data');
+    const tableData = XLSX.utils.table_to_sheet(tableElement);
+
+    const StartDate = this.startDateString.split('T')[0];
+    const EndDate = this.endDateString.split('T')[0];
+
+    const formDataArray: any[] = [
+      ['Resource Name', this.Resnames.join(', ')],
+      ['Location', this.locations.filter(loc => loc.id == formData.location)[0].location || ''],
+      ['Skill Group', this.DataofSkillGroup.filter(sg => sg.skillGroupID == formData.skillGroupID)[0].skillGroup || ''],
+      ['Skill', this.skillData.filter(sg => sg.skillID == formData.skillID)[0].skill || ''],
+      ['Start Date', StartDate],
+      ['End Date', EndDate],
+    ];
+
+    const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
+    const verticalData = tableDataArray[0].map((col: any, i: any) => [...tableDataArray.map(row => row[i])]);
+
+    const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(formDataArray);
+    const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(verticalData);
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  
-    // Define the filename for the exported Excel file
-    const fileName = 'exported_data.xlsx';
-  
-    // Generate the Excel file in memory
+    XLSX.utils.book_append_sheet(wb, ws1, 'Criteria');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data');
+
+    const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
-  
+
 }

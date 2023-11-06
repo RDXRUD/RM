@@ -2,56 +2,60 @@
   <div class="uppar">
     <form [formGroup]="filteringForm" sticky>
       <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>Resource Name</mat-label>
           <mat-select formControlName="res_name" multiple>
-            <mat-option *ngFor="let select of data" [value]="select.data">{{select.res_name}}</mat-option>
+            <mat-option *ngFor="let select of data" [value]="select.res_id">{{select.res_name}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>Location</mat-label>
           <mat-select input formControlName="location">
-            <mat-option *ngFor="let loc of locations" [value]="loc.location">{{loc.location}}
+            <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>Skill Group</mat-label>
           <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-            <mat-option *ngFor="let select of DataofSkillGroup" [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+            <mat-option *ngFor="let select of DataofSkillGroup"
+              [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>Skill</mat-label>
           <mat-select formControlName="skillID" single>
             <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>Start Date</mat-label>
           <input formControlName="startDate" matInput [matDatepicker]="one">
           <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
           <mat-datepicker #one></mat-datepicker>
         </mat-form-field>
-        <mat-form-field fxFlex="20">
+        <mat-form-field fxFlex="25">
           <mat-label>End Date</mat-label>
           <input formControlName="endDate" matInput [matDatepicker]="two">
           <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
           <mat-datepicker #two></mat-datepicker>
         </mat-form-field>
-        <div fxFlex="20" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnSubmit()"
-            value="OnSubmit">Submit</button>
+        <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+            (click)="OnSubmit()" value="OnSubmit">Submit</button>
         </div>
-        <div fxFlex="20" fxFlexFill>
-          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="OnReset()">
+        <div fxFlex="10" fxFlexFill>
+          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+            (click)="OnReset()">
             Reset</button>
         </div>
-        <div fxFlex="20" fxFlexFill>
-          <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary" (click)="exportToExcel()">Export to Excel</button>
-        </div>
+      </div>
+      <div align="end">
+        <mat-icon class="icon" matTooltipPosition="above" matTooltip="Export to Excel" mat-icon-button
+          style="color: green;" (click)="exportToExcel()">description</mat-icon>
       </div>
     </form>
+
   </div>
   <div class="mat-elevation-z8 list-table">
     <div class="table-container">
@@ -64,12 +68,13 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
           <td mat-cell *matCellDef="let user"> {{user.res_name}} </td>
         </ng-container>
-        <ng-container *ngFor="let col of columns" [matColumnDef]="col" >
-          <th mat-header-cell *matHeaderCellDef  sticky>{{ col | date: 'EEE' }} {{ col | date: 'dd MMM yyyy'}} </th>
-          <td mat-cell *matCellDef="let user" [ngStyle]="getCellStyle(user.allocationData[col])"> {{ user.allocationData[col]*100<0  ? "-": user.allocationData[col]*100 + '%'}}
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container *ngFor="let col of columns" [matColumnDef]="col">
+          <th mat-header-cell *matHeaderCellDef sticky>{{ col | date: 'EEE' }} {{ col | date: 'dd-MMM-yyyy'}} </th>
+          <td mat-cell *matCellDef="let user" [ngStyle]="getCellStyle(user.allocationData[col])"> {{
+            user.allocationData[col]*100<0 ? "-" : user.allocationData[col]*100 + '%' }} </ng-container>
+              
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
   </div>
