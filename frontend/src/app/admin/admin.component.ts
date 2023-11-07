@@ -545,7 +545,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     console.log(dataOfProjects)
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
-      height: '500px',
+      height: '550px',
       data: { dataOfProjects, }
     });
     dialogRef.afterClosed().subscribe((result) => {

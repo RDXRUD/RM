@@ -1,17 +1,9 @@
 <div mat-dialog-title>
-    <h1>Allocate Resource</h1>
+    <h1>Edit Resource Details</h1>
 </div>
 <form [formGroup]="updateResource" (ngSubmit)="UpdateResource(dataOfProjects.element)">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-            <mat-form-field fxFlex="50">
-                <mat-label>Role</mat-label>
-                <mat-select formControlName="skill_id" single (selectionChange)="onSkillSetSelection()">
-                    <mat-option *ngFor="let sd of skillData" [value]="sd.skillSetID">
-                        {{sd.skill}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
             <mat-form-field fxFlex="50">
                 <mat-label>Resource Name</mat-label>
                 <mat-select formControlName="res_id">
@@ -20,6 +12,29 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>Allocation Percentage</mat-label>
+                <mat-select formControlName="allocation_perc">
+                    <mat-option *ngFor="let ap of allocation" [value]="ap">
+                        {{ap*100}}%
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+                <mat-label>Skill Group</mat-label>
+                <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
+                  <mat-option>--None --</mat-option>
+                  <mat-option *ngFor="let select of DataofSkillGroup"
+                    [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex="50">
+                <mat-label>Skill</mat-label>
+                <mat-select formControlName="skillID" single>
+                  <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            
             <mat-form-field fxFlex="50">
                 <mat-label>Start Date</mat-label>
                 <input formControlName="start_date" matInput [matDatepicker]="one">
@@ -31,14 +46,6 @@
                 <input formControlName="end_date" matInput [matDatepicker]="two">
                 <mat-datepicker-toggle matIconSuffix [for]="two"></mat-datepicker-toggle>
                 <mat-datepicker #two></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field fxFlex="50">
-                <mat-label>Allocation Percentage</mat-label>
-                <mat-select formControlName="allocation_perc">
-                    <mat-option *ngFor="let ap of allocation" [value]="ap">
-                        {{ap*100}}%
-                    </mat-option>
-                </mat-select>
             </mat-form-field>
         </div>
         <div mat-dialog-actions align="end">

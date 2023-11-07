@@ -14,12 +14,12 @@
 
 .table-container {
 	// position: relative;
-	// top: 0;
+	// top: 220px;
 	// bottom: 0;
 	// left: 0;
 	// right: 0;
 	// max-height: 400px;
-	overflow: auto;
+	// overflow: auto;
 }
 
 // .table-container table {
@@ -120,8 +120,14 @@ td{
 }
 
 .uppar{
-	margin: 20px ;
+	margin: 10px ;
+	// margin-left: 2px;
 	margin-bottom: 0;
+	// position: fixed;
+	// z-index: 5;
+	// width: 99%;
+	// background-color: white;
+
 }
 
 .icon {

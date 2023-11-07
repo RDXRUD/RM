@@ -13,14 +13,6 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="50">
-                <mat-label>Role</mat-label>
-                <mat-select formControlName="skill_id" single (selectionChange)="onSkillSetSelection()">
-                    <mat-option *ngFor="let sd of skillData" [value]="sd.skillSetID">
-                        {{sd.skill}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field fxFlex="50">
                 <mat-label>Resource Name</mat-label>
                 <input #input type="text" placeholder="Pick one" matInput [formControl]="res_id"
                     [matAutocomplete]="auto" (input)="filterRes()" (focus)="filterRes()">
@@ -30,7 +22,20 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
- 
+             <mat-form-field fxFlex="50">
+              <mat-label>Skill Group</mat-label>
+              <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
+                <mat-option>--None --</mat-option>
+                <mat-option *ngFor="let select of DataofSkillGroup"
+                  [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
+              <mat-label>Skill</mat-label>
+              <mat-select formControlName="skillID" single>
+                <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
+              </mat-select>
+            </mat-form-field>
             <mat-form-field fxFlex="50">
                 <mat-label>Allocation Percentage</mat-label>
                 <mat-select formControlName="allocation_perc">
