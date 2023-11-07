@@ -298,11 +298,7 @@ export class HomeComponent implements OnInit {
       }
     }
   }
-  navigateToDetailReport() {
-    // Use Angular Router to navigate to the "Detail Report" tab
-    this.currentTab = 'Detail Report';
-    //this.router.navigate(['/tabs/detail-report']);
-  }
+
   selectTab(index: number,email:any): void {
     console.log(email)
     var resource = this.data.find(res => res.res_email_id === email);
