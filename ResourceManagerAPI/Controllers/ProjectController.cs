@@ -49,6 +49,20 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
+        [HttpGet]//, Authorize
+        [Route("Projects")]
+        public async Task<IActionResult> GetProjects()
+        {
+            try
+            {
+                return Ok(_dbContext.project_master.ToList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet, Authorize]
         [Route("ClientProjects/{id}")]
         public async Task<IEnumerable<ProjectDetails>> GetClientProjects(int id)

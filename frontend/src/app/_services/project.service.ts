@@ -25,6 +25,11 @@ export class ProjectService {
     let url = `${environment.apiUrl}/Project/ClientProjects/${id}`;
     return this.http.get<projectDetails[]>(url);
   }
+  
+  getAllProjects(): Observable<projectMaster[]> {
+    let url = `${environment.apiUrl}/Project/Projects`;
+    return this.http.get<projectMaster[]>(url);
+  }
 
   getProjectStatus(): Observable<projectStatus[]> {
     let url = `${environment.apiUrl}/Project/GetProjectStatus`;

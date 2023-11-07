@@ -16,6 +16,9 @@ import * as XLSX from 'xlsx';
 import { ClientService } from '../_services/client.service';
 import { ProjectService } from '../_services/project.service';
 import { MatSelectChange } from '@angular/material/select';
+import { DetailService } from '../_services/detail.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatTabGroup } from '@angular/material/tabs';
 
 export const MY_FORMATS = {
   parse: {
@@ -46,7 +49,7 @@ export class HomeComponent implements OnInit {
   datas: any;
   tasks!: tasks;
   dataOfSkill: any;
-  data: any;
+  data: any[]=[];
   locations!: any[];
   skillData!: any[];
   skillDataSorted!: any[];
@@ -65,12 +68,19 @@ export class HomeComponent implements OnInit {
   filter!: any;
   dataProject!: any[];
   clientData: any;
-  DetailsdisplayedColumns: string[] = ['res_name','email_id','client_name','project_name','role','start_date','end_date'];
+  selectAll: boolean = false;
+  submitClicked:boolean=false;
+  searchClicked:boolean=false;
+  DetailsdisplayedColumns: string[] = ['res_name','email_id','client_name','project_name','skill_group','skill','start_date','end_date'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('allSelected') private allSelected!: MatOption;
-
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  currentTab: string = 'Allocation Report';
   temp: any;
+  details: any;
+  private _coreService: any;
+  router: any;
   constructor(
     frmbuilder: FormBuilder,
     private allocationService: CrossViewService,
@@ -78,6 +88,7 @@ export class HomeComponent implements OnInit {
     private resources_Service: ResourcesService,
     private clientService: ClientService,
     private projectService: ProjectService,
+    private detailService:DetailService
   ) {
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
@@ -88,10 +99,10 @@ export class HomeComponent implements OnInit {
       endDate: new FormControl(''),
     });
     this.filteringDetails = frmbuilder.group({
-      res_name: new FormControl(null),
+      res_name: new FormControl([]),
       location: new FormControl(null),
-      client_name: new FormControl(''),
-      project_name: new FormControl(''),
+      client_name: new FormControl([]),
+      project_name: new FormControl([]),
     });
   }
   ngOnInit() {
@@ -107,7 +118,7 @@ export class HomeComponent implements OnInit {
     this.clientService.getActiveClients().subscribe(data => {
       this.clientData = data;
     });
-    this.projectService.getProjects(1).subscribe(data => {
+    this.projectService.getAllProjects().subscribe(data => {
       this.dataProject = data;
     });
   }
@@ -170,6 +181,7 @@ export class HomeComponent implements OnInit {
         console.log(this.filteringForm.value);
 
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
+          this.submitClicked=true
           this.dataOfAllocation = [];
           this.displayedColumns = ["res_name", "res_email_id"];
           this.columns = [];
@@ -186,12 +198,26 @@ export class HomeComponent implements OnInit {
               this.displayedColumns.push(date.date);
             }
           });
+        },(error: HttpErrorResponse) => {
+          if (error.status === 502) {
+            this.dataOfAllocation=[];
+          }
+          
         });
       });
     }
   }
-  OnSearch(){
-    
+  OnSearch(formdata:any){
+    console.log(formdata);
+    this.detailService.getDetailView(formdata).subscribe(data => {
+      this.details = data;
+      this.searchClicked=true;
+    },(error: HttpErrorResponse) => {
+      if (error.status === 502) {
+        this.details=[];
+        this._coreService.openSnackBar("Skill Group or Skill can't be null!");
+      }
+    })
   }
   getCellStyle(value: number): any {
     if (value > 1) {
@@ -204,11 +230,16 @@ export class HomeComponent implements OnInit {
   }
 
   OnReset() {
+    this.submitClicked=false
     this.filteringForm.reset();
     this.filteringDetails.reset();
     this.displayedColumns = []
     this.columns = []
+    this.dataOfAllocation=[]
     // this.applySortToDataSource();
+  }
+  OnResetDetail(){
+    this.searchClicked=true
   }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
@@ -253,21 +284,59 @@ export class HomeComponent implements OnInit {
   }
 
   toggleAllSelection() {
-    if (this.allSelected.selected) {
-      this.filteringForm.controls['res_name'].patchValue([...this.data.map((item: any) => item.key), 0]);
-    } else {
-      this.filteringForm.controls['res_name'].patchValue([]);
+    if (this.filteringForm.get('res_name') && this.data) { // Check if they are not null
+      if (!this.selectAll) {
+        console.log("val:",this.selectAll);
+        
+        this.filteringForm.get('res_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.selectAll=true
+      } else {
+        console.log("d:",this.selectAll);
+        
+        this.filteringForm.get('res_name')?.patchValue([]);
+        this.selectAll=false
+      }
     }
   }
-  tosslePerOne(all: any) {
-    if (this.allSelected.selected) {
-      this.allSelected.deselect();
-      return false;
-    }
-    if (this.filteringForm.controls['res_name'].value.length == this.data.length)
-      this.allSelected.select();
-    return true;
+  navigateToDetailReport() {
+    // Use Angular Router to navigate to the "Detail Report" tab
+    this.currentTab = 'Detail Report';
+    //this.router.navigate(['/tabs/detail-report']);
   }
+  selectTab(index: number,email:any): void {
+    console.log(email)
+    var resource = this.data.find(res => res.res_email_id === email);
+    this.filteringDetails.setValue({
+      res_name:[resource.res_id],
+      location:null,
+      client_name:[],
+      project_name:[]
+    })
+
+    this.OnSearch(this.filteringDetails.value)
+
+    console.log(resource)
+    console.log(this.data);
+    
+    this.tabGroup.selectedIndex = index;
+  }
+
+  // toggleAllSelection() {
+  //   if (this.allSelected.selected) {
+  //     this.filteringForm.controls['res_name'].patchValue([...this.data.map((item: any) => item.key), 0]);
+  //   } else {
+  //     this.filteringForm.controls['res_name'].patchValue([]);
+  //   }
+  // }
+  // tosslePerOne(all: any) {
+  //   if (this.allSelected.selected) {
+  //     this.allSelected.deselect();
+  //     return false;
+  //   }
+  //   if (this.filteringForm.controls['res_name'].value.length == this.data.length)
+  //     this.allSelected.select();
+  //   return true;
+  // }
 
   // Return a default value or throw an exception if needed
 }

@@ -19,7 +19,8 @@ export const routes: Routes = [
   },
   {
     path: 'Login', component: LoginComponent
-  }
+  },
+  { path: 'DetailReport', component: HomeComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({
