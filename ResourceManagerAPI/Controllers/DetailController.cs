@@ -83,19 +83,40 @@ namespace ResourceManagerAPI.Controllers
                         join sg in _dbContext.skill_group on ss?.SkillGroupID equals sg.SkillGroupID 
                         join s in _dbContext._skill on ss?.SkillID equals s.SkillID into detail
                         from m in detail.DefaultIfEmpty()
-                        select new DetailView
+                        select new 
                         {
                             res_name = rm?.res_name,
                             res_email_id = rm?.res_email_id,
                             project_name = pm.project_name != "" ? pm.project_name : "null",
+                            project_id= pm.project_id != null? pm.project_id:0,
                             client_name = cm.client_name != "" ? cm.client_name : "null",
+                            client_id= cm.client_id != null ? cm.client_id : 0,
                             skill = m?.Skill,
                             skillGroup = sg?.SkillGroup,
                             start_date = pra.start_date != null ? pra.start_date : new DateTime(2000, 1, 1, 0, 0, 0),
                             end_date= pra.end_date != null ? pra.end_date : new DateTime(2000, 1, 1, 0, 0, 0),
 
                         };
-            return query.ToList();
+
+            var result = (from data in query.Where(res =>
+                    ((filterData.client_name).Length==0 || filterData.client_name.Contains(res.client_id)) &&
+                    ((filterData.project_name).Length == 0 || filterData.project_name.Contains(res.project_id)))
+                              select new DetailView
+                              {
+                                  res_name = data.res_name,
+                                  res_email_id = data.res_email_id,
+                                  project_name = data.project_name,
+                                  //project_id = pm.project_id != null ? pm.project_id : 0,
+                                  client_name = data.client_name ,
+                                  //client_id = cm.client_id != null ? cm.client_id : 0,
+                                  skill = data.skill,
+                                  skillGroup = data.skillGroup,
+                                  start_date = data.start_date,
+                                  end_date = data.end_date,
+                              }).ToList();
+
+
+            return result.ToList();
 
         }
 
