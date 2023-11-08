@@ -68,16 +68,24 @@ export class AddResourceProjectDialogComponent {
   }
 
   AddResource() {
-    this.temp = this.addResource.value
-    this.temp.res_id = this.resexpansionid
-    this.temp.skill_id=this.skillset[0].skillSetID
-    this.projectService.AddResource(this.temp).subscribe(data => {
-      this._coreService.openSnackBar('Project Added Successfully ', 'done');
-      this.addResource.reset();
-      this.dialogRef.close('success');
-      this.ngOnInit();
-    })
+    this.temp = this.addResource.value;
+    this.temp.res_id = this.resexpansionid;
+    this.temp.skill_id = this.skillset[0].skillSetID;
+    this.projectService.AddResource(this.temp).subscribe(
+      () => {
+        this._coreService.openSnackBar('Project Added Successfully ', 'done');
+        this.addResource.reset();
+        this.dialogRef.close('success');
+        this.ngOnInit();
+      },
+      (error) => {
+        if (error.status === 503) {
+          this._coreService.openSnackBar('Time period is out of project duration', 'done');
+        }
+      }
+    );
   }
+  
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
     if (this.resourceExtensionData == null) {

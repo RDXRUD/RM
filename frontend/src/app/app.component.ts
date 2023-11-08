@@ -16,15 +16,15 @@ export class AppComponent {
   showSessionExpiredMessage = false;
   localStorage: any;
  
-  constructor(public tokenService: TokenService, private router: Router) {
+  constructor(
+    public tokenService: TokenService, 
+    private router: Router) 
+    {
     this.tokenService.isLoggedIn.subscribe(() => {
       this.Roles=localStorage.getItem("Role")
       this.isLoggedIn = this.tokenService.isAuthenticated();
       
     })
-  }
-
-  ngOnInit(): void {
   }
   
   OnLogout() {

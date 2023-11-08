@@ -53,7 +53,6 @@ export class EditResSkillDialogComponent implements OnInit {
     })
   }
   ngOnInit() {
-    console.log
     const encodedEmailID = encodeURIComponent(this.datadialog.emailID);
     this.skills_service.getSkill(encodedEmailID).subscribe(datas => {
       this.data = datas;

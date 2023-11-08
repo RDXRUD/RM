@@ -15,7 +15,6 @@
             <mat-form-field fxFlex="50">
                 <mat-label>Skill Group</mat-label>
                 <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-                    <mat-option>--None --</mat-option>
                     <mat-option *ngFor="let select of DataofSkillGroup"
                         [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
                 </mat-select>

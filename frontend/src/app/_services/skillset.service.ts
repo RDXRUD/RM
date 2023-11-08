@@ -62,12 +62,10 @@ export class SkillsetService {
     return this.http.post<addSkillGroup[]>(url, skillgroupdata);
   }
   DeleteSkillset(skillSetID: number) {
-    console.warn(skillSetID);
     let url = `${environment.apiUrl}/SkillSet/DeleteSkillSet`;
     return this.http.delete(url, { body: { skillSetID: skillSetID } });
   }
   UpdateSkillGroupStatus(skillGroupID: number):Observable<skillsetupdate[]> {
-    console.warn(skillGroupID);
     let url = `${environment.apiUrl}/SkillSet/UpdateSkillGroup/${skillGroupID}`;
     return this.http.put<skillsetupdate[]>(url,skillGroupID);
   }

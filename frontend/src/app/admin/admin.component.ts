@@ -1,13 +1,11 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
-import { file } from '../_model/file';
 import { EditResSkillDialogComponent } from '../_shared/edit-res-skill-dialog/edit-res-skill-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { userform } from '../_model/userform';
 import { addSkill } from '../_model/addSkill';
 import { addSkillGroup } from '../_model/addSkillGroup';
 import { EditSkillDialogComponent } from '../_shared/edit-skill-dialog/edit-skill-dialog.component';
-import { employee } from '../_model/employee';
 import { addEmployee } from '../_model/addEmployee';
 import { CoreService } from '../_services/core.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -48,35 +46,16 @@ import { EditProjectResourceDialogComponent } from '../_shared/edit-project-reso
 export class AdminComponent implements OnInit, AfterViewInit {
   apiData!: any[];
   api!: skillgroup[];
-  dataOfEmployees!: employee[];
-  forms: FormGroup;
-  formsOfSkills: FormGroup;
-  formdata!: file;
   userForm: FormGroup;
   formdatas!: userform;
   addskill: FormGroup;
   addSkillgroup: FormGroup;
-  AddDataOfEmployee: FormGroup;
   skilldata!: addSkill;
   skillgroupdata!: addSkillGroup;
-  addEmpDetails!: addEmployee;
-  deletedata: any;
   data: any;
-  sg: any;
-  dataOffile: any;
-  datasofemployees: any;
   datas: any;
   resourcesWithSkillCount: any;
-  user: any;
-  userdata: any;
   skgroups: any;
-  res: any;
-  dataOfFile: any;
-  dataEmp: any;
-  dataOfLists: any;
-  dataOfSkillsFile!: file[];
-  deleteuser: any;
-  deleteskillgroup: any;
   displayedResourceColumns: string[] = ['res_id', 'res_name', 'res_user_id', 'res_email_id', 'location', 'res_create_date', 'res_last_modified', 'role_name', 'edit', 'disable'];
   displayedColumns: string[] = ['res_id', 'res_name', 'res_email_id', 'skill_count', 'details'];
   dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'description', 'status', 'edit', 'disable'];
@@ -105,22 +84,18 @@ export class AdminComponent implements OnInit, AfterViewInit {
   addClient!: FormGroup;
   addProject!: FormGroup;
   addProjectResource!: FormGroup;
-  isChecked: boolean = true;
   filterData!: resFilter;
   filterSkillData!: skillSetFilter;
-  filteredData: any;
   dataSource!: MatTableDataSource<any>;
   skillData!: any[];
   Status: string[] = ["ACTIVE", "INACTIVE"];
-  clientStatus: string[] = ["ACTIVE", "INACTIVE"];
-  panelOpenState = false;
   dataOfClient: any;
   clientExtensionData!: any[];
   resexpansionid: any;
   dataProject!: any[];
   dataOfProjects!: any[];
   allocatedResources!: any;
-  temp: any;
+
 
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   project_manager = new FormControl();
@@ -163,12 +138,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       password: new FormControl(),
       role_name: new FormControl()
     })
-    this.forms = frmbuilder.group({
-      planFile: new FormControl(),
-    })
-    this.formsOfSkills = frmbuilder.group({
-      planFile: new FormControl(),
-    })
     this.userForm = frmbuilder.group({
       userName: new FormControl(),
       fullName: new FormControl(),
@@ -183,12 +152,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
       skillGroup: new FormControl(),
       description: new FormControl()
     })
-    this.AddDataOfEmployee = frmbuilder.group({
-      resourceName: new FormControl(),
-      taskName: new FormControl(),
-      start: new FormControl(),
-      end: new FormControl()
-    })
+
     this.filterResource = frmbuilder.group({
       res_name: new FormControl(),
       res_email_id: new FormControl(),

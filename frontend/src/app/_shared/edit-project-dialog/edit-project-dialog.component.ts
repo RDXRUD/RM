@@ -45,7 +45,6 @@ export class EditProjectDialogComponent {
       project_status: new FormControl()
       }),
       this.dataofProj=dataOfClient;
-      console.log(this.dataofProj);
     }
   ngOnInit(){
     this.updateProject.setValue({
@@ -58,7 +57,6 @@ export class EditProjectDialogComponent {
       project_status:this.dataOfClient.element.project_status,
     });
     this.clientService.getClients().subscribe(data=>{
-      console.log(data);
       this.data=data;
     })
     this.projectService.getProjectMangers().subscribe(data => {
@@ -83,9 +81,6 @@ export class EditProjectDialogComponent {
     else{
       this.temp.project_manager=this.resexpansionid
     }
-    console.log('h:',)
-    console.log(this.temp.project_manager)
-    console.log(this.temp)
     this.projectService.UpdateProject(element.project_id,this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Updated Successfully ', 'done');
       this.updateProject.reset();
@@ -95,12 +90,7 @@ export class EditProjectDialogComponent {
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
-    console.log(filterValue)
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
-    console.log(this.filteredResOptions)
-    console.log(this.resourceExtensionData)
-    console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid=this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
- 
   }
 }

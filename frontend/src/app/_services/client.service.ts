@@ -28,13 +28,11 @@ export class ClientService {
   UpdateClient(id: number, formdata: Client): Observable<any> {
     let url = `${environment.apiUrl}/Client/UpdateClient/${id}`;
     return this.http.put(url, formdata).pipe(
-      // Handle response or error as needed
     );
   }
   UpdateClientStatus(id: number): Observable<any> {
     let url = `${environment.apiUrl}/Client/UpdateStatus/${id}`;
     return this.http.put(url,id).pipe(
-      // Handle response or error as needed
     );
   }
 }

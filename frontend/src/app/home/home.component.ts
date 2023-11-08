@@ -6,8 +6,6 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOption } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
-import { employeeFilters } from '../_model/employeefilters';
-import { tasks } from '../_model/tasks';
 import { CrossViewService } from '../_services/cross-view.service';
 import { SkillsetService } from '../_services/skillset.service';
 import { SkillGroups } from '../_model/SkillGroups';
@@ -19,6 +17,7 @@ import { DetailService } from '../_services/detail.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CoreService } from '../_services/core.service';
+import moment from 'moment';
 
 export const MY_FORMATS = {
   parse: {
@@ -45,15 +44,9 @@ export const MY_FORMATS = {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  dataOfEmp: any;
-  datas: any;
-  tasks!: tasks;
-  dataOfSkill: any;
   data: any[] = [];
   locations!: any[];
   skillData!: any[];
-  skillDataSorted!: any[];
-  formdata!: employeeFilters;
   filteringForm: FormGroup;
   filteringDetails: FormGroup;
   DataofSkillGroup!: any[];
@@ -94,8 +87,8 @@ export class HomeComponent implements OnInit {
       location: new FormControl(null),
       skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
-      startDate: new FormControl(''),
-      endDate: new FormControl(''),
+      startDate: new FormControl(new Date()),
+      endDate: new FormControl(new Date(new Date().setMonth(new Date().getMonth() + 1))),
     });
     this.filteringDetails = frmbuilder.group({
       res_name: new FormControl([]),
@@ -119,7 +112,7 @@ export class HomeComponent implements OnInit {
     });
     this.projectService.getAllProjects().subscribe(data => {
       this.dataProject = data;
-    });
+    });  
   }
   applySortToDataSource() {
     if (this.dataSource) {
@@ -149,20 +142,20 @@ export class HomeComponent implements OnInit {
         this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
         const startDateValue = this.filteringForm.get('startDate')?.value;
         let startDate;
-        if (startDateValue) {
+        
+        if (moment.isMoment(startDateValue)) {
           startDate = new Date(startDateValue.format('YYYY-MM-DD'));
         } else {
-          startDate = new Date();
+          startDate = startDateValue;
         }
         const startDateString = startDate.toISOString();
 
         const endDateValue = this.filteringForm.get('endDate')?.value;
         let endDate;
-        if (endDateValue) {
+        if (moment.isMoment(endDateValue)) {
           endDate = new Date(endDateValue.format('YYYY-MM-DD'));
         } else {
-          endDate = new Date(startDate);
-          endDate.setMonth(startDate.getMonth() + 1);
+          endDate = endDateValue;
         }
         const endDateString = endDate.toISOString();
 
