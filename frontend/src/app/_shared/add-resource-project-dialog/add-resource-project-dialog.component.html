@@ -32,7 +32,7 @@
             </mat-form-field>
             <mat-form-field fxFlex="50">
               <mat-label>Skill</mat-label>
-              <mat-select formControlName="skillID" single>
+              <mat-select formControlName="skillID" single (selectionChange)="onSkillSetSelection()">
                 <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
               </mat-select>
             </mat-form-field>

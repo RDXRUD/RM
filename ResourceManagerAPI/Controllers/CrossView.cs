@@ -22,14 +22,10 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-        [HttpGet]
-        [Route("Dates")]
-        public ActionResult<IEnumerable<DateMaster>> GetDates()
-        {
-            
-            return _dbContext.date_master;
-            //return datesWithDays;
-        }
+        public static List<DateMaster> dateMasterList = new List<DateMaster>();
+       
+
+
 
         [HttpPost]
         [Route("CrossViewData")]
@@ -39,7 +35,7 @@ namespace ResourceManagerAPI.Controllers
             {
                 return BadRequest("Invalid date range. Start date should be before end date.");
             }
-
+            dateMasterList.Clear();
             _dbContext.Database.ExecuteSqlRaw("DELETE FROM date_master");
             _dbContext.Database.ExecuteSqlRaw("SELECT setval('date_master_id_seq', 1, false)");
             _dbContext.Database.ExecuteSqlRaw("DELETE FROM cross_view_data");
@@ -59,8 +55,10 @@ namespace ResourceManagerAPI.Controllers
                 };
 
                 datesWithDays.Add(model);
+                dateMasterList.Add(model);
                 _dbContext.date_master.Add(model);
             }
+
             _dbContext.SaveChanges();
 
             var locResIds = _dbContext.resource_master
@@ -178,20 +176,15 @@ namespace ResourceManagerAPI.Controllers
 
             return crosstab;
 
-            //    var crosstab = data
-            //.GroupBy(d => new { d.res_name, d.date })
-            //.Select(g => new CrossTabResult
-            //{
-            //    res_name = g.Key.res_name,
-            //    allocationData = g.GroupBy(d => d.date).ToDictionary(
-            //        group => group.Key,
-            //        group => group.Sum(item => item.allocation_perc)
-            //    )
-            //})
-            //.OrderBy(c => c.res_name) // Sort by ResName
-            //.ToList();
+        }
 
-            //    return crosstab;
+        [HttpGet]
+        [Route("Dates")]
+        public ActionResult<IEnumerable<DateMaster>> GetDates()
+        {
+
+            return _dbContext.date_master;
+            //return dateMasterList;
             //return datesWithDays;
         }
     }

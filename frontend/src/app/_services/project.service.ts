@@ -60,7 +60,7 @@ export class ProjectService {
       // Handle response or error as needed
     );
   }
-  UpdateResource(id: number, formdata: projectMaster): Observable<any> {
+  UpdateResource(id: number, formdata: projectResAllocation): Observable<any> {
     let url = `${environment.apiUrl}/Project/UpdateAllocatedResource/${id}`;
     return this.http.put(url, formdata).pipe(
       // Handle response or error as needed

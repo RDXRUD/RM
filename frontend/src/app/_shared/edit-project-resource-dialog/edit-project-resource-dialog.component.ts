@@ -24,8 +24,9 @@ export class EditProjectResourceDialogComponent {
   isRoleSelected: boolean = false;
   DataofSkillGroup!: any[];
   skillSets:any;
-  skillGroupID:any;
+  skillGroupID!:number;
   skillID:any;
+  skillSet:any;
 
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   res_id = new FormControl();
@@ -36,9 +37,15 @@ export class EditProjectResourceDialogComponent {
   temp: any;
   skillData!: any[];
   allocation: any[] = [0.25, 0.5, 0.75, 1];
+  skillGroup: SkillGroups = {
+    skillGroupID: 0,
+    skillGroup: ''
+  };
+  skillSetID:any;
+  //skillSet!:any;
 
   constructor(private projectService: ProjectService,
-    // private skillsetService: SkillsetService,
+    //private skillsetService: SkillsetService,
     private skillSetService: SkillsetService,
     private resources_Service: ResourcesService,
     private _coreService: CoreService,
@@ -49,7 +56,7 @@ export class EditProjectResourceDialogComponent {
     this.updateResource = this.fb.group({
       project_id: new FormControl(),
       res_id: new FormControl(),
-      // skillGroupID: new FormControl(''),
+      skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
       allocation_perc: new FormControl(),
       start_date: new FormControl(),
@@ -60,44 +67,60 @@ export class EditProjectResourceDialogComponent {
   }
   ngOnInit() {
 
-
     this.skillSetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
     });
     this.skillSetService.getSkillSets().subscribe(datas => {
       this.skillSets=datas
       console.log(this.skillSets);
-      var skillset=this.skillSets.find((ss:any)=>ss.skillSetID== this.dataOfProjects.element.skill_id)
-      console.log(skillset);
-      this.skillGroupID=skillset.skillGroupID
-      this.skillID=skillset.skillID
-      console.log(skillset.skillGroupID);
+      this.skillSet=this.skillSets.find((ss:any)=>ss.skillSetID== this.dataOfProjects.element.skill_id)
+      console.log(this.skillSet);
+      this.skillSetID=this.skillSet.skillSetID
+      console.log(this.skillSetID);
       
+      this.skillGroupID=this.skillSet.skillGroupID
+      this.skillID=this.skillSet.skillID
+      console.log(this.skillSet.skillGroupID);
+
+      this.updateResource.setValue({
+        project_id: this.dataOfProjects.element.project_id,
+        res_id: this.dataOfProjects.element.res_id,
+        start_date: this.dataOfProjects.element.start_date,
+        end_date: this.dataOfProjects.element.end_date,
+        skillID: this.skillID,
+        skillGroupID: this.skillGroupID,
+        allocation_perc: this.dataOfProjects.element.allocation_perc,
+      });
+      this.skillGroup.skillGroupID=this.updateResource.value.skillGroupID
+      this.skillSetService.getSkillAsPerSkillGroup(this.skillGroup).subscribe(res => {
+        this.skillData = res;
+        console.log("ski:",this.skillSet);
+      });
+      this.skillSetService.getResourceAsPerSkillSet(this.skillSetID).subscribe(data => {
+        this.resourceExtensionData=data;
+        console.log(this.resourceExtensionData);
+        
+      });
       
+      // this.skillSetService.getActiveSkillSets().subscribe(datas => {
+      //   console.log("qwertyui",datas)
+      //   this.skillData = datas;
+      // });
+
     });
-    this.updateResource.setValue({
-      project_id: this.dataOfProjects.element.project_id,
-      res_id: this.dataOfProjects.element.res_id,
-      start_date: this.dataOfProjects.element.start_date,
-      end_date: this.dataOfProjects.element.end_date,
-      skillID: this.skillID,
-      // skillGroupID: this.skillGroupID,
-      
-      allocation_perc: this.dataOfProjects.element.allocation_perc,
-    });
-    this.skillSetService.getActiveSkillSets().subscribe(datas => {
-      console.log("qwertyui",datas)
-      this.skillData = datas;
-    });
-    this.skillSetService.getResourceAsPerSkillSet(this.dataOfProjects.element.skill_id).subscribe(data => {
-      this.resourceExtensionData = data;
-    })
+
+
+
+    // this.skillSetService.getResourceAsPerSkillSet(this.dataOfProjects.element.skill_id).subscribe(data => {
+    //   this.resourceExtensionData = data;
+    // })
   }
 
   UpdateResource(element: any) {
     console.log(element)
     console.log(this.updateResource.value);
     this.temp = this.updateResource.value
+    this.temp.skill_id=this.skillSet[0].skillSetID
     console.log(this.temp)
     this.projectService.UpdateResource(element.id, this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Updated Successfully ', 'done');
@@ -120,20 +143,24 @@ export class EditProjectResourceDialogComponent {
       this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
     }
   }
-  // onSkillSetSelection(){
-  //   const skillSetID = Number(this.updateResource.get('skill_id')?.value);
-  //   this.skillSetService.getResourceAsPerSkillSet(skillSetID).subscribe(data => {
-  //     this.resourceExtensionData=data;
-  //     console.log("kl",this.resourceExtensionData)
-  //   });
-  // }
+  onSkillSetSelection(){
+    console.log(this.updateResource.value.skillGroupID);
+    
+    this.skillSet=this.skillSets.filter((data:any) => data.skillGroupID === this.updateResource.value.skillGroupID && data.skillID === this.updateResource.value.skillID);
+    console.log(this.skillSet);
+    
+    this.skillSetService.getResourceAsPerSkillSet(this.skillSet[0].skillSetID).subscribe(data => {
+      this.resourceExtensionData=data;
+      console.log(this.resourceExtensionData);
+      
+    });
+  }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.updateResource.get('skillGroupID')?.value);
-    const skillGroup: SkillGroups = {
-      skillGroupID: skillGroupID,
-      skillGroup: ''
-    };
-    this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+
+    this.skillGroup.skillGroupID=skillGroupID
+    
+    this.skillSetService.getSkillAsPerSkillGroup(this.skillGroup).subscribe(res => {
       this.skillData = res;
     });
   }
