@@ -40,21 +40,17 @@ export class UpdateProfileDialogComponent {
       role_name: this.Data.details[0].role_name,
       res_user_id: this.Data.details[0].res_user_id,
     });
-    console.log("details:", this.Data.details)
     this.resource_service.GetLocations().subscribe((data: any) => {
       this.locations = data;
-      console.log(this.locations);
     });
-    console.log(this.Data.details[0].res_id)
+
   }
   UpdateUser(res_id: number) {
-    console.log(res_id)
     this.formdata = this.OnUpdate.value;
     this.formdata = {
       ...this.OnUpdate.value,
       res_id: res_id
     };
-    console.log(res_id, this.formdata);
     this.resource_service.UpdateResource(res_id, this.formdata).subscribe(res => {
       this._coreService.openSnackBar("Record Updated Successfully", "ok");
       this.OnUpdate.reset();

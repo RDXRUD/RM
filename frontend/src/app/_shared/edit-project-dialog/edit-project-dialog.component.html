@@ -33,6 +33,14 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="50">
+                <mat-label>Project Status</mat-label>
+                <mat-select formControlName="project_status">
+                    <mat-option *ngFor="let ps of projectStatus" [value]="ps.id">
+                        {{ps.project_status}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
                 <mat-label>Start Date</mat-label>
                 <input formControlName="start_date" matInput [matDatepicker]="one">
                 <mat-datepicker-toggle matIconSuffix [for]="one"></mat-datepicker-toggle>
@@ -45,14 +53,6 @@
                 <mat-datepicker #two></mat-datepicker>
             </mat-form-field>
            
-            <mat-form-field fxFlex="50">
-                <mat-label>Project Status</mat-label>
-                <mat-select formControlName="project_status">
-                    <mat-option *ngFor="let ps of projectStatus" [value]="ps.id">
-                        {{ps.project_status}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
         </div>
         <div mat-dialog-actions align="end">
             <button mat-raised-button color="primary">Update</button>

@@ -49,7 +49,6 @@ export class EditClientDialogComponent {
       ...this.clientDetails.value,
       client_id: client_id
     };
-    console.log(client_id,this.formdata);
     this.clientService.UpdateClient(client_id,this.formdata).subscribe(client => {
       this._coreService.openSnackBar("Record Updated Successfully","ok");
       this.clientDetails.reset();

@@ -38,7 +38,6 @@ export class EditSkillDialogComponent {
       this.apiData = data;
     })
     this.skillsetService.getSkills().subscribe(datas => {
-      console.log(datas);
       this.apiDataa = datas;
     })
   }
@@ -49,7 +48,6 @@ export class EditSkillDialogComponent {
       skillSetID: skillSetID
     };
     this.skillsetService.UpdateSkillSet(this.formdata).subscribe(result => {
-      console.log(result)
       this._coreService.openSnackBar("Record Updated Successfully","ok");
       this.skills.reset();
       this.dialogRef.close('success');

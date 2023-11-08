@@ -14,7 +14,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../_services/skillset.service';
-//import { EditEmpDialogComponent } from '../_shared/edit-emp-dialog/edit-emp-dialog.component';
 import { ResourcesService } from '../_services/resources.service';
 import { addNewResource } from '../_model/addNewResource';
 import { EditResDailogComponent } from '../_shared/edit-res-dailog/edit-res-dailog.component';
@@ -47,7 +46,6 @@ import { EditProjectResourceDialogComponent } from '../_shared/edit-project-reso
 
 
 export class AdminComponent implements OnInit, AfterViewInit {
-  // buttonState!: string;
   apiData!: any[];
   api!: skillgroup[];
   dataOfEmployees!: employee[];
@@ -88,7 +86,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   displayedColumnsOfLists: string[] = ['columnLists', 'selectors'];
   displayedClientColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'status', 'edit', 'action_dis'];
-  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand'];//,'partner_incharge'
+  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand'];
   displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit', 'inner_expand']
   displayedProjectResourceExpansionColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'start_date', 'end_date', 'edit'];
   displayedAllocatedResourceExpansionColumns: string[] = ['res_name', 'skill', 'allocation_perc', 'start_date', 'end_date', 'edit', 'delete'];
@@ -120,7 +118,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   clientExtensionData!: any[];
   resexpansionid: any;
   dataProject!: any[];
-  // resourceExtensionData!:any[];
   dataOfProjects!: any[];
   allocatedResources!: any;
   temp: any;
@@ -149,7 +146,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   element: any;
   constructor(
     private resources_Service: ResourcesService,
-    private frmbuilder: FormBuilder,
+    frmbuilder: FormBuilder,
     private _coreService: CoreService,
     private dialog: MatDialog,
     private skillSetService: SkillsetService,
@@ -247,7 +244,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.apiData = sg;
     })
     this.skillSetService.getSkillSets().subscribe(datas => {
-      console.log(datas)
       this.datas = datas;
       this.dataOfempSkill = new MatTableDataSource(this.datas);
       this.dataOfempSkill.sort = this.sort;
@@ -269,18 +265,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.skillData = dataOfSkill;
     });
     this.clientService.getClients().subscribe(data => {
-      console.log(data);
       this.clientExtensionData = data;
       this.dataOfClient = data;
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
     });
-    this.projectService.getProjects(1).subscribe(data =>{
+    this.projectService.getAllProjects().subscribe(data =>{
       this.dataProject = data;
     });
   }
   AddSkill() {
-    console.log(this.addskill.value)
     this.skilldata = this.addskill.value;
     this.skillSetService.AddSkillset(this.skilldata).subscribe(res => {
       this._coreService.openSnackBar('Record Added Successfully', 'done')
@@ -297,7 +291,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   AddSkillGroup() {
     this.skillgroupdata = this.addSkillgroup.value;
-    this.skillSetService.AddSkillGroup(this.skillgroupdata).subscribe(skillgroupdataApi => {
+    this.skillSetService.AddSkillGroup(this.skillgroupdata).subscribe(() => {
       this._coreService.openSnackBar('Record Added Successfully', 'done')
       this.addSkillgroup.reset();
       this.ngOnInit();
@@ -311,12 +305,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
     })
   }
   getResourceSkills(emailID: string) {
-    console.log(emailID)
     const dialogRef = this.dialog.open(EditResSkillDialogComponent, {
       data: { emailID }
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
+    dialogRef.afterClosed().subscribe(() => {
       this.ngOnInit();
     });
   }
@@ -325,7 +317,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
@@ -343,7 +334,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
@@ -353,7 +343,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const confirmation = confirm("Are you sure you want to disable?");
     if (confirmation) {
       this.resources_Service.EditStatus(res_id).subscribe(
-        (res) => {
+        () => {
           this._coreService.openSnackBar('Resource Disabled Successfully', 'Done')
           this.ngOnInit();
         },
@@ -369,8 +359,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const confirmation = confirm("Are you sure you want to update status?");
     if (confirmation) {
       this.skillSetService.UpdateSkillSetStatus(id).subscribe(
-        (res) => {
-          console.log(res)
+        () => {
           this._coreService.openSnackBar(' Updated Successfully', 'Done')
           this.ngOnInit();
         },
@@ -389,7 +378,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
       this.skillSetService.DeleteSkillset(skillSetID).subscribe(
-        deleteuser => {
+        () => {
           this._coreService.openSnackBar('Record Deleted Successfully', 'done')
           this.ngOnInit();
         },
@@ -404,8 +393,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   updateSkillGroupStatus(skillGroupID: number) {
     const confirmation = confirm("Are you sure you want to update status?");
     if (confirmation) {
-      this.skillSetService.UpdateSkillGroupStatus(skillGroupID).subscribe(result => {
-        console.log(result);
+      this.skillSetService.UpdateSkillGroupStatus(skillGroupID).subscribe(() => {
         this._coreService.openSnackBar('Status Updated Successfully', 'done')
         this.ngOnInit();
       },
@@ -420,8 +408,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   AddResource() {
     this.addRes = this.addResource.value;
-    console.log(this.addRes);
-    this.resources_Service.AddResource(this.addRes).subscribe(res => {
+    this.resources_Service.AddResource(this.addRes).subscribe(() => {
       this._coreService.openSnackBar('Record Added Successfully ', 'done');
       this.addResource.reset();
       this.ngOnInit();
@@ -436,7 +423,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   OnSubmit() {
     this.filterData = this.filterResource.value;
-    console.log(this.filterData)
     this.skillService.FilterResource(this.filterData).subscribe(data => {
       this.resourcesWithSkillCount = data;
       this.dataOfResskill = new MatTableDataSource(this.resourcesWithSkillCount);
@@ -448,10 +434,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.filterSkillData = this.filterSkills.value;
     this.filterSkillData.skill = Array.isArray(this.filterSkillData.skill) ? this.filterSkillData.skill.join(',') : this.filterSkillData.skill;
     this.filterSkillData.skillGroup = Array.isArray(this.filterSkillData.skillGroup) ? this.filterSkillData.skillGroup.join(',') : this.filterSkillData.skillGroup;
-    console.log(this.filterSkillData)
     this.skillSetService.FilterSkillSet(this.filterSkillData).subscribe(data => {
       this.datas = data;
-      console.log(this.datas);
       this.dataOfempSkill = new MatTableDataSource(this.datas);
       this.dataOfempSkill.sort = this.sort;
     });
@@ -469,12 +453,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   AddClient() {
     this.addCli = this.addClient.value;
-    console.log(this.addCli)
-    this.clientService.AddClient(this.addCli).subscribe(client => {
+    this.clientService.AddClient(this.addCli).subscribe(() => {
       this._coreService.openSnackBar('Client Added Successfully ', 'done');
       this.addClient.reset();
       this.ngOnInit();
-    })
+    },(error: HttpErrorResponse) => {
+      if (error.status == 501) {
+        this._coreService.openSnackBar('Client Name already exist', 'ok');
+      }
+    }
+    )
   }
   UpdateClient(element: any) {
     const dialogRef = this.dialog.open(EditClientDialogComponent, {
@@ -483,7 +471,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
@@ -492,36 +479,31 @@ export class AdminComponent implements OnInit, AfterViewInit {
   UpdateClientStatus(id: number) {
     const confirmation = confirm("Are you sure you want to update status?");
     if (confirmation) {
-      this.clientService.UpdateClientStatus(id).subscribe(result => {
-        console.log(result);
+      this.clientService.UpdateClientStatus(id).subscribe(() => {
         this._coreService.openSnackBar('Status Updated Successfully', 'done')
         this.ngOnInit();
       });
     }
   }
   UpdateProject(element: any) {
-    console.log(element)
     const dialogRef = this.dialog.open(EditProjectDialogComponent, {
       width: '600px',
       height: '550px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
     });
   }
   UpdateAllocatedResource(element: any) {
-    console.log(element)
     const dialogRef = this.dialog.open(EditProjectResourceDialogComponent, {
       width: '600px',
       height: '500px',
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
@@ -535,21 +517,18 @@ export class AdminComponent implements OnInit, AfterViewInit {
       data: { dataOfClient, }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
     });
   }
   AddProjectResource(dataOfProjects: any) {
-    console.log(dataOfProjects)
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
       height: '550px',
       data: { dataOfProjects, }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
         this.ngOnInit();
       }
@@ -567,20 +546,15 @@ export class AdminComponent implements OnInit, AfterViewInit {
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
-    console.log(filterValue)
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
-    console.log(this.filteredResOptions)
-
-    console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
 
   }
   DeleteResource(element: any) {
-    console.log(element)
     const confirmation = confirm("Are you sure you want to delete?");
     if (confirmation) {
-      this.projectService.DeleteResource(element.id).subscribe((deletedata: any) => {
-        this._coreService.openSnackBar(" Record deleted", "ok")
+      this.projectService.DeleteResource(element.id).subscribe(() => {
+        this._coreService.openSnackBar(" Record deleted", "Ok")
         this.ngOnInit();
       });
     }

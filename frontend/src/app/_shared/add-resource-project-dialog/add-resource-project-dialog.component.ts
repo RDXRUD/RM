@@ -5,7 +5,6 @@ import { SkillGroups } from 'src/app/_model/SkillGroups';
 import { Client } from 'src/app/_model/client';
 import { CoreService } from 'src/app/_services/core.service';
 import { ProjectService } from 'src/app/_services/project.service';
-import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
 
 @Component({
@@ -37,7 +36,6 @@ export class AddResourceProjectDialogComponent {
   skillset:any;
 
   constructor(
-    private resources_Service:ResourcesService,
     private projectService: ProjectService,
     private skillsetService: SkillsetService,
     private skillSetService: SkillsetService,
@@ -55,19 +53,12 @@ export class AddResourceProjectDialogComponent {
       start_date: new FormControl(),
       end_date: new FormControl()
     }),
-      this.dataofProj = dataOfProjects;
-    console.log(this.dataofProj);
+    
+    this.dataofProj = dataOfProjects;
 
 
   }
   ngOnInit() {
-    // this.skillSetService.getActiveSkillSets().subscribe(datas => {
-    //   console.log(datas)
-    //   this.skillData = datas;
-    // })
-    // this.resources_Service.getResources().subscribe(data => {
-    // this.resourceExtensionData=data;
-    // })
     this.skillSetService.getSkillSets().subscribe(datas => {
       this.skillSets=datas
     });
@@ -77,11 +68,9 @@ export class AddResourceProjectDialogComponent {
   }
 
   AddResource() {
-    console.log("value",this.addResource.value);
     this.temp = this.addResource.value
     this.temp.res_id = this.resexpansionid
     this.temp.skill_id=this.skillset[0].skillSetID
-    console.log(this.temp)
     this.projectService.AddResource(this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Added Successfully ', 'done');
       this.addResource.reset();
@@ -91,22 +80,15 @@ export class AddResourceProjectDialogComponent {
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
-    console.log(filterValue)
     if (this.resourceExtensionData == null) {
-      console.log("DATA IS NULL")
     }
     else {
       this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
-      console.log(this.filteredResOptions)
-
-      console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
       this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
     }
   }
   onSkillSetSelection(){
-    this.skillset=this.skillSets.filter((data:any) => data.skillGroupID === this.addResource.value.skillGroupID && data.skillID === this.addResource.value.skillID);
-    console.log(this.skillset);
-    
+    this.skillset=this.skillSets.filter((data:any) => data.skillGroupID === this.addResource.value.skillGroupID && data.skillID === this.addResource.value.skillID);    
     this.skillsetService.getResourceAsPerSkillSet(this.skillset[0].skillSetID).subscribe(data => {
       this.resourceExtensionData=data;
     });
@@ -117,12 +99,8 @@ export class AddResourceProjectDialogComponent {
       skillGroupID: skillGroupID,
       skillGroup: ''
     };
-    console.log(skillGroup);
-
     this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
       this.skillData = res;
-
     });
-    
   }
 }

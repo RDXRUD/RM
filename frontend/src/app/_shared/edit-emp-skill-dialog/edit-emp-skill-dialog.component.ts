@@ -6,7 +6,6 @@ import { skillset } from '../../_model/skillset';
 import { SkillsetService } from '../../_services/skillset.service';
 import { CoreService } from 'src/app/_services/core.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SkillGroups } from 'src/app/_model/SkillGroups';
 @Component({
   selector: 'app-edit-emp-skill-dialog',
   templateUrl: './edit-emp-skill-dialog.component.html',
@@ -24,7 +23,7 @@ export class EditEmpSkillDialogComponent {
     public dialogRef: MatDialogRef<EditEmpSkillDialogComponent>,
     private skillsService: SkillsService,
     private skillsetService: SkillsetService,
-    private frmbuilder: FormBuilder,
+    frmbuilder: FormBuilder,
     private _coreService:CoreService,
     @Inject(MAT_DIALOG_DATA) public dataOfskills: any,
   ) {
@@ -45,8 +44,6 @@ export class EditEmpSkillDialogComponent {
   }
   getSkillSets(){
   this.skillsetService.getActiveSkillSets().subscribe((datas) => {
-    console.log("set:",datas)
-    console.log( this.dataOfskills.element.skillGroupID)
     this.apiDataa = datas;
     this.filterSkillsBySkillGroup();
   });
@@ -62,7 +59,6 @@ filterSkillsBySkillGroup() {
       resourceSkillID: resourceSkillID,
       resourceID: resourceID,
     };
-    console.log(this.formdatas)
     this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {  
       this._coreService.openSnackBar('Record Updated Successfully', 'done')
       this.skillgroupskill.reset();

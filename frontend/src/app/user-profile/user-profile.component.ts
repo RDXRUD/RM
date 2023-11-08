@@ -54,7 +54,7 @@ export class UserProfileComponent {
     })
   }
   ResetPassword() {
-    const dialogRef = this.dialog.open(ResetPasswordDailogComponent, {
+    this.dialog.open(ResetPasswordDailogComponent, {
       width: '350px',
       height: '380px',
     });
@@ -67,7 +67,6 @@ export class UserProfileComponent {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result == 'success') {
-        // Refresh the data after a successful update
         this.ngOnInit();
       }
     });

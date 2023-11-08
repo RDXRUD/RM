@@ -40,13 +40,11 @@ export class ResetPasswordDailogComponent {
   ngOnInit() {
   }
   ResetPassword(userID: string) {
-    console.log(userID)
     this.formdata = this.OnReset.value;
     this.formdata = {
       ...this.OnReset.value,
       UserID: userID
     };
-    console.log(this.formdata);
     this.resource_service.ResetPassword(userID, this.formdata).subscribe(res => {
       this._coreService.openSnackBar("Password Updated Successfully", "ok");
       this.OnReset.reset();

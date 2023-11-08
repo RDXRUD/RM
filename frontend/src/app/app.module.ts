@@ -35,7 +35,6 @@ import { RouterModule } from '@angular/router';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ViewTasknameDialogComponent } from './_shared/view-taskname-dialog/view-taskname-dialog.component';
-import { EditEmpDialogComponent } from './_shared/edit-emp-dialog/edit-emp-dialog.component';
 import { EditResDailogComponent } from './_shared/edit-res-dailog/edit-res-dailog.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ResetPasswordDailogComponent } from './_shared/reset-password-dailog/reset-password-dailog.component';
@@ -59,7 +58,6 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     EditEmpSkillDialogComponent,
     EditSkillDialogComponent,
     ViewTasknameDialogComponent,
-    EditEmpDialogComponent,
     EditResDailogComponent,
     UserProfileComponent,
     ResetPasswordDailogComponent,
