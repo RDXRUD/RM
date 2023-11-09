@@ -38,7 +38,8 @@ namespace ResourceManagerAPI.Controllers
                                       select new ProjectManager
                                       {
                                           res_id=re.res_id,
-                                          res_name=re.res_name
+                                          res_name=re.res_name,
+                                          res_email_id=re.res_email_id,
 
                                       }).ToList();
                 return PMDetails;
