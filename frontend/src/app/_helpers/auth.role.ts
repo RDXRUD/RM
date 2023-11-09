@@ -5,23 +5,23 @@ import { TokenService } from '../_services/token.service'; // Replace with the a
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
-  constructor(private tokenService: TokenService, private router: Router) {}
+  constructor(private tokenService: TokenService, private router: Router) { }
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
 
     if (this.tokenService.isAuthenticated()) {
 
-        const userRoles: string| null = this.tokenService.getRole();
-        if (userRoles && userRoles.includes('Non-Admin')) {
-          this.router.navigate(['/access-denied']); 
-          return false;
-        } else {
-          return true;
-        }
-      } else {
-        this.router.navigate(['/login']); 
+      const userRoles: string | null = this.tokenService.getRole();
+      if (userRoles && userRoles.includes('Non-Admin')) {
+        this.router.navigate(['/access-denied']);
         return false;
+      } else {
+        return true;
       }
+    } else {
+      this.router.navigate(['/login']);
+      return false;
     }
-    }
+  }
+}

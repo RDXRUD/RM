@@ -1,10 +1,23 @@
 <div mat-dialog-title>
-    <h1>Edit Resource Details</h1>
+    <h1>Edit Allocate Resource Details</h1>
 </div>
 <form [formGroup]="updateResource" (ngSubmit)="UpdateResource(dataOfProjects.element)">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
             <mat-form-field fxFlex="50">
+                <mat-label>Skill Group</mat-label>
+                <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
+                  <mat-option *ngFor="let select of DataofSkillGroup"
+                    [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex="50">
+                <mat-label>Skill</mat-label>
+                <mat-select formControlName="skillID" single (selectionChange)="onSkillSetSelection()">
+                  <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex="50">
                 <mat-label>Resource Name</mat-label>
                 <mat-select formControlName="res_id">
                     <mat-option *ngFor="let cd of resourceExtensionData" [value]="cd.res_id">
@@ -20,21 +33,6 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field fxFlex="50">
-                <mat-label>Skill Group</mat-label>
-                <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-                  <mat-option>--None --</mat-option>
-                  <mat-option *ngFor="let select of DataofSkillGroup"
-                    [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field fxFlex="50">
-                <mat-label>Skill</mat-label>
-                <mat-select formControlName="skillID" single (selectionChange)="onSkillSetSelection()">
-                  <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            
             <mat-form-field fxFlex="50">
                 <mat-label>Start Date</mat-label>
                 <input formControlName="start_date" matInput [matDatepicker]="one">

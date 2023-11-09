@@ -36,19 +36,16 @@ export class ResourcesService {
   EditStatus(id: number): Observable<any> {
     let url = `${environment.apiUrl}/Resources/EditStatus/${id}`;
     return this.http.put(url, {}).pipe(
-      // Handle response or error as needed
     );
   }
   UpdateResource(id: number, formdata: editResource): Observable<any> {
     let url = `${environment.apiUrl}/Resources/EditResource/${id}`;
     return this.http.put(url, formdata).pipe(
-      // Handle response or error as needed
     );
   }
   ResetPassword(userID: string,formdata: reset): Observable<any> {
     let url = `${environment.apiUrl}/Resources/ResetPassword/${userID}`;
     return this.http.put(url,formdata).pipe(
-      // Handle response or error as needed
     );
   }
 }

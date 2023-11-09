@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -29,7 +30,10 @@ export class AddProjectDialogComponent {
   temp: any;
   clientData:any;
 
-  constructor(private projectService: ProjectService,private clientService: ClientService ,private _coreService: CoreService, private fb: FormBuilder,
+  constructor(private projectService: ProjectService,
+    private clientService: ClientService ,
+    private _coreService: CoreService, 
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddProjectDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfClient: any,
   ) {
@@ -43,7 +47,6 @@ export class AddProjectDialogComponent {
       project_status: new FormControl()
     }),
       this.dataofProj = dataOfClient;
-    console.log(this.dataofProj);
   }
   ngOnInit() {
     this.clientService.getActiveClients().subscribe(data => {
@@ -61,26 +64,22 @@ export class AddProjectDialogComponent {
   }
 
   AddProject() {
-    console.log( "P",this.addProject.value);
-    
     this.temp = this.addProject.value;
     this.temp.project_manager = this.resexpansionid
-    console.log("Project",this.temp);
     this.projectService.AddProject(this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Added Successfully ', 'done');
       this.addProject.reset();
       this.dialogRef.close('success');
       this.ngOnInit();
+    },(error: HttpErrorResponse) => {
+      if (error.status == 502) {
+        this._coreService.openSnackBar('Project Name already exist', 'Ok');
+      }
     })
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
-    console.log(filterValue)
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
-    console.log(this.filteredResOptions)
-
-    console.log(this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined');
     this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
-
   }
 }

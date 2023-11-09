@@ -57,17 +57,14 @@ export class ProjectService {
   UpdateProject(id: number, formdata: projectMaster): Observable<any> {
     let url = `${environment.apiUrl}/Project/UpdateProject/${id}`;
     return this.http.put(url, formdata).pipe(
-      // Handle response or error as needed
     );
   }
   UpdateResource(id: number, formdata: projectResAllocation): Observable<any> {
     let url = `${environment.apiUrl}/Project/UpdateAllocatedResource/${id}`;
     return this.http.put(url, formdata).pipe(
-      // Handle response or error as needed
     );
   }
   DeleteResource(id: number) {
-    console.warn(id);
     let url = `${environment.apiUrl}/Project/DeleteResource/${id}`;
     return this.http.delete(url);
   }

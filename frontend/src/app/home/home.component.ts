@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { FormGroup, FormControl, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOption } from '@angular/material/core';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
-import { employeeFilters } from '../_model/employeefilters';
-import { tasks } from '../_model/tasks';
 import { CrossViewService } from '../_services/cross-view.service';
 import { SkillsetService } from '../_services/skillset.service';
 import { SkillGroups } from '../_model/SkillGroups';
@@ -15,11 +13,11 @@ import { ResourcesService } from '../_services/resources.service';
 import * as XLSX from 'xlsx';
 import { ClientService } from '../_services/client.service';
 import { ProjectService } from '../_services/project.service';
-import { MatSelectChange } from '@angular/material/select';
 import { DetailService } from '../_services/detail.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatTabGroup } from '@angular/material/tabs';
-
+import { CoreService } from '../_services/core.service';
+import moment from 'moment';
 
 export const MY_FORMATS = {
   parse: {
@@ -46,15 +44,9 @@ export const MY_FORMATS = {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  dataOfEmp: any;
-  datas: any;
-  tasks!: tasks;
-  dataOfSkill: any;
-  data: any[]=[];
+  data: any[] = [];
   locations!: any[];
   skillData!: any[];
-  skillDataSorted!: any[];
-  formdata!: employeeFilters;
   filteringForm: FormGroup;
   filteringDetails: FormGroup;
   DataofSkillGroup!: any[];
@@ -70,17 +62,15 @@ export class HomeComponent implements OnInit {
   dataProject!: any[];
   clientData: any;
   selectAll: boolean = false;
-  submitClicked:boolean=false;
-  searchClicked:boolean=false;
-  DetailsdisplayedColumns: string[] = ['res_name','email_id','client_name','project_name','skill_group','skill','start_date','end_date'];
+  submitClicked: boolean = false;
+  searchClicked: boolean = false;
+  DetailsdisplayedColumns: string[] = ['res_name', 'email_id', 'client_name', 'project_name', 'skill_group', 'skill', 'start_date', 'end_date'];
   dataSource!: MatTableDataSource<any>;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('allSelected') private allSelected!: MatOption;
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
   currentTab: string = 'Allocation Report';
   temp: any;
   details: any;
-  private _coreService: any;
   router: any;
   constructor(
     frmbuilder: FormBuilder,
@@ -89,15 +79,16 @@ export class HomeComponent implements OnInit {
     private resources_Service: ResourcesService,
     private clientService: ClientService,
     private projectService: ProjectService,
-    private detailService:DetailService
+    private detailService: DetailService,
+    private _coreService: CoreService,
   ) {
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
       location: new FormControl(null),
       skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
-      startDate: new FormControl(''),
-      endDate: new FormControl(''),
+      startDate: new FormControl(new Date()),
+      endDate: new FormControl(new Date(new Date().setMonth(new Date().getMonth() + 1))),
     });
     this.filteringDetails = frmbuilder.group({
       res_name: new FormControl([]),
@@ -121,7 +112,7 @@ export class HomeComponent implements OnInit {
     });
     this.projectService.getAllProjects().subscribe(data => {
       this.dataProject = data;
-    });
+    });  
   }
   applySortToDataSource() {
     if (this.dataSource) {
@@ -133,13 +124,11 @@ export class HomeComponent implements OnInit {
     const skillID = this.filteringForm.get('skillID')?.value;
 
     if (skillGroupID && !skillID) {
-      window.alert('Please select both Skill Group and Skill to submit.');
+      this._coreService.openSnackBar("Please select both Skill Group and Skill to submit!");
     }
     else {
       this.displayedColumns = [];
       this.columns = [];
-
-      // Your form submission logic here
 
       this.skillSetService.getSkillSets().subscribe(datas => {
         const temp = datas.filter(data => data.skillGroupID === skillGroupID && data.skillID === skillID);
@@ -149,74 +138,63 @@ export class HomeComponent implements OnInit {
           this.skillSetID = null;
         }
 
-        console.log("filter", this.filteringForm.value);
         const names = Array.isArray(this.filteringForm.value.res_name) && this.filteringForm.value.res_name.length > 0 ? this.data.filter((res: any) => this.filteringForm.value.res_name.includes(res.res_id)) : this.data;
         this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
         const startDateValue = this.filteringForm.get('startDate')?.value;
         let startDate;
-        if (startDateValue) {
+        
+        if (moment.isMoment(startDateValue)) {
           startDate = new Date(startDateValue.format('YYYY-MM-DD'));
         } else {
-          startDate = new Date(); // Use the current date as a default
+          startDate = startDateValue;
         }
         const startDateString = startDate.toISOString();
 
         const endDateValue = this.filteringForm.get('endDate')?.value;
         let endDate;
-        if (endDateValue) {
+        if (moment.isMoment(endDateValue)) {
           endDate = new Date(endDateValue.format('YYYY-MM-DD'));
         } else {
-          endDate = new Date(startDate);
-          endDate.setMonth(startDate.getMonth() + 1);
+          endDate = endDateValue;
         }
         const endDateString = endDate.toISOString();
-
-        console.log("asdfghjkl:", startDateString, endDateString, this.skillSetID);
 
         this.filter = this.filteringForm.value;
         this.filter.startDate = startDateString;
         this.filter.endDate = endDateString;
         this.filter.skillSetID = this.skillSetID;
 
-        console.log("asdfilter", this.filter);
-        console.log(this.filteringForm.value);
-
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
-          this.submitClicked=true
+          this.submitClicked = true
           this.dataOfAllocation = [];
           this.displayedColumns = ["res_name", "res_email_id"];
           this.columns = [];
           this.dataOfAllocation = response;
-          console.log(this.dataOfAllocation);
           this.allocationService.getDates().subscribe(date => {
             this.dates = date;
-            console.log("date:", date);
-
             for (const date of this.dates) {
-              console.log("Date:", date.date);
-              console.log("Day:", date.day);
               this.columns.push(date.date);
               this.displayedColumns.push(date.date);
             }
           });
-        },(error: HttpErrorResponse) => {
+        }, (error: HttpErrorResponse) => {
           if (error.status === 502) {
-            this.dataOfAllocation=[];
+            this.dataOfAllocation = [];
+            this.submitClicked = true
           }
-          
+
         });
       });
     }
   }
-  OnSearch(formdata:any){
-    console.log(formdata);
+  OnSearch(formdata: any) {
     this.detailService.getDetailView(formdata).subscribe(data => {
       this.details = data;
-      this.searchClicked=true;
-    },(error: HttpErrorResponse) => {
+      this.searchClicked = true;
+    }, (error: HttpErrorResponse) => {
       if (error.status === 502) {
-        this.details=[];
-        this._coreService.openSnackBar("Skill Group or Skill can't be null!");
+        this.details = [];
+        this._coreService.openSnackBar("No Records Found!");
       }
     })
   }
@@ -231,16 +209,15 @@ export class HomeComponent implements OnInit {
   }
 
   OnReset() {
-    this.submitClicked=false
+    this.submitClicked = false
     this.filteringForm.reset();
-    this.filteringDetails.reset();
     this.displayedColumns = []
     this.columns = []
-    this.dataOfAllocation=[]
-    // this.applySortToDataSource();
+    this.dataOfAllocation = []
   }
-  OnResetDetail(){
-    this.searchClicked=true
+  OnResetDetail() {
+    this.searchClicked = true;
+    this.filteringDetails.reset();
   }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
@@ -252,52 +229,27 @@ export class HomeComponent implements OnInit {
       this.skillData = res;
     });
   }
-
   removeDayFromDate(cell: XLSX.CellObject) {
-    if (typeof cell.v === 'string') { // Check if 'v' is a string
-      // Use type assertion to ensure 'cell.v' is treated as a string
+    if (typeof cell.v === 'string') {
       const vAsString = cell.v as string;
-      // Check if the cell contains a date in the format 'Day DD-Mon-YYYY'
       const dateMatch = vAsString.match(/^\w{3} \d{2}-[A-Za-z]{3}-\d{4}$/);
       if (dateMatch) {
         const datePart = dateMatch[0].split(' ')[1];
-
-      // Convert the 'DD-Mon-YYYY' string to a JavaScript Date object
       const date = new Date(datePart);
-
-      // Assign the date object to the cell's 'v' property
       cell.v = date;
       cell.t = 'd';
       }
     }
   }
-
-  // applyCellBackgroundColor(cell: XLSX.CellObject) {
-  //   if (typeof cell.v === 'number') {
-  //     if (cell.v > 1) {
-  //       // Value greater than 1, set the cell background color to red
-  //       cell.s = { fill: { fgColor: { rgb: 'FFFF0000' } } };
-  //     } else if (cell.v < 1) {
-  //       // Value less than 1, set the cell background color to green
-  //       cell.s = { fill: { fgColor: { rgb: 'FF00FF00' } } };
-  //     }
-  //   }
-  // }
-
   exportToExcel(): void {
     const formData = this.filteringForm.value;
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
-    console.log(tableData);
 
     for (const cellName in tableData) {
       const cell = tableData[cellName];
       this.removeDayFromDate(cell);
-      // this.applyCellBackgroundColor(cell);
     }
-
-    console.log(tableData);
-    
     const StartDate = formData.startDate.split('T')[0];
     const EndDate = formData.endDate.split('T')[0];
 
@@ -325,55 +277,59 @@ export class HomeComponent implements OnInit {
   }
 
   toggleAllSelection() {
-    if (this.filteringForm.get('res_name') && this.data) { // Check if they are not null
+    if (this.filteringForm.get('res_name') && this.data) {
       if (!this.selectAll) {
-        console.log("val:",this.selectAll);
-        
         this.filteringForm.get('res_name')?.patchValue(this.data.map((item) => item.res_id));
-        this.selectAll=true
+        this.selectAll = true
       } else {
-        console.log("d:",this.selectAll);
-        
         this.filteringForm.get('res_name')?.patchValue([]);
-        this.selectAll=false
+        this.selectAll = false
       }
     }
   }
-
-  selectTab(index: number,email:any): void {
-    console.log(email)
+  allSelection() {
+    if (this.filteringDetails.get('res_name') && this.data) {
+      if (!this.selectAll) {
+        this.filteringDetails.get('res_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.selectAll = true
+      } else {
+        this.filteringDetails.get('res_name')?.patchValue([]);
+        this.selectAll = false
+      }
+    }
+  }
+  allClientSelection() {
+    if (this.filteringDetails.get('client_name') && this.data) {
+      if (!this.selectAll) {
+        this.filteringDetails.get('client_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.selectAll = true
+      } else {
+        this.filteringDetails.get('client_name')?.patchValue([]);
+        this.selectAll = false
+      }
+    }
+  }
+  allProjectSelection() {
+    if (this.filteringDetails.get('project_name') && this.data) {
+      if (!this.selectAll) {
+        this.filteringDetails.get('project_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.selectAll = true
+      } else {
+        this.filteringDetails.get('project_name')?.patchValue([]);
+        this.selectAll = false
+      }
+    }
+  }
+  selectTab(index: number, email: any): void {
     var resource = this.data.find(res => res.res_email_id === email);
     this.filteringDetails.setValue({
-      res_name:[resource.res_id],
-      location:null,
-      client_name:[],
-      project_name:[]
+      res_name: [resource.res_id],
+      location: null,
+      client_name: [],
+      project_name: []
     })
 
     this.OnSearch(this.filteringDetails.value)
-
-    console.log(resource)
-    console.log(this.data);
-    
     this.tabGroup.selectedIndex = index;
   }
-
-  // toggleAllSelection() {
-  //   if (this.allSelected.selected) {
-  //     this.filteringForm.controls['res_name'].patchValue([...this.data.map((item: any) => item.key), 0]);
-  //   } else {
-  //     this.filteringForm.controls['res_name'].patchValue([]);
-  //   }
-  // }
-  // tosslePerOne(all: any) {
-  //   if (this.allSelected.selected) {
-  //     this.allSelected.deselect();
-  //     return false;
-  //   }
-  //   if (this.filteringForm.controls['res_name'].value.length == this.data.length)
-  //     this.allSelected.select();
-  //   return true;
-  // }
-
-  // Return a default value or throw an exception if needed
 }

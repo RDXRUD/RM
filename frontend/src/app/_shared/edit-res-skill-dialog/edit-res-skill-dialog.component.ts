@@ -7,9 +7,9 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../../_services/skillset.service';
 import { addskillgroupdata } from '../../_model/addskillgroupdata';
-import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
 import { SkillGroups } from 'src/app/_model/SkillGroups';
 import { CoreService } from 'src/app/_services/core.service';
+import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
 @Component({
   selector: 'app-edit-res-skill-dialog',
   templateUrl: './edit-res-skill-dialog.component.html',
@@ -53,9 +53,7 @@ export class EditResSkillDialogComponent implements OnInit {
     })
   }
   ngOnInit() {
-    console.log(this.datadialog.emailID)
     const encodedEmailID = encodeURIComponent(this.datadialog.emailID);
-    console.log(encodedEmailID)
     this.skills_service.getSkill(encodedEmailID).subscribe(datas => {
       this.data = datas;
     })
@@ -69,29 +67,24 @@ export class EditResSkillDialogComponent implements OnInit {
       data: { element }
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       if (result === 'success') {
-        // Refresh the data after a successful update
         this.ngOnInit();
       }
     });
   };
   AddEmpSkill(emailID: string) {
-    console.log(emailID)
     this.empSkills = {
       ...this.addEmpskills.value,
       emailID: emailID,
     };
-    console.warn(this.empSkills);
     this.skills_service.AddEmpSkill(this.empSkills).subscribe(
-      res => {
-        console.log(this.empSkills)
+      () => {
+
         this._coreService.openSnackBar('Record Added', 'done')
         this.addEmpskills.reset();
         this.ngOnInit();
       },
       error => {
-        console.error(error);
         if (error.status === 400) {
           this._coreService.openSnackBar('Skill already exists for the resource.', 'ok');
         } else {

@@ -28,7 +28,6 @@ export class SkillsService {
     return this.http.post<ResourceWithSkillCount[]>(url, filter);
   }
   DeleteResourceSkill(id: number) {
-    console.warn(id);
     let url = `${environment.apiUrl}/Skills/DeleteResourceSkill/${id}`;
     return this.http.delete(url);
   }
