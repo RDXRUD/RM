@@ -20,6 +20,7 @@ import { DetailService } from '../_services/detail.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatTabGroup } from '@angular/material/tabs';
 
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -252,11 +253,51 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  removeDayFromDate(cell: XLSX.CellObject) {
+    if (typeof cell.v === 'string') { // Check if 'v' is a string
+      // Use type assertion to ensure 'cell.v' is treated as a string
+      const vAsString = cell.v as string;
+      // Check if the cell contains a date in the format 'Day DD-Mon-YYYY'
+      const dateMatch = vAsString.match(/^\w{3} \d{2}-[A-Za-z]{3}-\d{4}$/);
+      if (dateMatch) {
+        const datePart = dateMatch[0].split(' ')[1];
+
+      // Convert the 'DD-Mon-YYYY' string to a JavaScript Date object
+      const date = new Date(datePart);
+
+      // Assign the date object to the cell's 'v' property
+      cell.v = date;
+      cell.t = 'd';
+      }
+    }
+  }
+
+  // applyCellBackgroundColor(cell: XLSX.CellObject) {
+  //   if (typeof cell.v === 'number') {
+  //     if (cell.v > 1) {
+  //       // Value greater than 1, set the cell background color to red
+  //       cell.s = { fill: { fgColor: { rgb: 'FFFF0000' } } };
+  //     } else if (cell.v < 1) {
+  //       // Value less than 1, set the cell background color to green
+  //       cell.s = { fill: { fgColor: { rgb: 'FF00FF00' } } };
+  //     }
+  //   }
+  // }
+
   exportToExcel(): void {
     const formData = this.filteringForm.value;
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
+    console.log(tableData);
 
+    for (const cellName in tableData) {
+      const cell = tableData[cellName];
+      this.removeDayFromDate(cell);
+      // this.applyCellBackgroundColor(cell);
+    }
+
+    console.log(tableData);
+    
     const StartDate = formData.startDate.split('T')[0];
     const EndDate = formData.endDate.split('T')[0];
 

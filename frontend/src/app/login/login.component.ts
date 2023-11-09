@@ -5,6 +5,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TokenService } from '../_services/token.service';
 import { CoreService } from '../_services/core.service';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -28,7 +29,7 @@ export class LoginComponent {
   }
   OnLogin() {
     const { UserName, Password } = this.loginForm.value;
-    this.http.post('https://localhost:7271/Login', { userID: UserName, password: Password }).subscribe(
+    this.http.post(`${environment.apiUrl}/User/Login`, { userID: UserName, password: Password }).subscribe(
       (response: any) => {
         this.tokenService.setDetails(response.Token, response.Role, response.UserName);
         console.log(response.Role)
