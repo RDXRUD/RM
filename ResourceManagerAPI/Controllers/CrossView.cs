@@ -149,7 +149,9 @@ namespace ResourceManagerAPI.Controllers
 
             var data = cross_view_join.ToList();
 
-            var groupedData = data.GroupBy(d => new { d.res_name, d.res_email_id });
+            var groupedData = data.GroupBy(d => new { d.res_name, d.res_email_id })
+                                  .OrderBy(g => g.Key.res_name)
+                                  .ThenBy(g => g.Key.res_email_id);
 
             var crosstab = new List<CrossTabResult>();
 

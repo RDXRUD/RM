@@ -473,6 +473,7 @@ namespace ResourceManagerAPI.Controllers
                            {
                                res_id = m.res_id,
                                res_name = m.res_name,
+                               res_email_id= m.res_email_id,
                                SkillSetID = rs.SkillSetID
                            }).ToListAsync();
                            

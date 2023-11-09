@@ -30,7 +30,7 @@
                 <input #input type="text" placeholder="Pick one" matInput [formControl]="res_id"
                     [matAutocomplete]="auto" (input)="filterRes()" (focus)="filterRes()">
                 <mat-autocomplete requireSelection #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredResOptions" [value]="option.res_name">
+                    <mat-option [matTooltip]="option.res_email_id" matTooltipPosition="right" *ngFor="let option of filteredResOptions" [value]="option.res_name">
                         {{option.res_name}}
                     </mat-option>
                 </mat-autocomplete>

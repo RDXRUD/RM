@@ -1,7 +1,7 @@
 
-<mat-tab-group #tabGroup >
+<mat-tab-group #tabGroup style="height: calc(100vh - 64px);" >
   <mat-tab label="Allocation Report" >
-    <div class="container" style="height: calc(100vh - 64px);">
+    
       <div class="uppar">
         <form [formGroup]="filteringForm" sticky="true" >
           <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
@@ -15,7 +15,7 @@
             <mat-form-field fxFlex="25">
               <mat-label>Location</mat-label>
               <mat-select input formControlName="location">
-                <mat-option>-- None --</mat-option>
+                <mat-option>None</mat-option>
                 <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
                 </mat-option>
               </mat-select>
@@ -23,7 +23,7 @@
             <mat-form-field fxFlex="25">
               <mat-label>Skill Group</mat-label>
               <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-                <mat-option>--None --</mat-option>
+                <mat-option>None</mat-option>
                 <mat-option *ngFor="let select of DataofSkillGroup"
                   [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
               </mat-select>
@@ -62,6 +62,7 @@
           </div>
         </form>  
       </div>
+      <div class="container"style="height: calc(100vh - 64px);"  >
       <div style="height: 100%;">
         <div style="height: calc(100vh - 64px);" class="table-container">
           <table mat-table id="table_data" [dataSource]="dataOfAllocation" matSort *ngIf="dataOfAllocation.length > 0">
@@ -86,7 +87,8 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Detail Report" style="height: calc(100vh - 64px);">
+  <mat-tab label="Detail Report" >
+    
     <div class="uppar" >
       <form [formGroup]="filteringDetails" sticky>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
@@ -130,6 +132,7 @@
         </div>
       </form>
     </div>
+    <div class="container" style="height: calc(100vh - 64px);">
     <div  style="height: 100%; overflow-y: auto;">
         <table mat-table [dataSource]="details" matSort >
           <ng-container matColumnDef="res_name" sticky>
@@ -168,5 +171,6 @@
           <tr mat-row *matRowDef="let row; columns: DetailsdisplayedColumns;"></tr>
         </table>
       </div>
+    </div>
   </mat-tab>
 </mat-tab-group>

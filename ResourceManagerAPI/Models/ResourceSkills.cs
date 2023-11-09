@@ -28,5 +28,6 @@ namespace ResourceManagerAPI.Models
         public int res_id { get; set; }
         public string res_name { get; set; }
         public int SkillSetID { get; set; }
+        public string res_email_id { get; set; }
     }
 }

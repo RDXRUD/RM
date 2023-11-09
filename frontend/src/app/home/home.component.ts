@@ -210,14 +210,26 @@ export class HomeComponent implements OnInit {
 
   OnReset() {
     this.submitClicked = false
-    this.filteringForm.reset();
+    this.filteringForm.reset({
+      res_name: [], // Default value for res_name
+      location: null, // Default value for location
+      skillGroupID: '', // Default value for skillGroupID
+      skillID: '', // Default value for skillID
+      startDate: new Date(), // Default value for startDate
+      endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Default value for endDate
+    });
     this.displayedColumns = []
     this.columns = []
     this.dataOfAllocation = []
   }
   OnResetDetail() {
     this.searchClicked = true;
-    this.filteringDetails.reset();
+    this.filteringDetails.reset({
+      res_name: [], // Default value for res_name
+      location: null, // Default value for location
+      client_name: [], // Default value for client_name
+      project_name: [], // Default value for project_name
+    });
   }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
