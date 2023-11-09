@@ -105,7 +105,7 @@ export class HomeComponent implements OnInit {
       this.locations = data;
     });
     this.resources_Service.getResources().subscribe(data => {
-      this.data = data;
+      this.data = data.sort((a, b) => a.res_name.toLowerCase().localeCompare(b.res_name.toLowerCase()));
     });
     this.clientService.getActiveClients().subscribe(data => {
       this.clientData = data;

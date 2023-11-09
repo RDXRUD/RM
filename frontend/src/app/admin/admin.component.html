@@ -403,7 +403,7 @@
                     <mat-form-field fxFlex="45">
                       <mat-label>Client In Charge</mat-label>
                       <mat-select formControlName="partner_incharge">
-                        <mat-option *ngFor="let opt of resourceExtensionData" [value]="opt.res_name">{{opt.res_name}}
+                        <mat-option [matTooltip]="opt.res_email_id" matTooltipPosition="right" *ngFor="let opt of resourceExtensionData" [value]="opt.res_name">{{opt.res_name}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>

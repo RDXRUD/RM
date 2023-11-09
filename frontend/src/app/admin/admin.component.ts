@@ -197,7 +197,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
-      this.resourceExtensionData = data;
+      this.resourceExtensionData = data.sort((a, b) => a.res_name.toLowerCase().localeCompare(b.res_name.toLowerCase()));
       this.dataOfRes = new MatTableDataSource(this.data);
       this.dataOfRes.sort = this.sortRes;
     })

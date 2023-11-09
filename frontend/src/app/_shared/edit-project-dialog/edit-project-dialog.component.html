@@ -19,7 +19,7 @@
             <mat-form-field fxFlex="50">
                 <mat-label>Project Manager</mat-label>
                 <mat-select formControlName="project_manager">
-                    <mat-option *ngFor="let cn of resourceExtensionData" [value]="cn.res_id">
+                    <mat-option [matTooltip]="cn.res_email_id" matTooltipPosition="right" *ngFor="let cn of resourceExtensionData" [value]="cn.res_id">
                         {{cn.res_name}}
                     </mat-option>
                 </mat-select>
