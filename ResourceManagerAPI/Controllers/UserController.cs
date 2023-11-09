@@ -17,8 +17,7 @@ using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace ResourceManagerAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    
     public class JwtToken
     {
         public int UserID { get; internal set; }
@@ -27,6 +26,8 @@ namespace ResourceManagerAPI.Controllers
         //public string? FullName { get; internal set; }
         public string? Token { get; set; }
     }
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserController : Controller
     {
         public static int userId;

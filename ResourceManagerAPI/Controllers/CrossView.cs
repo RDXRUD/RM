@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
-using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore; // Import the Entity Framework Core namespace
-using Microsoft.CodeAnalysis.Rename;
+using Microsoft.EntityFrameworkCore;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -22,29 +19,34 @@ namespace ResourceManagerAPI.Controllers
             _dbContext = context;
         }
 
-        public static List<DateMaster> dateMasterList = new List<DateMaster>();
+        private static List<DateMaster> dateMasterList = new List<DateMaster>();
        
-
-
-
-        [HttpPost]
+        [HttpPost,Authorize]
         [Route("CrossViewData")]
         public ActionResult<IEnumerable<CrossTabResult>> GetDates([FromBody] FilterViewModel filterData)
         {
+
+
             if (filterData.startDate > filterData.endDate)
             {
                 return BadRequest("Invalid date range. Start date should be before end date.");
             }
+
             dateMasterList.Clear();
-            _dbContext.Database.ExecuteSqlRaw("DELETE FROM date_master");
-            _dbContext.Database.ExecuteSqlRaw("SELECT setval('date_master_id_seq', 1, false)");
-            _dbContext.Database.ExecuteSqlRaw("DELETE FROM cross_view_data");
-            _dbContext.Database.ExecuteSqlRaw("SELECT setval('cross_view_data_id_seq', 1, false)");
-            _dbContext.Database.ExecuteSqlRaw("DELETE FROM cross_view_join");
-            _dbContext.Database.ExecuteSqlRaw("SELECT setval('cross_view_join_id_seq', 1, false)");
 
 
-            var datesWithDays = new List<DateMaster>();
+
+             List<CrossViewData> cross_view_data = new List<CrossViewData>();
+             List<CrossJoin> cross_view_join = new List<CrossJoin>();
+
+
+            cross_view_data.Clear();
+            cross_view_join.Clear();
+
+            var resourceMaster = _dbContext.resource_master.ToList();
+            var resource_skill = _dbContext.resource_skill;
+            var project_res_allocation=_dbContext.project_res_allocation.ToList();
+
 
             for (DateTime date = filterData.startDate.Date; date <= filterData.endDate.Date; date = date.AddDays(1))
             {
@@ -54,20 +56,17 @@ namespace ResourceManagerAPI.Controllers
                     day = date.ToString("dddd")
                 };
 
-                datesWithDays.Add(model);
                 dateMasterList.Add(model);
-                _dbContext.date_master.Add(model);
             }
 
-            _dbContext.SaveChanges();
 
-            var locResIds = _dbContext.resource_master
+            var locResIds = resourceMaster
             .Where(rm => rm.location_id == filterData.location)
             .Select(resource => resource.res_id)
             .ToList();
             
 
-            var skillResIds = _dbContext.resource_skill
+            var skillResIds = resource_skill
                 .Where(ss => ss.SkillSetID == filterData.skillSetID)
                 .Select(resource => resource.res_id)
                 .ToList();
@@ -96,44 +95,42 @@ namespace ResourceManagerAPI.Controllers
             if(resIds.Count == 0) {
                 return StatusCode(502, "No Records Found");
             }
-            //var resIds = _dbContext.resource_master.Select(resource => resource.res_id).ToList();
-            var dateIds = _dbContext.date_master.Select(date => date.date_id).ToList();
+
+            var dateIds = dateMasterList.Select(date => date.date_id).ToList();
 
             var crossViewDataList = resIds
                 .SelectMany(resId => dateIds, (resId, dateId) => new CrossViewData
                 {
-                    id = 0, // Set an initial value here
+                    id = 0, // initial value 
                     res_id = resId,
                     date_id = dateId,
-                    allocation_perc = 0 // Set an initial allocation value here
+                    allocation_perc = 0 // initial allocation value 
                 })
                 .ToList();
 
-            _dbContext.cross_view_data.AddRange(crossViewDataList);
-            _dbContext.SaveChanges();
+            cross_view_data.AddRange(crossViewDataList);
 
-            var joinQuery = from rm in _dbContext.resource_master
-                            join cvd in _dbContext.cross_view_data on rm.res_id equals cvd.res_id
-                            join dm in _dbContext.date_master on cvd.date_id equals dm.date_id
-                            join pra in _dbContext.project_res_allocation on cvd.res_id equals pra.res_id into allocationGroup
-                            from allocation in allocationGroup.DefaultIfEmpty() // Left join
-                            where ((allocation.start_date <= dm.date && allocation.end_date >= dm.date))
-                            group allocation by new { rm.res_name,rm.res_email_id, cvd.res_id, dm.date, dm.day } into grouped
+            var joinQuery = from rm in resourceMaster
+                            join cvd in cross_view_data on rm.res_id equals cvd.res_id
+                            join dm in dateMasterList on cvd.date_id equals dm.date_id
+                            join pra in project_res_allocation on cvd.res_id equals pra.res_id
+                            where (pra.start_date <= dm.date && pra.end_date >= dm.date)
+                            group pra by new { rm.res_name, rm.res_email_id, cvd.res_id, dm.date, dm.day,pra.allocation_perc } into grouped
                             select new CrossJoin
                             {
                                 res_name = grouped.Key.res_name,
-                                res_email_id=grouped.Key.res_email_id,
+                                res_email_id = grouped.Key.res_email_id,
                                 allocation_perc = grouped.Key.day == "Saturday" || grouped.Key.day == "Sunday"
                                     ? -1 // Set allocation_perc to -1 for Saturday and Sunday
-                                    : grouped.Sum(p => p.allocation_perc),
+                                    : grouped.Key.allocation_perc,
                                 date = grouped.Key.date,
                                 day = grouped.Key.day
                             };
 
-            var tempQuery = from rm in _dbContext.resource_master
-                            join cvd in _dbContext.cross_view_data on rm.res_id equals cvd.res_id
-                            join dm in _dbContext.date_master on cvd.date_id equals dm.date_id
-                            join pra in _dbContext.project_res_allocation on cvd.res_id equals pra.res_id into allocationGroup
+            var tempQuery = from rm in resourceMaster
+                            join cvd in cross_view_data on rm.res_id equals cvd.res_id
+                            join dm in dateMasterList on cvd.date_id equals dm.date_id
+                            join pra in project_res_allocation on cvd.res_id equals pra.res_id into allocationGroup
                             from allocation in allocationGroup.DefaultIfEmpty() // Left join
                             select new CrossJoin
                             {
@@ -147,10 +144,10 @@ namespace ResourceManagerAPI.Controllers
 
             var combinedQuery = joinQuery.Union(tempQuery);
 
-            _dbContext.cross_view_join.AddRange(combinedQuery);
+            cross_view_join.AddRange(combinedQuery);
             _dbContext.SaveChanges();
 
-            var data = _dbContext.cross_view_join.ToList();
+            var data = cross_view_join.ToList();
 
             var groupedData = data.GroupBy(d => new { d.res_name, d.res_email_id });
 
@@ -178,14 +175,11 @@ namespace ResourceManagerAPI.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [Route("Dates")]
         public ActionResult<IEnumerable<DateMaster>> GetDates()
         {
-
-            return _dbContext.date_master;
-            //return dateMasterList;
-            //return datesWithDays;
+            return dateMasterList;
         }
     }
 }
