@@ -26,7 +26,7 @@ namespace ResourceManagerAPI.Controllers
         //public string? FullName { get; internal set; }
         public string? Token { get; set; }
     }
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : Controller
     {

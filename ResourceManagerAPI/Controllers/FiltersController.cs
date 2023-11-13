@@ -5,7 +5,7 @@ using ResourceManagerAPI.Models;
 using System.Linq;
 namespace ResourceManagerAPI.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	[ApiController]
     public class FiltersController : Controller
     {

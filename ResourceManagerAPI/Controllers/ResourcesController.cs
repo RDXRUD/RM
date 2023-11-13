@@ -13,7 +13,7 @@ using Resources = ResourceManagerAPI.Models.Resources;
 
 namespace ResourceManagerAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ResourcesController : ControllerBase
     {

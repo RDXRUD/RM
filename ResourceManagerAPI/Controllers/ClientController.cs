@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace ResourceManagerAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ClientController : ControllerBase
     {
