@@ -75,6 +75,40 @@ namespace ResourceManagerAPI.Controllers
         }
 
         [HttpPut, Authorize]
+        [Route("EditSkillGroup")]
+        public async Task<IActionResult> EditSkillGroup([FromBody] NewSkillGroup updatedGroup)
+        {
+            try
+            {
+                var existingSkillGroup = await _dbContext.skill_group.FindAsync(updatedGroup.SkillGroupID);
+
+                if (existingSkillGroup == null)
+                {
+                    return NotFound();
+                }
+                if (existingSkillGroup.Status == "INACTIVE")
+                {
+                    return StatusCode(501, "Can't edit INACTIVE Skill Group");
+                }
+
+                if (existingSkillGroup.Status == "ACTIVE")
+                {
+                    existingSkillGroup.Description = updatedGroup.Description;
+
+                }
+                
+
+                //_dbContext.Entry(existingSkillGroup).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                return Ok(existingSkillGroup);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut, Authorize]
         [Route("UpdateSkillGroup/{id}")]
         public async Task<IActionResult> UpdateSkillGroup(int id)
         {

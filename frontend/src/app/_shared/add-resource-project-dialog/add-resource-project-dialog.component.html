@@ -5,10 +5,20 @@
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
             <mat-form-field fxFlex="50">
+                <mat-label>Client Name</mat-label>
+                <!-- <input readonly formControlName="client_id" matInput> -->
+                <mat-select formControlName="client_id" single (selectionChange)="onClientSelection()">
+                    <mat-option *ngFor="let cd of clientData" [value]="cd.client_id">
+                        {{cd.client_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
                 <mat-label>Project Name</mat-label>
+                <!-- <input readonly formControlName="project_id" matInput> -->
                 <mat-select formControlName="project_id">
-                    <mat-option *ngFor="let dp of dataOfProjects.dataOfProjects" [value]="dp.project_id">
-                        {{dp.project_name}}
+                    <mat-option *ngFor="let pd of projectData" [value]="pd.project_id">
+                        {{pd.project_name}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -58,7 +68,7 @@
         </div>
         <div mat-dialog-actions align="end">
             <button mat-raised-button color="primary">Add</button>
-            <button mat-raised-button color="primary" mat-dialog-close="false">Cancel</button>
+            <button mat-raised-button color="primary" (click)="windowClose()">Close</button>
         </div>
     </div>
 </form>

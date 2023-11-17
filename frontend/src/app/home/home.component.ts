@@ -187,9 +187,10 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+
   OnSearch(formdata: any) {
     this.detailService.getDetailView(formdata).subscribe(data => {
-      this.details = data;
+      this.details=data
       this.searchClicked = true;
     }, (error: HttpErrorResponse) => {
       if (error.status === 502) {
@@ -285,6 +286,75 @@ export class HomeComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data');
 
     const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  }
+
+  convertToDate(cell: XLSX.CellObject) {
+    if (typeof cell.v === 'string') {
+      const vAsString = cell.v as string;
+      const dateMatch = vAsString.match(/^\d{2}-[A-Za-z]{3}-\d{4}$/);
+      if (dateMatch) {
+      const datePart = dateMatch[0];
+      const date = new Date(datePart);
+      cell.v = date;
+      cell.t = 'd';
+      }
+    }
+  }
+
+  detailReportToExcel(){
+    const formData = this.filteringDetails.value;
+    const tableElement = document.getElementById('detail_report_data');
+    const tableData = XLSX.utils.table_to_sheet(tableElement, { raw: true });
+        console.log(tableElement);
+    
+        for (const cellName in tableData) {
+          const cell = tableData[cellName];
+          this.convertToDate(cell);
+        }
+// Iterate through the cells in the G column (excluding G1) and convert date format
+
+    // const cellAddress = 'G2';
+    // tableData[cellAddress].z = 'dd-mmm-yyyy';
+
+    const rNames = Array.isArray(formData.res_name) && formData.res_name.length > 0 ? this.data.filter((res: any) => formData.res_name.includes(res.res_id)) : [];
+    const resNames = [...new Set(rNames.map((data: any) => data.res_name))];
+
+    const cNames = Array.isArray(formData.client_name) && formData.client_name.length > 0 ? this.clientData.filter((cli: any) => formData.client_name.includes(cli.client_id)) : [];
+    const clientNames = [...new Set(cNames.map((data: any) => data.client_name))];
+
+    const pNames = Array.isArray(formData.project_name) && formData.project_name.length > 0 ? this.dataProject.filter((proj: any) => formData.project_name.includes(proj.project_id)) : [];
+    const projectNames = [...new Set(pNames.map((data: any) => data.project_name))];
+
+    console.log(tableData);
+    console.log(projectNames);
+    
+
+    // for (const cellName in tableData) {
+    //   const cell = tableData[cellName];
+    //   this.removeDayFromDate(cell);
+    // }
+    // const StartDate = formData.startDate.split('T')[0];
+    // const EndDate = formData.endDate.split('T')[0];
+
+    const formDataArray: any[] = [
+      ['Resource Name', resNames.join(', ')],
+      ['Location', this.locations.find(loc => loc.id == formData.location)?.location || ''],
+      ['Client Name', clientNames.join(', ')],
+      ['Project Name', projectNames.join(', ')],
+    ];
+
+    const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
+    // const verticalData = tableDataArray[0].map((col: any, i: any) => [...tableDataArray.map(row => row[i])]);
+
+    const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(formDataArray);
+    const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(tableDataArray);
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws1, 'Criteria');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Detail Data');
+
+    const fileName = `RM_DetailReport.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
 

@@ -1,6 +1,6 @@
 <div style="height: 100%;">
   <mat-tab-group style="height: calc(100vh - 64px);">
-    <mat-tab label="Resource ">
+    <mat-tab label="Resource Master">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
           <table mat-table [dataSource]="dataOfRes" matSort #sortRes="matSort" matSortDirection="asc">
@@ -106,7 +106,7 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab label="Skill Configuration ">
+    <mat-tab label="Skill Master">
       <mat-tab-group style="height: calc(92vh - 64px);">
         <mat-tab label='Skill Groups'>
           <div style="height: 100%; overflow-y: auto;">
@@ -137,8 +137,15 @@
                       'Disable' : 'Enable' }}</button>
                   </td>
                 </ng-container>
+                <ng-container matColumnDef="edit">
+                  <th mat-header-cell *matHeaderCellDef>Action - Edit</th>
+                  <td mat-cell *matCellDef="let element">
+                    
+                    <button mat-raised-button color="primary" (click)="editSkillGroup(element)">Edit</button>
+                  </td>
+                </ng-container>
                 <ng-container matColumnDef="action">
-                  <td mat-footer-cell *matFooterCellDef colspan="5">
+                  <td mat-footer-cell *matFooterCellDef colspan="6">
                     <div style="margin-top: 10px;">
                       <form [formGroup]="addSkillgroup" (ngSubmit)="AddSkillGroup()">
                         <div fxLayout="row" fxLayoutAlign="none center" fxFlexFill fxLayoutGap="10px grid">
@@ -232,7 +239,7 @@
                   <th mat-header-cell *matHeaderCellDef> Action - Edit </th>
                   <td mat-cell *matCellDef="let element">
                     <mat-dialog-actions>
-                      <button mat-raised-button color="primary" (click)="Edit(element)">Edit</button>
+                      <button mat-raised-button color="primary" (click)="editSkill(element)">Edit</button>
                     </mat-dialog-actions>
                   </td>
                 </ng-container>
@@ -288,75 +295,76 @@
             </div>
           </div>
         </mat-tab>
-        <mat-tab label="Resource Skills">
-          <div style="height: 100%; overflow-y: auto;">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Filters</mat-panel-title>
-              </mat-expansion-panel-header>
-              <form [formGroup]="filterResource" (ngSubmit)="OnSubmit()">
-                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-                  <mat-form-field fxFlex="30">
-                    <mat-label>Resource Name</mat-label>
-                    <input formControlName="res_name" matInput>
-                  </mat-form-field>
-                  <mat-form-field fxFlex="30">
-                    <mat-label>Email ID</mat-label>
-                    <input formControlName="res_email_id" matInput t>
-                  </mat-form-field>
-                  <mat-form-field fxFlex="20">
-                    <mat-label>Skill Count</mat-label>
-                    <input type="text" formControlName="skill_count" matInput>
-                  </mat-form-field>
-                  <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
-                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                      value="OnSubmit">Submit</button>
-                  </div>
-                  <div fxFlex="10" fxFlexFill>
-                    <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                      (click)="OnReset()">
-                      Reset</button>
-                  </div>
-                </div>
-              </form>
-            </mat-expansion-panel>
-            <div style="height: 100%;">
-              <table mat-table [dataSource]="dataOfResskill" matSort #rescoskill="matSort" matSortDirection="asc">
-                `
-                <ng-container matColumnDef="res_id">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource ID </th>
-                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_id}} </td>
-                </ng-container>
-                <ng-container matColumnDef="res_name">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
-                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_name}} </td>
-                </ng-container>
-                <ng-container matColumnDef="res_email_id">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
-                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_email_id}} </td>
-                </ng-container>
-                <ng-container matColumnDef="skill_count">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Count </th>
-                  <td mat-cell *matCellDef="let resSkill"> {{resSkill.skill_count}} </td>
-                </ng-container>
-                <ng-container matColumnDef="details">
-                  <th mat-header-cell *matHeaderCellDef> Action </th>
-                  <td mat-cell *matCellDef="let element">
-                    <mat-dialog-actions>
-                      <button mat-raised-button color="primary" (click)="getResourceSkills(element.res_email_id)">Get
-                        Details</button>
-                    </mat-dialog-actions>
-                  </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-              </table>
-            </div>
-          </div>
-        </mat-tab>
+
       </mat-tab-group>
     </mat-tab>
-    <mat-tab label="Client ">
+    <mat-tab label="Resource-Skill Mapping">
+      <div style="height: 100%; overflow-y: auto;">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Filters</mat-panel-title>
+          </mat-expansion-panel-header>
+          <form [formGroup]="filterResource" (ngSubmit)="OnSubmit()">
+            <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+              <mat-form-field fxFlex="30">
+                <mat-label>Resource Name</mat-label>
+                <input formControlName="res_name" matInput>
+              </mat-form-field>
+              <mat-form-field fxFlex="30">
+                <mat-label>Email ID</mat-label>
+                <input formControlName="res_email_id" matInput t>
+              </mat-form-field>
+              <mat-form-field fxFlex="20">
+                <mat-label>Skill Count</mat-label>
+                <input type="text" formControlName="skill_count" matInput>
+              </mat-form-field>
+              <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+                <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                  value="OnSubmit">Submit</button>
+              </div>
+              <div fxFlex="10" fxFlexFill>
+                <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+                  (click)="OnReset()">
+                  Reset</button>
+              </div>
+            </div>
+          </form>
+        </mat-expansion-panel>
+        <div style="height: 100%;">
+          <table mat-table [dataSource]="dataOfResskill" matSort #rescoskill="matSort" matSortDirection="asc">
+            `
+            <ng-container matColumnDef="res_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource ID </th>
+              <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+              <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="res_email_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Email ID </th>
+              <td mat-cell *matCellDef="let resSkill"> {{resSkill.res_email_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="skill_count">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Skill Count </th>
+              <td mat-cell *matCellDef="let resSkill"> {{resSkill.skill_count}} </td>
+            </ng-container>
+            <ng-container matColumnDef="details">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-dialog-actions>
+                  <button mat-raised-button color="primary" (click)="getResourceSkills(element.res_email_id)">Get
+                    Details</button>
+                </mat-dialog-actions>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Client Master">
       <div style="height: 100%; overflow-y: auto;">
         <table mat-table [dataSource]="dataOfClient" matSort #sortedClientData="matSort" matSortDirection="asc">
           <ng-container matColumnDef="client_id">
@@ -470,12 +478,30 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Partner In Charge </th>
               <td mat-cell *matCellDef="let element"> {{element.partner_incharge}} </td>
             </ng-container>
+
+            
+
             <ng-container style="text-align: end;" matColumnDef="expand">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
                 <mat-dialog-actions>
-                  <button mat-raised-button color="primary" (click)="AddProject(clientExtensionData)"> Add Project
-                  </button>
+                  <!-- <button mat-raised-button color="primary" (click)="AddProject(clientExtensionData)"> Add Project
+                  </button> -->
+                  <a mat-raised-button target="_blank" [routerLink]="['/app-add-project-dialog']" color="primary" > Add Project
+                  </a>
                 </mat-dialog-actions>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <!-- <button mat-icon-button aria-label="expand row">
+                  <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                  <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                </button> -->
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="addResource">
+              <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+                  <a mat-raised-button target="_blank" [routerLink]="['/app-add-resource-project-dialog']" color="primary" > Add Resource
+                  </a>
               </th>
               <td mat-cell *matCellDef="let element">
                 <button mat-icon-button aria-label="expand row">
@@ -484,6 +510,7 @@
                 </button>
               </td>
             </ng-container>
+
             <ng-container matColumnDef="expandedDetail">
               <td mat-cell *matCellDef="let element" [attr.colspan]="displayedClientExtensionColumns.length + 2">
                 <!-- expanded content here -->
@@ -530,12 +557,24 @@
                           </mat-dialog-actions>
                         </td>
                       </ng-container>
+                      <ng-container matColumnDef="add">
+                        <th mat-header-cell *matHeaderCellDef> Action-Add</th>
+                        <td mat-cell *matCellDef="let element">
+                          <mat-dialog-actions>
+                            <!-- <button mat-raised-button color="primary" (click)="AddProjectResource(element)"> Add Resource </button> -->
+                            <a mat-raised-button  (click)="sendDataToRoute(element)" color="primary" > Add Resource
+                            </a>
+                          </mat-dialog-actions>
+                        </td>
+                      </ng-container>
                       <ng-container matColumnDef="inner_expand">
-                        <th mat-header-cell *matHeaderCellDef aria-label="row actions"><mat-dialog-actions>
+                        <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+                          <!-- <mat-dialog-actions>
                             <button mat-raised-button color="primary" (click)="AddProjectResource(dataOfProjects)"> Add
                               Resource
                             </button>
-                          </mat-dialog-actions></th>
+                          </mat-dialog-actions> -->
+                        </th>
                         <td mat-cell *matCellDef="let subElement">
                           <button mat-icon-button aria-label="expand row">
                             <mat-icon *ngIf="subExpandedElement !== subElement">keyboard_arrow_down</mat-icon>

@@ -47,6 +47,9 @@ import { AddResourceProjectDialogComponent } from './_shared/add-resource-projec
 import { EditProjectDialogComponent } from './_shared/edit-project-dialog/edit-project-dialog.component';
 import { EditProjectResourceDialogComponent } from './_shared/edit-project-resource-dialog/edit-project-resource-dialog.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { EditSkillGroupDialogComponent } from './_shared/edit-skill-group-dialog/edit-skill-group-dialog.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,7 +67,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     AddProjectDialogComponent,
     AddResourceProjectDialogComponent,
     EditProjectDialogComponent,
-    EditProjectResourceDialogComponent
+    EditProjectResourceDialogComponent,
+    EditSkillGroupDialogComponent
   ],
   imports: [
     MatSortModule,
@@ -102,6 +106,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     ReactiveFormsModule,
     NgFor,
     AsyncPipe,
+    DragDropModule,
 
     RouterModule.forRoot(routes),
     JwtModule.forRoot({

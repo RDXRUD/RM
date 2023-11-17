@@ -28,6 +28,8 @@ import { AddProjectDialogComponent } from '../_shared/add-project-dialog/add-pro
 import { AddResourceProjectDialogComponent } from '../_shared/add-resource-project-dialog/add-resource-project-dialog.component';
 import { EditProjectDialogComponent } from '../_shared/edit-project-dialog/edit-project-dialog.component';
 import { EditProjectResourceDialogComponent } from '../_shared/edit-project-resource-dialog/edit-project-resource-dialog.component';
+import { Router } from '@angular/router';
+import { EditSkillGroupDialogComponent } from '../_shared/edit-skill-group-dialog/edit-skill-group-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -61,12 +63,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
   dsp: string[] = ['skillSetID', 'skillGroup', 'skill', 'description', 'status', 'edit', 'disable'];
   dc: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish', 'edit'];
   displayedColumnss: string[] = ['userName', 'fullName', 'delete'];
-  displayedColumnsto: string[] = ['skillGroupID', 'skillGroup', 'description', 'status', 'action_dis'];
+  displayedColumnsto: string[] = ['skillGroupID', 'skillGroup', 'description', 'status', 'edit','action_dis'];
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   displayedColumnsOfLists: string[] = ['columnLists', 'selectors'];
   displayedClientColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'status', 'edit', 'action_dis'];
-  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand'];
-  displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit', 'inner_expand']
+  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand','addResource'];
+  displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit','add', 'inner_expand']
   displayedProjectResourceExpansionColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'start_date', 'end_date', 'edit'];
   displayedAllocatedResourceExpansionColumns: string[] = ['res_name', 'skill', 'allocation_perc', 'start_date', 'end_date', 'edit', 'delete'];
 
@@ -120,6 +122,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   element: any;
   constructor(
+    private router : Router,
     private resources_Service: ResourcesService,
     frmbuilder: FormBuilder,
     private _coreService: CoreService,
@@ -276,7 +279,24 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.ngOnInit();
     });
   }
-  Edit(element: any) {
+  editSkillGroup(element: any) {
+    console.log(element);
+    
+    const dialogRef = this.dialog.open(EditSkillGroupDialogComponent, {
+      data: { element }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.ngOnInit();
+      }
+    },
+      (error: HttpErrorResponse) => {
+        if (error.status === 501) {
+          this._coreService.openSnackBar("Can't edit INACTIVE Skill Group");
+        }
+      });
+  }
+  editSkill(element: any) {
     const dialogRef = this.dialog.open(EditSkillDialogComponent, {
       data: { element }
     });
@@ -291,6 +311,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
         }
       });
   }
+  
   EditResource(element: any) {
     const dialogRef = this.dialog.open(EditResDailogComponent, {
       width: '600px',
@@ -474,19 +495,24 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
 
-  AddProject(dataOfClient: any) {
-    const dialogRef = this.dialog.open(AddProjectDialogComponent, {
-      width: '600px',
-      height: '550px',
-      data: { dataOfClient, }
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'success') {
-        this.ngOnInit();
-      }
-    });
-  }
+  // AddProject(dataOfClient: any) {
+  //   // const newWindow = window.open('', '_blank', 'width=600,height=550');
+  //   // newWindow!.document.write('<app-add-project-dialog></app-add-project-dialog>');
+  //   // newWindow!.document.close();
+  //   const dialogRef = this.dialog.open(AddProjectDialogComponent, {
+  //     width: '600px',
+  //     height: '550px',
+  //     data: { dataOfClient, }
+  //   });
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     if (result === 'success') {
+  //       this.ngOnInit();
+  //     }
+  //   });
+  // }
   AddProjectResource(dataOfProjects: any) {
+    console.log(dataOfProjects);
+    
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
       height: '550px',
@@ -501,6 +527,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
   getProjects(id: number) {
     this.projectService.getProjects(id).subscribe(data => {
       this.dataOfProjects = data;
+      console.log(this.dataOfProjects);
+      
     })
   }
   getAllocatedResources(id: number) {
@@ -522,5 +550,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
         this.ngOnInit();
       });
     }
+  }
+
+  sendDataToRoute(element: any) {
+    console.log(element);
+
+    const url = this.router.createUrlTree(['/app-add-resource-project-dialog'], {
+      queryParams: { data: JSON.stringify(element) }
+    }).toString();
+  
+    // Open the URL in a new window
+    window.open(url, '_blank');  
   }
 }

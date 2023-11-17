@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Edit Skill Group - {{dataOfGroup.element.skillGroup}}</h1>
+<form [formGroup]="skillGroups" (ngSubmit)="updateSkillGroup()">
+  <div mat-dialog-content>
+    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+      <mat-form-field fxFlex="80">
+        <mat-label>Skill Group Description</mat-label>
+        <input formControlName="Description" matInput>
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions align="end"  >    
+      <button mat-raised-button color="primary" value="UpdateSkill">Update</button>
+      <button mat-raised-button color="primary" mat-dialog-close="false">Cancel</button>
+    </div>
+  </div> 
+</form>

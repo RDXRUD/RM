@@ -34,8 +34,8 @@ export class AddProjectDialogComponent {
     private clientService: ClientService ,
     private _coreService: CoreService, 
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<AddProjectDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public dataOfClient: any,
+    //public dialogRef: MatDialogRef<AddProjectDialogComponent>,
+    //@Inject(MAT_DIALOG_DATA) public dataOfClient: any,
   ) {
     this.addProject = this.fb.group({
       client_id: new FormControl(),
@@ -45,8 +45,8 @@ export class AddProjectDialogComponent {
       end_date: new FormControl(),
       project_type: new FormControl(),
       project_status: new FormControl()
-    }),
-      this.dataofProj = dataOfClient;
+    })
+      // this.dataofProj = dataOfClient;
   }
   ngOnInit() {
     this.clientService.getActiveClients().subscribe(data => {
@@ -69,7 +69,7 @@ export class AddProjectDialogComponent {
     this.projectService.AddProject(this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Added Successfully ', 'done');
       this.addProject.reset();
-      this.dialogRef.close('success');
+      // this.dialogRef.close('success');
       this.ngOnInit();
     },(error: HttpErrorResponse) => {
       if (error.status == 502) {
@@ -81,5 +81,8 @@ export class AddProjectDialogComponent {
     const filterValue = this.input.nativeElement.value.toLowerCase();
     this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
     this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
+  }
+  windowClose(){
+    window.close();
   }
 }

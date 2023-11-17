@@ -1,7 +1,7 @@
 <div mat-dialog-title>
     <h1>Add New Project</h1>
 </div>
-<form [formGroup]="addProject" (ngSubmit)="AddProject()">
+<form [formGroup]="addProject" (ngSubmit)="AddProject()" target="_blank">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
             <mat-form-field fxFlex="50">
@@ -57,7 +57,7 @@
         </div>
         <div mat-dialog-actions align="end">
             <button mat-raised-button color="primary">Add</button>
-            <button mat-raised-button color="primary" mat-dialog-close="false">Cancel</button>
+            <button mat-raised-button color="primary" (click)="windowClose()">Close</button>
         </div>
     </div>
 </form>

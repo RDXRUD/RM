@@ -69,6 +69,10 @@ export class SkillsetService {
     let url = `${environment.apiUrl}/SkillSet/UpdateSkillGroup/${skillGroupID}`;
     return this.http.put<skillsetupdate[]>(url,skillGroupID);
   }
+  UpdateSkillGroup(formdata: skillgroup):Observable<skillgroup[]> {
+    let url = `${environment.apiUrl}/SkillSet/EditSkillGroup`;
+    return this.http.put<skillgroup[]>(url,formdata);
+  }
   UpdateSkillSet(formdata: skillsetupdate): Observable<skillsetupdate[]> {
     let url = `${environment.apiUrl}/SkillSet/UpdateSkillSet`;
     return this.http.put<skillsetupdate[]>(url, formdata);

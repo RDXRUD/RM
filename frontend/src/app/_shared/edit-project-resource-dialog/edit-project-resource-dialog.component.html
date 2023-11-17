@@ -1,4 +1,4 @@
-<div mat-dialog-title>
+<div mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" >
     <h1>Edit Allocated Resource Details</h1>
 </div>
 <form [formGroup]="updateResource" (ngSubmit)="UpdateResource(dataOfProjects.element)">
