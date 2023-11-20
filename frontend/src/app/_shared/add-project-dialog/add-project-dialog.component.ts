@@ -1,16 +1,28 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import moment from 'moment';
 import { Client } from 'src/app/_model/client';
 import { ClientService } from 'src/app/_services/client.service';
 import { CoreService } from 'src/app/_services/core.service';
 import { ProjectService } from 'src/app/_services/project.service';
+import { MY_FORMATS } from 'src/app/home/home.component';
 
 @Component({
   selector: 'app-add-project-dialog',
   templateUrl: './add-project-dialog.component.html',
-  styleUrls: ['./add-project-dialog.component.scss']
+  styleUrls: ['./add-project-dialog.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class AddProjectDialogComponent {
@@ -66,6 +78,16 @@ export class AddProjectDialogComponent {
   AddProject() {
     this.temp = this.addProject.value;
     this.temp.project_manager = this.resexpansionid
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
     this.projectService.AddProject(this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Added Successfully ', 'done');
       this.addProject.reset();

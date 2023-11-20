@@ -1,14 +1,26 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import moment from 'moment';
 import { Client } from 'src/app/_model/client';
 import { ClientService } from 'src/app/_services/client.service';
 import { CoreService } from 'src/app/_services/core.service';
 import { ProjectService } from 'src/app/_services/project.service';
+import { MY_FORMATS } from 'src/app/home/home.component';
 @Component({
   selector: 'app-edit-project-dialog',
   templateUrl: './edit-project-dialog.component.html',
-  styleUrls: ['./edit-project-dialog.component.scss']
+  styleUrls: ['./edit-project-dialog.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
  
 export class EditProjectDialogComponent {
@@ -74,6 +86,23 @@ export class EditProjectDialogComponent {
   UpdateProject(element:any) {
  
     this.temp=this.updateProject.value
+    console.log(this.temp);
+    // this.temp.start_date=new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    // console.log(this.temp.start_date);
+
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
+    console.log(this.temp);
+    
+    
     if(this.resexpansionid=='undefined'){
       this.temp.project_manager=element.project_manager
  

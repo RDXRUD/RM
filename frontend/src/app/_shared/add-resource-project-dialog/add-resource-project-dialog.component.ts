@@ -11,11 +11,23 @@ import { ProjectService } from 'src/app/_services/project.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
 import { Subscription } from 'rxjs';
 import { projectFilter } from 'src/app/_model/projectFilter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MY_FORMATS } from 'src/app/home/home.component';
+import moment from 'moment';
 
 @Component({
   selector: 'app-add-resource-project-dialog',
   templateUrl: './add-resource-project-dialog.component.html',
-  styleUrls: ['./add-resource-project-dialog.component.scss']
+  styleUrls: ['./add-resource-project-dialog.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class AddResourceProjectDialogComponent {
@@ -157,6 +169,16 @@ export class AddResourceProjectDialogComponent {
     this.temp = this.addResource.value;
     this.temp.res_id = this.resexpansionid;
     this.temp.skill_id = this.skillset[0].skillSetID;
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
     // this.temp.project_id=this.dataOfProjects.dataOfProjects.project_id;
     console.log(this.temp);
     

@@ -4,6 +4,7 @@ using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using com.sun.org.apache.xpath.@internal.operations;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -38,6 +39,7 @@ namespace ResourceManagerAPI.Controllers
 
              List<CrossViewData> cross_view_data = new List<CrossViewData>();
              List<CrossJoin> cross_view_join = new List<CrossJoin>();
+            
 
 
             cross_view_data.Clear();
@@ -46,6 +48,8 @@ namespace ResourceManagerAPI.Controllers
             var resourceMaster = _dbContext.resource_master.ToList();
             var resource_skill = _dbContext.resource_skill;
             var project_res_allocation=_dbContext.project_res_allocation.ToList();
+            var skill_group= _dbContext.skill_group.ToList();
+            var skill_set= _dbContext.skill_set.ToList();
 
 
             for (DateTime date = filterData.startDate.Date; date <= filterData.endDate.Date; date = date.AddDays(1))
@@ -67,9 +71,37 @@ namespace ResourceManagerAPI.Controllers
             
 
             var skillResIds = resource_skill
-                .Where(ss => ss.SkillSetID == filterData.skillSetID)
+                .Where(ss => filterData.skillSetID.Contains(ss.SkillSetID))
                 .Select(resource => resource.res_id)
                 .ToList();
+
+            //        var skillResIds = _dbContext.resource_skill
+            //.Where(ss => ss.SkillSetID == filterData.skillSetID)
+            //.Join(
+            //    _dbContext.skillgroup,
+            //    resource => resource.SkillSetID,
+            //    skillgroup => skillgroup.SkillSetID,
+            //    (resource, skillgroup) => new { Resource = resource, SkillGroup = skillgroup }
+            //)
+            //.Select(joinResult => joinResult.Resource.res_id)
+            //.ToList();
+
+            //var groupResIds = (
+            //                from rs in resource_skill
+            //                join ss in skill_set on rs.SkillSetID equals ss.SkillSetID
+            //                join sg in skill_group on ss.SkillGroupID equals sg.SkillGroupID
+            //                where sg.SkillGroupID == filterData.skillGroupID
+            //                select rs.res_id
+            //            ).ToListAsync();
+
+//            var groupResIds = (
+//    from rs in resource_skill
+//    join ss in skill_set on rs.SkillSetID equals ss.SkillSetID
+//    where ss.SkillGroupID == filterData.skillGroupID
+//    select rs.res_id
+//).ToList();
+
+
 
             var nameResIds = filterData.res_name;
 

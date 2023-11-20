@@ -1,3 +1,4 @@
+
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -13,11 +14,24 @@ import { Subscription } from 'rxjs';
 import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsService } from 'src/app/_services/skills.service';
 import { projectFilter } from 'src/app/_model/projectFilter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MY_FORMATS } from 'src/app/home/home.component';
+import moment from 'moment';
 
 @Component({
   selector: 'app-allocate-resource-dialog',
   templateUrl: './allocate-resource-dialog.component.html',
   styleUrls: ['./allocate-resource-dialog.component.scss']
+  // ,
+  // providers: [
+  //   {
+  //     provide: DateAdapter,
+  //     useClass: MomentDateAdapter,
+  //     deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+  //   },
+  //   { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  // ],
 })
 
 export class AllocateResourceDialogComponent {
@@ -175,6 +189,17 @@ export class AllocateResourceDialogComponent {
     this.temp = this.allocateResource.value;
     this.temp.res_id = this.resSkillData[0].resourceID;
     this.temp.skill_id = this.temp.skillID;
+
+    // if (moment.isMoment(this.temp.end_date)) {
+    //   this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    // } else {
+    //   this.temp.end_date = this.temp.end_date;
+    // }
+    // if (moment.isMoment(this.temp.start_date)) {
+    //   this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    // } else {
+    //   this.temp.start_date = this.temp.start_date;
+    // }
     // this.temp.project_id=this.dataOfProjects.dataOfProjects.project_id;
     console.log(this.temp);
     

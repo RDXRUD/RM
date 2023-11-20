@@ -33,6 +33,9 @@ import { EditSkillGroupDialogComponent } from '../_shared/edit-skill-group-dialo
 import { SharedDataService } from '../_services/shared-data.service';
 import { Subscription } from 'rxjs';
 import { MatTabGroup } from '@angular/material/tabs';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MY_FORMATS } from '../home/home.component';
 
 @Component({
   selector: 'app-admin',
@@ -44,6 +47,14 @@ import { MatTabGroup } from '@angular/material/tabs';
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.215, 0.610, 0.355, 1.000)')),
     ]),
+  ],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
 
@@ -271,6 +282,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
     this.projectService.getProjectStatus().subscribe(data=>{
       this.projectStatus=data
+      this.filterProject.patchValue({
+        project_status:[1,2]
+      })
     })
   }
   ngOnDestroy() {
@@ -441,6 +455,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
   OnResetSkill() {
     this.filterSkills.reset();
   }
+  OnResetProject(){
+    this.filterProject.reset();
+    this.filterProject.setValue({
+      client_name:[],
+      project_name:[],
+      project_status:[1,2]
+    })
+  }
   OnSubmit() {
     this.filterData = this.filterResource.value;
     this.skillService.FilterResource(this.filterData).subscribe(data => {
@@ -570,8 +592,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
       height: '550px',
-      data: { dataOfProjects, },
-      disableClose: true
+      data: { dataOfProjects, }
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {

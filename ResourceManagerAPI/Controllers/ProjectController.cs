@@ -259,7 +259,7 @@ namespace ResourceManagerAPI.Controllers
         {
             try
             {
-                var projectStatus = _dbContext.project_status.ToList();
+                var projectStatus = _dbContext.project_status.ToList().OrderBy(p => p.project_status).ToList();
                 return Ok(projectStatus); // Return a 200 OK response with the data
             }
             catch (Exception ex)

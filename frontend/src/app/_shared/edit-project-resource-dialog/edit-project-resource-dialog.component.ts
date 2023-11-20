@@ -10,10 +10,21 @@ import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MY_FORMATS } from 'src/app/home/home.component';
+import moment from 'moment';
 @Component({
   selector: 'app-edit-project-resource-dialog',
   templateUrl: './edit-project-resource-dialog.component.html',
-  styleUrls: ['./edit-project-resource-dialog.component.scss']
+  styleUrls: ['./edit-project-resource-dialog.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class EditProjectResourceDialogComponent {
@@ -102,16 +113,30 @@ export class EditProjectResourceDialogComponent {
   UpdateResource(element: any) {
     this.temp = this.updateResource.value
     console.log(this.temp);
-    this.temp.start_date=new Date(this.temp.start_date);
-    console.log(this.temp);
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
+    
     
     this.temp.skill_id=this.temp.skillID
     this.projectService.UpdateResource(element.id, this.temp).subscribe(data => {
-      this._coreService.openSnackBar('Project Updated Successfully ', 'done');
+      this._coreService.openSnackBar('Allocated Resource Updated Successfully ', 'done');
       this.updateResource.reset();
       this.dialogRef.close('success');
       this.ngOnInit();
-    })
+    },
+    (error) => {
+      if (error.status === 503) {
+        this._coreService.openSnackBar('Time period is out of project duration', 'done');
+      }
+  });
   }
   filterRes(): void {
     const filterValue = this.input.nativeElement.value.toLowerCase();
@@ -134,5 +159,6 @@ export class EditProjectResourceDialogComponent {
     this.skillSetService.getSkillAsPerSkillGroup(this.skillGroup).subscribe(res => {
       this.skillData = res;
     });
+
   }
 }

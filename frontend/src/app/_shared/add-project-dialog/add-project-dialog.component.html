@@ -1,7 +1,7 @@
 <div mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">
     <h1>Add New Project</h1>
 </div>
-<form [formGroup]="addProject" (ngSubmit)="AddProject()" target="_blank">
+<form [formGroup]="addProject"  target="_blank">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
             <mat-form-field fxFlex="50">
@@ -56,8 +56,8 @@
             </mat-form-field>
         </div>
         <div mat-dialog-actions align="end">
-            <button mat-raised-button color="primary">Add</button>
-            <button mat-raised-button color="primary" (click)="windowClose()">Close</button>
+            <button mat-raised-button color="primary" (click)="AddProject()">Add</button>
+            <button mat-raised-button color="primary" mat-dialog-close="false">Close</button>
         </div>
     </div>
 </form>

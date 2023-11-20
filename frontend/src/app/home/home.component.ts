@@ -22,7 +22,6 @@ import { Router } from '@angular/router';
 import { SharedDataService } from '../_services/shared-data.service';
 import { AddProjectDialogComponent } from '../_shared/add-project-dialog/add-project-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AllocateResourceDialogComponent } from '../_shared/allocate-resource-dialog/allocate-resource-dialog.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -34,7 +33,12 @@ export const MY_FORMATS = {
     dateA11yLabel: 'DD',
     monthYearA11yLabel: 'MMM YYYY',
   },
+  utc: {
+    dateInput: 'YYYY-MM-DDTHH:mm:ss[Z]', // Add the UTC format here
+  },
 };
+import { AllocateResourceDialogComponent } from '../_shared/allocate-resource-dialog/allocate-resource-dialog.component';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -99,8 +103,8 @@ export class HomeComponent implements OnInit {
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
       location: new FormControl(null),
-      skillGroupID: new FormControl(''),
-      skillID: new FormControl(''),
+      skillGroupID: new FormControl(),
+      skillID: new FormControl(),
       startDate: new FormControl(new Date()),
       endDate: new FormControl(new Date(new Date().setMonth(new Date().getMonth() + 1))),
     });
@@ -145,13 +149,14 @@ export class HomeComponent implements OnInit {
       this.columns = [];
 
       this.skillSetService.getSkillSets().subscribe(datas => {
-        const temp = datas.filter(data => data.skillGroupID === skillGroupID && data.skillID === skillID);
+        const temp = datas.filter(data => data.skillGroupID === skillGroupID && skillID.includes(data.skillID));
         if (temp.length > 0) {
-          this.skillSetID = temp[0].skillSetID;
+          this.skillSetID = temp.map(item => item.skillSetID);
         } else {
           this.skillSetID = null;
         }
-
+        console.log(this.skillSetID);
+        
         const names = Array.isArray(this.filteringForm.value.res_name) && this.filteringForm.value.res_name.length > 0 ? this.data.filter((res: any) => this.filteringForm.value.res_name.includes(res.res_id)) : this.data;
         this.Resnames = [...new Set(names.map((data: any) => data.res_name))];
         const startDateValue = this.filteringForm.get('startDate')?.value;
@@ -177,7 +182,10 @@ export class HomeComponent implements OnInit {
         this.filter.startDate = startDateString;
         this.filter.endDate = endDateString;
         this.filter.skillSetID = this.skillSetID;
-
+        console.log(this.filter);
+        console.log(this.filteringForm.value);
+        
+        
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
           this.submitClicked = true
           this.dataOfAllocation = [];
@@ -256,6 +264,7 @@ export class HomeComponent implements OnInit {
       client_name: [], // Default value for client_name
       project_name: [], // Default value for project_name
     });
+    this.details = [];
   }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
@@ -265,6 +274,9 @@ export class HomeComponent implements OnInit {
     };
     this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
       this.skillData = res;
+      this.filteringForm.patchValue({
+        skillID:this.skillData.map(item => item.skillID)
+      })
     });
   }
   removeDayFromDate(cell: XLSX.CellObject) {
@@ -406,6 +418,23 @@ export class HomeComponent implements OnInit {
       }
     }
   }
+  allSkillSelection(){
+    console.log(this.skillData);
+    
+    if (this.filteringForm.get('skillID') && this.skillData) {
+      if (!this.selectAll) {
+        this.filteringForm.get('skillID')?.patchValue(this.skillData.map((item) => item.skillID));
+        this.selectAll = true
+        console.log("if");
+        
+      } else {
+        this.filteringForm.get('skillID')?.patchValue([]);
+        this.selectAll = false
+        console.log("else");
+        
+      }
+    }
+  }
   allSelection() {
     if (this.filteringDetails.get('res_name') && this.data) {
       if (!this.selectAll) {
@@ -452,15 +481,15 @@ export class HomeComponent implements OnInit {
     this.tabGroup.selectedIndex = index;
   }
   navigateToAdmin(email:any) {
-    this.router.navigate(['/Admin']).then(() => {
-      this.tabService.setActiveTabIndex(4); // Set the index based on your tab order
-      console.log(email);
+    // this.router.navigate(['/Admin']).then(() => {
+    //   this.tabService.setActiveTabIndex(4); // Set the index based on your tab order
+    //   console.log(email);
       const dialogRef = this.dialog.open(AllocateResourceDialogComponent, {
         width: '600px',
         height: '550px',
         data:{email}
         
-      });
+    //   });
     });
   }
 }

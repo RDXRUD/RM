@@ -436,19 +436,12 @@
           <mat-expansion-panel-header>
             <mat-panel-title>Filters</mat-panel-title>
           </mat-expansion-panel-header>
-          <form [formGroup]="filterProject" (ngSubmit)="OnSubmitProject()">
+          <form [formGroup]="filterProject">
             <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
               <mat-form-field fxFlex="25">
                 <mat-label>Client Name</mat-label>
                 <mat-select formControlName="client_name" multiple>
                   <mat-option *ngFor="let cli of clientExtensionData" [value]="cli.client_id">{{cli.client_name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field fxFlex="25">
-                <mat-label>Project</mat-label>
-                <mat-select formControlName="project_name" multiple>
-                  <mat-option *ngFor="let pro of dataProject" [value]="pro.project_id">{{pro.project_name}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -459,13 +452,20 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+              <mat-form-field fxFlex="25">
+                <mat-label>Project</mat-label>
+                <mat-select formControlName="project_name" multiple>
+                  <mat-option *ngFor="let pro of dataProject" [value]="pro.project_id">{{pro.project_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
               <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
                 <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                  value="OnSubmit">Submit</button>
+                  (click)="OnSubmitProject()">Submit</button>
               </div>
               <div fxFlex="10" fxFlexFill>
                 <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
-                  (click)="OnResetSkill()">Reset</button>
+                  (click)="OnResetProject()">Reset</button>
               </div>
             </div>
           </form>

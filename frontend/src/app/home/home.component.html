@@ -22,14 +22,15 @@
             <mat-form-field fxFlex="25">
               <mat-label>Skill Group</mat-label>
               <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-                <mat-option>None</mat-option>
+                <mat-option value=0>None</mat-option>
                 <mat-option *ngFor="let select of DataofSkillGroup"
                   [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="25">
               <mat-label>Skill</mat-label>
-              <mat-select formControlName="skillID" single>
+              <mat-select formControlName="skillID" multiple>
+                <option  (click)="allSkillSelection()" [value]="0">Select All</option>
                 <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
               </mat-select>
             </mat-form-field>
