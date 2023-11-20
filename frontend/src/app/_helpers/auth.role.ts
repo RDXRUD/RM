@@ -13,7 +13,7 @@ export class RoleGuard implements CanActivate {
     if (this.tokenService.isAuthenticated()) {
 
       const userRoles: string | null = this.tokenService.getRole();
-      if (userRoles && userRoles.includes('Non-Admin')) {
+      if (userRoles && userRoles.includes('NON ADMIN')) {
         this.router.navigate(['/access-denied']);
         return false;
       } else {

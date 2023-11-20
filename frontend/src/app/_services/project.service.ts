@@ -8,6 +8,7 @@ import { projectManager } from '../_model/projectManager';
 import { projectStatus } from '../_model/projectStatus';
 import { projectType } from '../_model/projectType';
 import { projectResAllocation } from '../_model/projectResAllocation';
+import { projectFilter } from '../_model/projectFilter';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +22,9 @@ export class ProjectService {
     return this.http.get<projectManager[]>(url);
   }
 
-  getProjects(id:number): Observable<projectDetails[]> {
+  getProjects(id:number,formData:projectFilter): Observable<projectDetails[]> {
     let url = `${environment.apiUrl}/Project/ClientProjects/${id}`;
-    return this.http.get<projectDetails[]>(url);
+    return this.http.post<projectDetails[]>(url,formData)
   }
   
   getAllProjects(): Observable<projectMaster[]> {

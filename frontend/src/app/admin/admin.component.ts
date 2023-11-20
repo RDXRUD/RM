@@ -30,6 +30,9 @@ import { EditProjectDialogComponent } from '../_shared/edit-project-dialog/edit-
 import { EditProjectResourceDialogComponent } from '../_shared/edit-project-resource-dialog/edit-project-resource-dialog.component';
 import { Router } from '@angular/router';
 import { EditSkillGroupDialogComponent } from '../_shared/edit-skill-group-dialog/edit-skill-group-dialog.component';
+import { SharedDataService } from '../_services/shared-data.service';
+import { Subscription } from 'rxjs';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-admin',
@@ -47,6 +50,7 @@ import { EditSkillGroupDialogComponent } from '../_shared/edit-skill-group-dialo
 
 export class AdminComponent implements OnInit, AfterViewInit {
   apiData!: any[];
+  private tabSubscription!: Subscription;
   api!: skillgroup[];
   userForm: FormGroup;
   formdatas!: userform;
@@ -95,10 +99,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   clientExtensionData!: any[];
   resexpansionid: any;
   dataProject!: any[];
-  dataOfProjects!: any[];
+  //dataOfProjects!: any[];
   allocatedResources!: any;
+  projectStatus!:any[];
 
-
+  
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
   project_manager = new FormControl();
   resourceExtensionData!: any[];
@@ -119,9 +124,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild('matSorted') matSorted!: MatSort;
   clientData!: MatTableDataSource<any>;
   @ViewChild('sortedClientData') sortedClientData!: MatSort;
-
+  dataOfProjects!:MatTableDataSource<any>;
+  @ViewChild('innerTables1') innerTables1!: MatSort;
   element: any;
+
   constructor(
+    private tabService: SharedDataService,
     private router : Router,
     private resources_Service: ResourcesService,
     frmbuilder: FormBuilder,
@@ -191,13 +199,32 @@ export class AdminComponent implements OnInit, AfterViewInit {
       end_date: new FormControl(),
     })
     this.filterProject = frmbuilder.group({
-      client_name: new FormControl(),
-      project_name: new FormControl(),
+      client_name: new FormControl([]),
+      project_name: new FormControl([]),
+      project_status:new FormControl([]),
     });
   }
-  ngAfterViewInit(): void {
+  
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  ngAfterViewInit() {
+    console.log('Tab Group:', this.tabGroup);
+    this.tabSubscription = this.tabService.activeTabIndex$.subscribe((index) => {
+      if (this.tabGroup) {
+        this.tabGroup.selectedIndex = index;
+      }
+    });
+    if (this.innerTables1) {
+      this.dataOfProjects.sort = this.innerTables1;
+    }
   }
   ngOnInit() {
+    // this.tabSubscription = this.tabService.activeTabIndex$.subscribe((index) => {
+    //   console.log(this.tabGroup);
+      
+    //   if (this.tabGroup) {
+    //     this.tabGroup.selectedIndex = index;
+    //   }
+    // });
     this.resources_Service.getResources().subscribe(data => {
       this.data = data;
       this.resourceExtensionData = data.sort((a, b) => a.res_name.toLowerCase().localeCompare(b.res_name.toLowerCase()));
@@ -234,12 +261,20 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.clientService.getClients().subscribe(data => {
       this.clientExtensionData = data;
       this.dataOfClient = data;
+      console.log(this.dataOfClient);
+      
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
     });
     this.projectService.getAllProjects().subscribe(data =>{
       this.dataProject = data;
     });
+    this.projectService.getProjectStatus().subscribe(data=>{
+      this.projectStatus=data
+    })
+  }
+  ngOnDestroy() {
+    this.tabSubscription.unsubscribe();
   }
   AddSkill() {
     this.skilldata = this.addskill.value;
@@ -415,6 +450,25 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.applySortToDataSource();
     });
   }
+  OnSubmitProject(){
+    console.log(this.filterProject.value);
+    this.clientService.getClients().subscribe(data => {
+      // this.clientExtensionData = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));
+      // console.log(this.clientExtensionData);
+      
+      // this.dataOfClient = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));;
+      // console.log(this.dataOfClient);
+      if (this.filterProject.value.client_name.length !== 0) {
+        this.dataOfClient = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));
+      } else {
+        // If client_name is null or an empty array, display all data
+        this.dataOfClient = data;
+      }
+      
+      this.dataOfClient = new MatTableDataSource(this.dataOfClient);
+      this.dataOfClient.sort = this.sortedClientData;
+    });
+  }
   OnSubmitSkill() {
     this.filterSkillData = this.filterSkills.value;
     this.filterSkillData.skill = Array.isArray(this.filterSkillData.skill) ? this.filterSkillData.skill.join(',') : this.filterSkillData.skill;
@@ -495,28 +549,29 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // AddProject(dataOfClient: any) {
-  //   // const newWindow = window.open('', '_blank', 'width=600,height=550');
-  //   // newWindow!.document.write('<app-add-project-dialog></app-add-project-dialog>');
-  //   // newWindow!.document.close();
-  //   const dialogRef = this.dialog.open(AddProjectDialogComponent, {
-  //     width: '600px',
-  //     height: '550px',
-  //     data: { dataOfClient, }
-  //   });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result === 'success') {
-  //       this.ngOnInit();
-  //     }
-  //   });
-  // }
+  AddProject(dataOfClient: any) {
+    // const newWindow = window.open('', '_blank', 'width=600,height=550');
+    // newWindow!.document.write('<app-add-project-dialog></app-add-project-dialog>');
+    // newWindow!.document.close();
+    const dialogRef = this.dialog.open(AddProjectDialogComponent, {
+      width: '600px',
+      height: '550px',
+      data: { dataOfClient, }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.ngOnInit();
+      }
+    });
+  }
   AddProjectResource(dataOfProjects: any) {
     console.log(dataOfProjects);
     
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
       width: '600px',
       height: '550px',
-      data: { dataOfProjects, }
+      data: { dataOfProjects, },
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
@@ -525,8 +580,9 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
   }
   getProjects(id: number) {
-    this.projectService.getProjects(id).subscribe(data => {
-      this.dataOfProjects = data;
+    this.projectService.getProjects(id,this.filterProject.value).subscribe(data => {
+      this.dataOfProjects = new MatTableDataSource(data);
+      this.dataOfProjects.sort = this.innerTables1;
       console.log(this.dataOfProjects);
       
     })

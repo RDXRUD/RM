@@ -6,7 +6,7 @@
     <nav class="navigation">
       <button mat-icon-button routerLink="Login" *ngIf="!tokenService.isLoggedIn"><mat-icon>login</mat-icon></button>
       <button mat-icon-button matTooltip="Home" routerLink="Home"><mat-icon>home</mat-icon></button>
-      <button mat-icon-button matTooltip="Settings" *ngIf="!(Roles.includes('Non-Admin'))"  routerLink="Admin"><mat-icon>settings</mat-icon></button>
+      <button mat-icon-button matTooltip="Settings" *ngIf="!(Roles.includes('NON ADMIN'))"  routerLink="Admin"><mat-icon>settings</mat-icon></button>
       <button mat-icon-button matTooltip="Profile" routerLink="UserProfile"><mat-icon>account_circle</mat-icon></button>
       <button mat-icon-button matTooltip="Logout" routerLink="#" (click)="OnLogout()"><mat-icon>logout</mat-icon></button>
     </nav>

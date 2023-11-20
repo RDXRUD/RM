@@ -1,10 +1,12 @@
 ﻿using com.sun.org.apache.xerces.@internal.impl.dv.xs;
+using javax.xml.soap;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResourceManagerAPI.DBContext;
 using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using System.Collections.Immutable;
+using System.Data.Entity;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace ResourceManagerAPI.Controllers
@@ -33,6 +35,7 @@ namespace ResourceManagerAPI.Controllers
             var skillSet = _dbContext.skill_set;
             var skillGroup = _dbContext.skill_group;
             var skill = _dbContext._skill;
+            var resourceSkill = _dbContext.resource_skill;
 
             var locResIds = resourceMaster
             .Where(rm => rm.location_id == filterData.location)
@@ -81,6 +84,30 @@ namespace ResourceManagerAPI.Controllers
                 return StatusCode(502, "No Records Found");
             }
 
+            //var tempskill = (from r in _dbContext.resources
+            //                 join rs in _dbContext.resourceskills on r.ResourceID equals rs.ResourceID
+            //                 join ss in _dbContext.skillset on rs.SkillSetID equals ss.SkillSetID
+            //                 join s in _dbContext.skill on ss.SkillID equals s.SkillID
+            //                 group s.Skill by new { r.ResourceID, r.EmailID } into g
+            //                 select new ResourceSkillManager
+            //                 {
+            //                     ResourceID = g.Key.ResourceID,
+            //                     EmailID = g.Key.EmailID,
+            //                     Skill = string.Join(", ", g.ToArray())
+            //                 }).ToList();
+
+            var pms = (from pra in projectResAllocation
+                          join rs in resourceSkill on pra.res_id equals rs.res_id
+                          join rm in resourceMaster on rs.res_id equals rm.res_id 
+                          where rs.SkillSetID == 6
+                          group rm.res_name by new { pra.project_id }  into g
+                          select new PM
+                          {
+                              project_id = g.Key.project_id,
+                              res_names = string.Join(", ", g.ToArray())
+                          }).ToList();
+
+
             var query = from r in resIds
                         join rm in resourceMaster on r equals rm.res_id
                         join pra in projectResAllocation on rm?.res_id equals pra.res_id
@@ -98,6 +125,7 @@ namespace ResourceManagerAPI.Controllers
                             project_id= pm.project_id != null? pm.project_id:0,
                             client_name = cm.client_name != "" ? cm.client_name : "null",
                             client_id= cm.client_id != null ? cm.client_id : 0,
+                            project_managers=pms.Where(p=>p.project_id==pm.project_id).Select(t=>t.res_names),
                             skill = m?.Skill,
                             skillGroup = sg?.SkillGroup,
                             start_date = pra.start_date != null ? pra.start_date : new DateTime(2000, 1, 1, 0, 0, 0),
@@ -117,6 +145,7 @@ namespace ResourceManagerAPI.Controllers
                                   res_name = data.res_name,
                                   res_email_id = data.res_email_id,
                                   project_name = data.project_name,
+                                  project_managers=data.project_managers,
                                   client_name = data.client_name ,
                                   skill = data.skill,
                                   skillGroup = data.skillGroup,

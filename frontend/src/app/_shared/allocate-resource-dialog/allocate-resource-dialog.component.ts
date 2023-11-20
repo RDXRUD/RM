@@ -10,17 +10,19 @@ import { ProjectService } from 'src/app/_services/project.service';
 // import { SharedDataService } from 'src/app/_services/shared-data.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
 import { Subscription } from 'rxjs';
+import { ResourcesService } from 'src/app/_services/resources.service';
+import { SkillsService } from 'src/app/_services/skills.service';
 import { projectFilter } from 'src/app/_model/projectFilter';
 
 @Component({
-  selector: 'app-add-resource-project-dialog',
-  templateUrl: './add-resource-project-dialog.component.html',
-  styleUrls: ['./add-resource-project-dialog.component.scss']
+  selector: 'app-allocate-resource-dialog',
+  templateUrl: './allocate-resource-dialog.component.html',
+  styleUrls: ['./allocate-resource-dialog.component.scss']
 })
 
-export class AddResourceProjectDialogComponent {
+export class AllocateResourceDialogComponent {
   [x: string]: any;
-  addResource: FormGroup;
+  allocateResource: FormGroup;
   projectStatus!: any[];
   projectType!: any[];
   formdata!: Client;
@@ -45,6 +47,9 @@ export class AddResourceProjectDialogComponent {
   data!:any;
   receivedData!: any[];
   allProjects!:any[]
+  resourceData!:any[]
+  resSkillData!:any
+  skillgroupData!:any
   emptyFilter: projectFilter = {
     client_name:[],
     project_name: [],
@@ -53,17 +58,19 @@ export class AddResourceProjectDialogComponent {
   // private subscription: Subscription;
 
   constructor(
-    public dialogRef: MatDialogRef<AddResourceProjectDialogComponent>,
+    private skillService:SkillsService,
+    public dialogRef: MatDialogRef<AllocateResourceDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataRes: any,
+    private resourceService:ResourcesService,
     private route: ActivatedRoute,
     private clientService:ClientService,
     private projectService: ProjectService,
-    private skillsetService: SkillsetService,
+    // private skillsetService: SkillsetService,
     private skillSetService: SkillsetService,
     private _coreService: CoreService,
     private fb: FormBuilder,
   ) {
-    this.addResource = this.fb.group({
+    this.allocateResource = this.fb.group({
       client_id:new FormControl(),
       project_id: new FormControl(),//this.dataOfProjects.dataOfProjects.project_name
       res_id: new FormControl(),
@@ -81,37 +88,31 @@ export class AddResourceProjectDialogComponent {
     
     // this.dataofProj = dataOfProjects;
 
-
+    
   }
   ngOnInit() {
+    this.resourceService.getResources().subscribe(data=>{
+      this.resourceData=data
+      this.allocateResource.patchValue({
+        res_id: this.resourceData.find(res=>res.res_email_id==this.dataRes.email).res_id,
+      });
+    });
     // this.route.queryParamMap.subscribe((params: any) => {
     //   console.log(params);
     //   console.log(params.params.data);
-    console.log(this.dataRes.dataOfProjects);
-    
-    if(Array.isArray(this.dataRes.dataOfProjects)){
-      // console.log("UNDEFINED");
-      this.data=null
-    }
-    else{
-      // this.data=JSON.parse(params.params.data)
-      this.addResource.setValue({
-        client_id: this.dataRes.dataOfProjects.client_id,
-        project_id: this.dataRes.dataOfProjects.project_id,//this.dataOfProjects.dataOfProjects.project_name
-        res_id: null,
-        skillGroupID: null,
-        skillID: null,
-        allocation_perc: null,
-        start_date:null,
-        end_date: null
-        // partner_incharge: this.dataOfClient.element.partner_incharge,
-        // status: this.dataOfClient.element.status
-      });
       
-      this.projectService.getProjects(this.dataRes.dataOfProjects.client_id,this.emptyFilter).subscribe(data=>{
-        this.projectData=data
-      })
-    }
+    // if(params.params.data===undefined){
+    //   console.log("UNDEFINED");
+    //   this.data=null
+    // }
+    // else{
+    //   this.data=JSON.parse(params.params.data)
+      
+      // this.projectService.getProjects(this.data.client_id).subscribe(data=>{
+      //   this.projectData=data
+      // })
+      
+    
       
       // console.log( this.data.client_id);
     
@@ -137,8 +138,23 @@ export class AddResourceProjectDialogComponent {
     // console.log(this.receivedData);
     
     // console.log(this.dataOfProjects.dataOfProjects);
-    
-    
+    this.skillSetService.getSkillGroups().subscribe(res => {
+    this.DataofSkillGroup = res;  
+    const encodedEmailID = encodeURIComponent(this.dataRes.email);
+    this.skillService.getSkill(encodedEmailID).subscribe(datas => {
+      console.log(datas);
+
+      console.log(this.DataofSkillGroup);
+      this.resSkillData=datas
+      const intersection = this.DataofSkillGroup.filter(skillGroup =>
+        datas.some((resSkill:any) => resSkill.skillGroupID === skillGroup.skillGroupID)
+      );
+      this.skillgroupData=intersection
+            console.log(intersection);
+      
+      
+    });
+    })
     
     this.clientService.getActiveClients().subscribe(data=>{
       this.clientData=data
@@ -146,25 +162,27 @@ export class AddResourceProjectDialogComponent {
     this.skillSetService.getSkillSets().subscribe(datas => {
       this.skillSets=datas
     });
-    this.skillSetService.getSkillGroups().subscribe(res => {
-      this.DataofSkillGroup = res;
-    });
+    
+    // const valiGroups=this.DataofSkillGroup.skillgroupID.intersect(this.resSkillData.skillGroupID)
+
+    
   }
 
   AddResource() {
-    console.log( this.addResource.value);
+    console.log( this.allocateResource.value);
+    console.log("md",this.resSkillData);
     
-    this.temp = this.addResource.value;
-    this.temp.res_id = this.resexpansionid;
-    this.temp.skill_id = this.skillset[0].skillSetID;
+    this.temp = this.allocateResource.value;
+    this.temp.res_id = this.resSkillData[0].resourceID;
+    this.temp.skill_id = this.temp.skillID;
     // this.temp.project_id=this.dataOfProjects.dataOfProjects.project_id;
     console.log(this.temp);
     
     this.projectService.AddResource(this.temp).subscribe(
       () => {
         this._coreService.openSnackBar('Resource Added Successfully ', 'done');
-        this.addResource.reset();
-        this.input.nativeElement.value = '';
+        this.allocateResource.reset();
+        // this.input.nativeElement.value = '';
         // this.addResource.setValue({
         //   client_id: null,
         //   project_id: null,//this.dataOfProjects.dataOfProjects.project_name
@@ -188,36 +206,70 @@ export class AddResourceProjectDialogComponent {
     );
   }
   
-  filterRes(): void {
-    const filterValue = this.input.nativeElement.value.toLowerCase();
-    if (this.resourceExtensionData == null) {
-    }
-    else {
-      this.filteredResOptions = this.resourceExtensionData.filter(o => o.res_name.toLowerCase().includes(filterValue));
-      this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
-    }
-  }
-  onSkillSetSelection(){
-    this.skillset=this.skillSets.filter((data:any) => data.skillGroupID === this.addResource.value.skillGroupID && data.skillID === this.addResource.value.skillID);    
-    this.skillsetService.getResourceAsPerSkillSet(this.skillset[0].skillSetID).subscribe(data => {
-      this.resourceExtensionData=data;
-    });
-  }
+  // filterRes(): void {
+  //   this.filteredResOptions=this.resourceData
+  //   const filterValue = this.input.nativeElement.value.toLowerCase();
+  //   if (this.resourceData == null) {
+  //   }
+  //   else {
+  //     this.filteredResOptions = this.resourceData.filter(o => o.res_name.toLowerCase().includes(filterValue));
+  //     this.resexpansionid = this.filteredResOptions.length == 1 ? this.filteredResOptions[0].res_id : 'undefined'
+  //   }
+  // }
+  // onSkillSetSelection(){
+  //   this.skillset=this.skillSets.filter((data:any) => data.skillGroupID === this.allocateResource.value.skillGroupID && data.skillID === this.allocateResource.value.skillID);    
+  //   this.skillSetService.getResourceAsPerSkillSet(this.skillset[0].skillSetID).subscribe(data => {
+  //     this.resourceExtensionData=data;
+  //   });
+  // }
   onSkillGroupSelection() {
-    const skillGroupID = Number(this.addResource.get('skillGroupID')?.value);
+    const skillGroupID = Number(this.allocateResource.get('skillGroupID')?.value);
     const skillGroup: SkillGroups = {
       skillGroupID: skillGroupID,
       skillGroup: ''
     };
     this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+      console.log(res);
+      
       this.skillData = res;
+      console.log(this.skillData);
+      const intersection = this.skillData.filter(skill =>
+        this.resSkillData.some((resSkill:any) => resSkill.skillID === skill.skillID)
+      );
+      this.skillData=intersection
     });
   }
   onClientSelection(){
-    const clientID = Number(this.addResource.get('client_id')?.value);
+    const clientID = Number(this.allocateResource.get('client_id')?.value);
     this.projectService.getProjects(clientID,this.emptyFilter).subscribe(data=>{
       this.projectData=data
     })
+  }
+  onResourceSelection(){
+    const resID = Number(this.allocateResource.get('res_id')?.value);
+    const resEmailID=this.resourceData.find(res=>res.res_id==resID).res_email_id
+    this.skillService.getSkill(resEmailID).subscribe(datas => {
+      this.resSkillData=datas
+      console.log("dat",this.resSkillData);
+      
+      const intersection = this.DataofSkillGroup.filter(skillGroup =>
+            datas.some((resSkill:any) => resSkill.skillGroupID === skillGroup.skillGroupID)
+          );
+          this.skillgroupData=intersection
+      console.log(this.resSkillData);
+      
+    })
+    // this.skillSetService.getSkillGroups().subscribe(res => {
+    //   this.DataofSkillGroup = res;
+    //   console.log(this.DataofSkillGroup);
+      
+    //   const intersection = this.DataofSkillGroup.filter(skillGroup =>
+    //     this.resSkillData.some((resSkill:any) => resSkill.skillGroupID === skillGroup.skillGroupID)
+    //   );
+    //   console.log(intersection);
+      
+      
+    // });
   }
   windowClose(){
     window.close();

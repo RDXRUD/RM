@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
@@ -18,6 +18,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatTabGroup } from '@angular/material/tabs';
 import { CoreService } from '../_services/core.service';
 import moment from 'moment';
+import { Router } from '@angular/router';
+import { SharedDataService } from '../_services/shared-data.service';
+import { AddProjectDialogComponent } from '../_shared/add-project-dialog/add-project-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AllocateResourceDialogComponent } from '../_shared/allocate-resource-dialog/allocate-resource-dialog.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -54,6 +59,7 @@ export class HomeComponent implements OnInit {
   dates!: any[];
   columns: string[] = [];
   dataOfAllocation = [];
+  dataOfAllocat!: MatTableDataSource<[]>;
   displayedColumns = [...this.columns];
   startDateString !: any;
   Resnames!: any[];
@@ -64,15 +70,22 @@ export class HomeComponent implements OnInit {
   selectAll: boolean = false;
   submitClicked: boolean = false;
   searchClicked: boolean = false;
-  DetailsdisplayedColumns: string[] = ['res_name', 'email_id', 'client_name', 'project_name', 'skill_group', 'skill', 'start_date', 'end_date'];
+  DetailsdisplayedColumns: string[] = ['res_name', 'email_id', 'client_name', 'project_name','project_manager','skill_group', 'skill', 'start_date', 'end_date'];
   dataSource!: MatTableDataSource<any>;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('sortData') sortData!: MatSort;
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
   currentTab: string = 'Allocation Report';
   temp: any;
   details: any;
-  router: any;
+  Roles:any;
+  // dataOfAllocation!: MatTableDataSource<any[]>;
+  // @ViewChild('sortAll') sortAll!: MatSort;
+
   constructor(
+    private dialog: MatDialog,
+    private tabService: SharedDataService,
+    private router: Router,
+    private el: ElementRef,
     frmbuilder: FormBuilder,
     private allocationService: CrossViewService,
     private skillSetService: SkillsetService,
@@ -82,6 +95,7 @@ export class HomeComponent implements OnInit {
     private detailService: DetailService,
     private _coreService: CoreService,
   ) {
+    this.Roles=localStorage.getItem("Role")
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
       location: new FormControl(null),
@@ -114,11 +128,11 @@ export class HomeComponent implements OnInit {
       this.dataProject = data;
     });  
   }
-  applySortToDataSource() {
-    if (this.dataSource) {
-      this.dataSource.sort = this.sort;
-    }
-  }
+  // applySortToDataSource() {
+  //   if (this.dataSource) {
+  //     this.dataSource.sort = this.sort;
+  //   }
+  // }
   OnSubmit() {
     const skillGroupID = this.filteringForm.get('skillGroupID')?.value;
     const skillID = this.filteringForm.get('skillID')?.value;
@@ -167,9 +181,18 @@ export class HomeComponent implements OnInit {
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
           this.submitClicked = true
           this.dataOfAllocation = [];
-          this.displayedColumns = ["res_name", "res_email_id"];
+          console.log(this.Roles);
+          if(!(this.Roles.includes('NON ADMIN'))){
+            this.displayedColumns = ["res_name", "res_email_id","allocate"];
+          }
+          else{
+            this.displayedColumns = ["res_name", "res_email_id"];
+          }
+          // this.displayedColumns = ["res_name", "res_email_id","allocate"];
           this.columns = [];
           this.dataOfAllocation = response;
+          // this.dataOfAllocat = new MatTableDataSource(response);
+          // this.dataOfAllocat.sort=this.sortData;
           this.allocationService.getDates().subscribe(date => {
             this.dates = date;
             for (const date of this.dates) {
@@ -191,6 +214,8 @@ export class HomeComponent implements OnInit {
   OnSearch(formdata: any) {
     this.detailService.getDetailView(formdata).subscribe(data => {
       this.details=data
+      console.log(this.details);
+      
       this.searchClicked = true;
     }, (error: HttpErrorResponse) => {
       if (error.status === 502) {
@@ -249,12 +274,24 @@ export class HomeComponent implements OnInit {
       if (dateMatch) {
         const datePart = dateMatch[0].split(' ')[1];
       const date = new Date(datePart);
+      console.log(date);
+      
       cell.v = date;
       cell.t = 'd';
       }
     }
   }
+//   formatDate(date:any) {
+//     return date.toLocaleDateString('en-US', {
+//         day: '2-digit',
+//         month: 'short',
+//         year: 'numeric'
+//     });
+// }
   exportToExcel(): void {
+    const date="28-Sep-2003"
+    console.log("Date:", new Date(date));
+    
     const formData = this.filteringForm.value;
     const tableElement = document.getElementById('table_data');
     const tableData = XLSX.utils.table_to_sheet(tableElement);
@@ -381,9 +418,9 @@ export class HomeComponent implements OnInit {
     }
   }
   allClientSelection() {
-    if (this.filteringDetails.get('client_name') && this.data) {
+    if (this.filteringDetails.get('client_name') && this.clientData) {
       if (!this.selectAll) {
-        this.filteringDetails.get('client_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.filteringDetails.get('client_name')?.patchValue(this.clientData.map((item:any) => item.client_id));
         this.selectAll = true
       } else {
         this.filteringDetails.get('client_name')?.patchValue([]);
@@ -392,9 +429,9 @@ export class HomeComponent implements OnInit {
     }
   }
   allProjectSelection() {
-    if (this.filteringDetails.get('project_name') && this.data) {
+    if (this.filteringDetails.get('project_name') && this.dataProject) {
       if (!this.selectAll) {
-        this.filteringDetails.get('project_name')?.patchValue(this.data.map((item) => item.res_id));
+        this.filteringDetails.get('project_name')?.patchValue(this.dataProject.map((item) => item.project_id));
         this.selectAll = true
       } else {
         this.filteringDetails.get('project_name')?.patchValue([]);
@@ -413,5 +450,17 @@ export class HomeComponent implements OnInit {
 
     this.OnSearch(this.filteringDetails.value)
     this.tabGroup.selectedIndex = index;
+  }
+  navigateToAdmin(email:any) {
+    this.router.navigate(['/Admin']).then(() => {
+      this.tabService.setActiveTabIndex(4); // Set the index based on your tab order
+      console.log(email);
+      const dialogRef = this.dialog.open(AllocateResourceDialogComponent, {
+        width: '600px',
+        height: '550px',
+        data:{email}
+        
+      });
+    });
   }
 }

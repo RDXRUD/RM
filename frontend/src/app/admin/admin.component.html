@@ -1,5 +1,5 @@
 <div style="height: 100%;">
-  <mat-tab-group style="height: calc(100vh - 64px);">
+  <mat-tab-group #tabGroup style="height: calc(100vh - 64px);">
     <mat-tab label="Resource Master">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
@@ -87,7 +87,7 @@
                       </mat-form-field>
                       <mat-form-field fxFlex="45">
                         <mat-label>Password</mat-label>
-                        <input type="password" formControlName="password" [type]="hide ? 'password' : 'text'" matInput>
+                        <input formControlName="password" [type]="hide ? 'password' : 'text'" matInput>
                         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' :'visibility_off'}}</mat-icon>
                       </mat-form-field>
                       <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
@@ -432,23 +432,30 @@
     </mat-tab>
     <mat-tab label="Project Allocation">
       <div style="height: 100%; overflow-y: auto;">
-        <!-- <mat-expansion-panel>
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>Filters</mat-panel-title>
           </mat-expansion-panel-header>
-          <form [formGroup]="filterProject" (ngSubmit)="OnSubmitSkill()">
+          <form [formGroup]="filterProject" (ngSubmit)="OnSubmitProject()">
             <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
-              <mat-form-field fxFlex="40">
+              <mat-form-field fxFlex="25">
                 <mat-label>Client Name</mat-label>
                 <mat-select formControlName="client_name" multiple>
-                  <mat-option *ngFor="let cli of clientExtensionData" [value]="cli.client_name">{{cli.client_name}}
+                  <mat-option *ngFor="let cli of clientExtensionData" [value]="cli.client_id">{{cli.client_name}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <mat-form-field fxFlex="40">
+              <mat-form-field fxFlex="25">
                 <mat-label>Project</mat-label>
                 <mat-select formControlName="project_name" multiple>
                   <mat-option *ngFor="let pro of dataProject" [value]="pro.project_id">{{pro.project_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex="25">
+                <mat-label>Project Status</mat-label>
+                <mat-select formControlName="project_status" multiple>
+                  <mat-option *ngFor="let ps of projectStatus" [value]="ps.id">{{ps.project_status}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -462,7 +469,7 @@
               </div>
             </div>
           </form>
-        </mat-expansion-panel> -->
+        </mat-expansion-panel>
         <div style="height: 100%;">
           <table mat-table class="tbl" [dataSource]="dataOfClient" multiTemplateDataRows matSort
             #sortedClientData="matSort" matSortDirection="asc">
@@ -484,10 +491,10 @@
             <ng-container style="text-align: end;" matColumnDef="expand">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
                 <mat-dialog-actions>
-                  <!-- <button mat-raised-button color="primary" (click)="AddProject(clientExtensionData)"> Add Project
-                  </button> -->
-                  <a mat-raised-button target="_blank" [routerLink]="['/app-add-project-dialog']" color="primary" > Add Project
-                  </a>
+                  <button mat-raised-button color="primary" id="addresource" (click)="AddProject(clientExtensionData)">Add Project</button>
+
+                  <!-- <a mat-raised-button target="_blank" [routerLink]="['/app-add-project-dialog']" color="primary" > Add Project
+                  </a> -->
                 </mat-dialog-actions>
               </th>
               <td mat-cell *matCellDef="let element">
@@ -500,8 +507,10 @@
 
             <ng-container matColumnDef="addResource">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
-                  <a mat-raised-button target="_blank" [routerLink]="['/app-add-resource-project-dialog']" color="primary" > Add Resource
-                  </a>
+                <button mat-raised-button color="primary" (click)="AddProjectResource(clientExtensionData)"> Add Resource
+                </button>
+                  <!-- <a mat-raised-button target="_blank" [routerLink]="['/app-add-resource-project-dialog']" color="primary" style="width: 100%;" > Add Resource
+                  </a> -->
               </th>
               <td mat-cell *matCellDef="let element">
                 <button mat-icon-button aria-label="expand row">
@@ -561,9 +570,9 @@
                         <th mat-header-cell *matHeaderCellDef> Action-Add</th>
                         <td mat-cell *matCellDef="let element">
                           <mat-dialog-actions>
-                            <!-- <button mat-raised-button color="primary" (click)="AddProjectResource(element)"> Add Resource </button> -->
-                            <a mat-raised-button  (click)="sendDataToRoute(element)" color="primary" > Add Resource
-                            </a>
+                            <button mat-raised-button color="primary" (click)="AddProjectResource(element)"> Add Resource </button>
+                            <!-- <a mat-raised-button  (click)="sendDataToRoute(element)" color="primary" > Add Resource
+                            </a> -->
                           </mat-dialog-actions>
                         </td>
                       </ng-container>

@@ -1,4 +1,4 @@
-<div mat-dialog-title>
+<div mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">
     <h1>Add New Project</h1>
 </div>
 <form [formGroup]="addProject" (ngSubmit)="AddProject()" target="_blank">

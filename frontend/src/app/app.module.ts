@@ -49,6 +49,7 @@ import { EditProjectResourceDialogComponent } from './_shared/edit-project-resou
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { EditSkillGroupDialogComponent } from './_shared/edit-skill-group-dialog/edit-skill-group-dialog.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AllocateResourceDialogComponent } from './_shared/allocate-resource-dialog/allocate-resource-dialog.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AddResourceProjectDialogComponent,
     EditProjectDialogComponent,
     EditProjectResourceDialogComponent,
-    EditSkillGroupDialogComponent
+    EditSkillGroupDialogComponent,
+    AllocateResourceDialogComponent
   ],
   imports: [
     MatSortModule,

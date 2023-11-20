@@ -1,5 +1,6 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SkillGroups } from 'src/app/_model/SkillGroups';
 import { Client } from 'src/app/_model/client';
@@ -7,7 +8,8 @@ import { CoreService } from 'src/app/_services/core.service';
 import { ProjectService } from 'src/app/_services/project.service';
 import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsetService } from 'src/app/_services/skillset.service';
-
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 @Component({
   selector: 'app-edit-project-resource-dialog',
   templateUrl: './edit-project-resource-dialog.component.html',
@@ -43,7 +45,9 @@ export class EditProjectResourceDialogComponent {
   };
   skillSetID:any;
 
-  constructor(private projectService: ProjectService,
+  constructor(
+    private dateAdapter: DateAdapter<Date>,
+    private projectService: ProjectService,
     private skillSetService: SkillsetService,
     private resources_Service: ResourcesService,
     private _coreService: CoreService,
@@ -51,6 +55,8 @@ export class EditProjectResourceDialogComponent {
     public dialogRef: MatDialogRef<EditProjectResourceDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataOfProjects: any,
   ) {
+    this.dateAdapter.setLocale('en-GB'); // Set your desired locale
+     // Set your desired date format
     this.updateResource = this.fb.group({
       project_id: new FormControl(),
       res_id: new FormControl(),
@@ -95,7 +101,11 @@ export class EditProjectResourceDialogComponent {
 
   UpdateResource(element: any) {
     this.temp = this.updateResource.value
-    this.temp.skill_id=this.skillSet[0].skillSetID
+    console.log(this.temp);
+    this.temp.start_date=new Date(this.temp.start_date);
+    console.log(this.temp);
+    
+    this.temp.skill_id=this.temp.skillID
     this.projectService.UpdateResource(element.id, this.temp).subscribe(data => {
       this._coreService.openSnackBar('Project Updated Successfully ', 'done');
       this.updateResource.reset();

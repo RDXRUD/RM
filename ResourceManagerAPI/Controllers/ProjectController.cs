@@ -64,14 +64,18 @@ namespace ResourceManagerAPI.Controllers
             }
         }
 
-        [HttpGet, Authorize]
+        [HttpPost, Authorize]
         [Route("ClientProjects/{id}")]
-        public async Task<IEnumerable<ProjectDetails>> GetClientProjects(int id)
+        public async Task<IEnumerable<ProjectDetails>> GetClientProjects(int id, [FromBody] projectFilter filter)
         {
             try
             {
                 
-                var projects= _dbContext.project_master.Where(project => project.client_id == id).ToList();
+                var projects= _dbContext.project_master.Where(project => project.client_id == id&&
+                                                             (filter.project_name.Length == 0 || filter.project_name.Contains(project.project_id))&&
+                                                             ((filter.project_status == null || filter.project_status.Length == 0)
+                                                             ? new[] { 1, 2 }.Contains(project.project_status)
+                                                             : filter.project_status.Contains(project.project_status))).ToList();
                 var projectDetails = (from p in projects
                                       join r in _dbContext.resource_master
                                       on p.project_manager equals r.res_id into rDetails

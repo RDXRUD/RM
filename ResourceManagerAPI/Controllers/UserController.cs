@@ -53,7 +53,7 @@ namespace ResourceManagerAPI.Controllers
         {
             if (_userData != null && _userData.UserID != null && _userData.Password != null)
             {
-                var users = await _dbContext.resource_master.ToListAsync();
+                var users = await _dbContext.resource_master.Where(res=>res.status=="ACTIVE").ToListAsync();
                 var user = users.FirstOrDefault(u => u.res_user_id == _userData.UserID && Decrypt(u.password) == _userData.Password);
                 
 
