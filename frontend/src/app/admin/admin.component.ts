@@ -107,6 +107,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   skillData!: any[];
   Status: string[] = ["ACTIVE", "INACTIVE"];
   dataOfClient: any;
+  dataOfClients:any;
   clientExtensionData!: any[];
   resexpansionid: any;
   dataProject!: any[];
@@ -135,8 +136,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild('matSorted') matSorted!: MatSort;
   clientData!: MatTableDataSource<any>;
   @ViewChild('sortedClientData') sortedClientData!: MatSort;
+  clientDatas!: MatTableDataSource<any>;
+  @ViewChild('sortedClientDatas') sortedClientDatas!: MatSort;
   dataOfProjects!:MatTableDataSource<any>;
   @ViewChild('innerTables1') innerTables1!: MatSort;
+  
   element: any;
 
   constructor(
@@ -272,10 +276,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.clientService.getClients().subscribe(data => {
       this.clientExtensionData = data;
       this.dataOfClient = data;
+      this.dataOfClients = data;
       console.log(this.dataOfClient);
-      
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
+      this.dataOfClients = new MatTableDataSource(this.dataOfClients);
+      this.dataOfClients.sort = this.sortedClientDatas;
     });
     this.projectService.getAllProjects().subscribe(data =>{
       this.dataProject = data;
@@ -485,10 +491,14 @@ export class AdminComponent implements OnInit, AfterViewInit {
       } else {
         // If client_name is null or an empty array, display all data
         this.dataOfClient = data;
+        this.dataOfClients = data;
       }
       
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
+      this.dataOfClients = new MatTableDataSource(this.dataOfClients);
+      this.dataOfClients.sort = this.sortedClientDatas;
+
     });
   }
   OnSubmitSkill() {
