@@ -22,7 +22,7 @@
         </div>
     </form>
   </div>
-  <table mat-table [dataSource]="data">
+  <table mat-table [dataSource]="data" style="overflow-y: scroll;">
     <ng-container matColumnDef="resourceID">
       <th mat-header-cell *matHeaderCellDef>Resource ID</th>
       <td mat-cell *matCellDef="let user"> {{user.resourceID}} </td>

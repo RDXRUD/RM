@@ -1,7 +1,7 @@
 <div mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">
     <h1>Allocate Resource</h1>
 </div>
-<form [formGroup]="addResource" (ngSubmit)="AddResource()">
+<form [formGroup]="allocateResource" (ngSubmit)="AddResource()">
     <div mat-dialog-content>
         <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
             <mat-form-field fxFlex="50">
@@ -23,27 +23,26 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="50">
+                <mat-label>Resource Name</mat-label>
+                <!-- <input readonly formControlName="client_id" matInput> -->
+                <mat-select formControlName="res_id" single (selectionChange)="onResourceSelection()">
+                    <mat-option *ngFor="let rd of resourceData" [value]="rd.res_id">
+                        {{rd.res_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="50">
                 <mat-label>Skill Group</mat-label>
                 <mat-select formControlName="skillGroupID" single (selectionChange)="onSkillGroupSelection()">
-                    <mat-option *ngFor="let select of DataofSkillGroup"
+                    <mat-option *ngFor="let select of skillgroupData"
                         [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="50">
                 <mat-label>Skill</mat-label>
-                <mat-select formControlName="skillID" single (selectionChange)="onSkillSetSelection()">
+                <mat-select formControlName="skillID" single >
                     <mat-option *ngFor="let select of skillData" [value]="select.skillID">{{select.skill}}</mat-option>
                 </mat-select>
-            </mat-form-field>
-            <mat-form-field fxFlex="50">
-                <mat-label>Resource Name</mat-label>
-                <input #input type="text" placeholder="Pick one" matInput [formControl]="res_id"
-                    [matAutocomplete]="auto" (input)="filterRes()" (focus)="filterRes()">
-                <mat-autocomplete requireSelection #auto="matAutocomplete">
-                    <mat-option [matTooltip]="option.res_email_id" matTooltipPosition="right" *ngFor="let option of filteredResOptions" [value]="option.res_name">
-                        {{option.res_name}}
-                    </mat-option>
-                </mat-autocomplete>
             </mat-form-field>
             <mat-form-field fxFlex="33.33">
                 <mat-label>Allocation Percentage</mat-label>

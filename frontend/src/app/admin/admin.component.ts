@@ -36,6 +36,7 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from '../home/home.component';
+import { AllocateResourceByNameDialogComponent } from '../_shared/allocate-resource-by-name-dialog/allocate-resource-by-name-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -83,7 +84,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumnsOfLists: string[] = ['columnLists', 'selectors'];
   displayedClientColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'status', 'edit', 'action_dis'];
   displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand','addResource'];
-  displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit','add', 'inner_expand']
+  displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit','add_skill','add_name', 'inner_expand']
   displayedProjectResourceExpansionColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'start_date', 'end_date', 'edit'];
   displayedAllocatedResourceExpansionColumns: string[] = ['res_name', 'skill', 'allocation_perc', 'start_date', 'end_date', 'edit', 'delete'];
 
@@ -107,12 +108,16 @@ export class AdminComponent implements OnInit, AfterViewInit {
   skillData!: any[];
   Status: string[] = ["ACTIVE", "INACTIVE"];
   dataOfClient: any;
+  filterClientData:any;
   clientExtensionData!: any[];
   resexpansionid: any;
   dataProject!: any[];
   //dataOfProjects!: any[];
   allocatedResources!: any;
   projectStatus!:any[];
+  projectOnStatus!:any[]
+  projectOnClient!:any[]
+  projectFilterDropdown!:any[]
 
   
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
@@ -272,6 +277,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
     this.clientService.getClients().subscribe(data => {
       this.clientExtensionData = data;
       this.dataOfClient = data;
+      this.filterClientData=data;
       console.log(this.dataOfClient);
       
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
@@ -279,6 +285,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
     });
     this.projectService.getAllProjects().subscribe(data =>{
       this.dataProject = data;
+      this.projectFilterDropdown=this.dataProject.filter(project => [1,2].includes(project.project_status));
+      this.projectOnClient=data;
+      this.projectOnStatus=this.projectFilterDropdown
+      console.log(this.dataProject);
+      
     });
     this.projectService.getProjectStatus().subscribe(data=>{
       this.projectStatus=data
@@ -462,6 +473,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       project_name:[],
       project_status:[1,2]
     })
+    this.projectFilterDropdown=this.dataProject.filter(project => [1,2].includes(project.project_status));
+    this.filterClientData=this.dataOfClient
   }
   OnSubmit() {
     this.filterData = this.filterResource.value;
@@ -481,15 +494,54 @@ export class AdminComponent implements OnInit, AfterViewInit {
       // this.dataOfClient = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));;
       // console.log(this.dataOfClient);
       if (this.filterProject.value.client_name.length !== 0) {
-        this.dataOfClient = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));
+        this.filterClientData = data.filter(dat => this.filterProject.value.client_name.includes(dat.client_id));
       } else {
         // If client_name is null or an empty array, display all data
-        this.dataOfClient = data;
+        this.filterClientData = data;
       }
       
-      this.dataOfClient = new MatTableDataSource(this.dataOfClient);
+      this.filterClientData = new MatTableDataSource(this.filterClientData);
       this.dataOfClient.sort = this.sortedClientData;
     });
+  }
+  // onSkillGroupSelection() {
+  //   const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);
+  //   const skillGroup: SkillGroups = {
+  //     skillGroupID: skillGroupID,
+  //     skillGroup: ''
+  //   };
+  //   this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+  //     this.skillData = res;
+  //     this.filteringForm.patchValue({
+  //       skillID:this.skillData.map(item => item.skillID)
+  //     })
+  //   });
+  // }
+  onStatusSelection(){
+    const status = (this.filterProject.get('project_status')?.value);
+    console.log("status",status);
+    this.projectOnStatus=this.dataProject.filter(project => status.includes(project.project_status));
+    console.log("projectOnStatus",this.projectOnStatus);
+    this.projectIntersection()
+  }
+  onClientSelection(){
+    const clients = (this.filterProject.get('client_name')?.value);
+    console.log("clients",clients);
+    this.projectOnClient=this.dataProject.filter(project => clients.includes(project.client_id));
+    console.log("projectOnClient",this.projectOnClient);
+    this.projectIntersection()
+  }
+  projectIntersection(){
+      if (this.projectOnClient && this.projectOnStatus && this.projectOnClient.length > 0 && this.projectOnStatus.length > 0) {
+        this.projectFilterDropdown = this.projectOnClient.filter(
+          clientProject => this.projectOnStatus.some(statusProject => statusProject.project_id === clientProject.project_id)
+        );
+    
+        console.log("Intersection Result", this.projectFilterDropdown);
+      } else {
+        console.log("One or both arrays are empty. No intersection found.");
+    }
+    
   }
   OnSubmitSkill() {
     this.filterSkillData = this.filterSkills.value;
@@ -586,10 +638,24 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  AddProjectResource(dataOfProjects: any) {
+  AddProjectResourceBySkill(dataOfProjects: any) {
     console.log(dataOfProjects);
     
     const dialogRef = this.dialog.open(AddResourceProjectDialogComponent, {
+      width: '600px',
+      height: '550px',
+      data: { dataOfProjects, }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.ngOnInit();
+      }
+    });
+  }
+  AddProjectResourceByName(dataOfProjects: any) {
+    console.log(dataOfProjects);
+    
+    const dialogRef = this.dialog.open(AllocateResourceByNameDialogComponent, {
       width: '600px',
       height: '550px',
       data: { dataOfProjects, }

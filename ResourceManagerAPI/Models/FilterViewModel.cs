@@ -10,6 +10,7 @@ namespace ResourceManagerAPI.Models
         public int[]? skillSetID { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
+        public string? report_type { get; set; }
 
     }
 }

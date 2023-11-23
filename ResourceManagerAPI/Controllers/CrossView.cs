@@ -5,6 +5,11 @@ using ResourceManagerAPI.IRepository;
 using ResourceManagerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using com.sun.org.apache.xpath.@internal.operations;
+using System.Linq;
+using org.apache.commons.math3.stat.descriptive.summary;
+using System.Globalization;
+using System.Data;
+using java.time.temporal;
 
 namespace ResourceManagerAPI.Controllers
 {
@@ -21,10 +26,22 @@ namespace ResourceManagerAPI.Controllers
         }
 
         private static List<DateMaster> dateMasterList = new List<DateMaster>();
-       
+        private static List<WeekMaster> weekMasterList = new List<WeekMaster>();
+        private static List<MonthMaster> monthMasterList = new List<MonthMaster>();
+        private static List<QuarterMaster> quarterMasterList = new List<QuarterMaster>();
+        private static List<YearMaster> yearMasterList = new List<YearMaster>();
+
+        private static List<MonthlyResult>monthlyCrossTab=new List<MonthlyResult>();
+        private static List<QuarterlyResult> quarterlyCrossTab = new List<QuarterlyResult>();
+        private static List<YearlyResult> yearlyCrossTab = new List<YearlyResult>();
+        private static List<WeeklyResult> weeklyCrossTab = new List<WeeklyResult>();
+
+
+
+
         [HttpPost,Authorize]
         [Route("CrossViewData")]
-        public ActionResult<IEnumerable<CrossTabResult>> GetDates([FromBody] FilterViewModel filterData)
+        public ActionResult<IEnumerable<CrossTabResult>> GetData([FromBody] FilterViewModel filterData)
         {
 
 
@@ -39,8 +56,11 @@ namespace ResourceManagerAPI.Controllers
 
              List<CrossViewData> cross_view_data = new List<CrossViewData>();
              List<CrossJoin> cross_view_join = new List<CrossJoin>();
-            
 
+            weekMasterList.Clear();
+            monthMasterList.Clear();
+            quarterMasterList.Clear();
+            yearMasterList.Clear();
 
             cross_view_data.Clear();
             cross_view_join.Clear();
@@ -62,7 +82,6 @@ namespace ResourceManagerAPI.Controllers
 
                 dateMasterList.Add(model);
             }
-
 
             var locResIds = resourceMaster
             .Where(rm => rm.location_id == filterData.location)
@@ -205,7 +224,179 @@ namespace ResourceManagerAPI.Controllers
                 });
             }
 
-            return crosstab;
+            if (filterData.report_type=="Month")
+            {
+                for (DateTime date = filterData.startDate; date <= filterData.endDate; date = date.AddMonths(1))
+                {
+                    var model = new MonthMaster
+                    {
+                        monthData = date.Year + "-" + date.Month
+                    };
+
+                    monthMasterList.Add(model);
+                }
+
+                monthlyCrossTab = crosstab.Select(obj =>
+                {
+                    var resName = obj.res_name;
+                    var resEmailId = obj.res_email_id;
+
+                    var allocationData = obj.allocationData
+                        .Where(item => item.Value >= 0)  // Filter out negative values
+                        .GroupBy(item => new { year = item.Key.Year, month = item.Key.Month })
+                        .ToDictionary(
+                            dataGroup => dataGroup.Key.year + "-" + dataGroup.Key.month,
+                            dataGroup =>
+                            {
+                                var sum = dataGroup.Sum(item => item.Value);
+                                var count = dataGroup.Count();
+                                return count > 0 ? sum / count : 0;  // Avoid division by zero
+                            }
+                        );
+
+                    return new MonthlyResult
+                    {
+                        res_name = resName,
+                        res_email_id = resEmailId,
+                        allocationData = allocationData
+                    };
+
+                }).ToList();
+
+            }
+
+            if (filterData.report_type == "Quarter")
+            {
+                for (DateTime date = filterData.startDate; date <= filterData.endDate; date = date.AddMonths(3))
+                {
+                    var model = new QuarterMaster
+                    {
+                        quarterData = "Q" + ((date.Month - 1) / 3 + 1 )+ "-" + date.Year
+                    };
+
+                    quarterMasterList.Add(model);
+                }
+                quarterlyCrossTab = crosstab.Select(obj =>
+                {
+                    var resName = obj.res_name;
+                    var resEmailId = obj.res_email_id;
+
+                    var allocationData = obj.allocationData
+                        .Where(item => item.Value >= 0)  // Filter out negative values
+                        .GroupBy(item => new { year = item.Key.Year, quarter = (item.Key.Month - 1) / 3 + 1 })
+                    .ToDictionary(
+                            dataGroup => ("Q" + ((dataGroup.Key.quarter) + "-" + dataGroup.Key.year)),
+                            dataGroup =>
+                            {
+                                var sum = dataGroup.Sum(item => item.Value);
+                                var count = dataGroup.Count();
+                                return count > 0 ? sum / count : 0;  // Avoid division by zero
+                            }
+                        );
+
+                    return new QuarterlyResult
+                    {
+                        res_name = resName,
+                        res_email_id = resEmailId,
+                        allocationData = allocationData
+                    };
+
+                }).ToList();
+            }
+
+            if(filterData.report_type == "Year")
+            {
+                for (int year = filterData.startDate.Year; year <= filterData.endDate.Year; year++)
+                {
+                    var model = new YearMaster
+                    {
+                        year = year.ToString()
+                    };
+
+                    yearMasterList.Add(model);
+                }
+
+                yearlyCrossTab = crosstab.Select(obj =>
+                {
+                    var resName = obj.res_name;
+                    var resEmailId = obj.res_email_id;
+
+                    var allocationData = obj.allocationData
+                        .Where(item => item.Value >= 0)  // Filter out negative values
+                        .GroupBy(item => new { year = item.Key.Year })
+                        .ToDictionary(
+                            dataGroup => dataGroup.Key.year,
+                            dataGroup =>
+                            {
+                                var sum = dataGroup.Sum(item => item.Value);
+                                var count = dataGroup.Count();
+                                return count > 0 ? sum / count : 0;  // Avoid division by zero
+                            }
+                        );
+
+                    return new YearlyResult
+                    {
+                        res_name = resName,
+                        res_email_id = resEmailId,
+                        allocationData = allocationData
+                    };
+
+                }).ToList();
+            }
+            if (filterData.report_type == "Week")
+            {
+
+                for (DateTime date = filterData.startDate; date <= filterData.endDate; date = date.AddDays(7))
+                {
+                    var weekStartDate = date.Date;
+                    var weekEndDate = date.AddDays(4).Date;
+
+                    var model = new WeekMaster
+                    {
+                        weekData = $"{weekStartDate:dd-MMM-yyyy} - {weekEndDate:dd-MMM-yyyy}"
+                    };
+
+                    weekMasterList.Add(model);
+                }
+                weeklyCrossTab = crosstab.Select(obj =>
+                {
+                    var resName = obj.res_name;
+                    var resEmailId = obj.res_email_id;
+
+                    var allocationData = obj.allocationData
+                        .Where(item => item.Value >= 0)  // Filter out negative values
+                        .GroupBy(item =>
+                        {
+                            // Determine the start date of the 5-day interval
+                            var startDate = (item.Key.Date.AddDays(-(int)item.Key.DayOfWeek + (int)DayOfWeek.Monday)).Date; // Start from Monday
+
+                            // Determine the end date by adding 4 days to the start date
+                            var endDate = startDate.AddDays(4).Date;
+
+                            return $"{startDate:dd-MMM-yyyy} - {endDate:dd-MMM-yyyy}";
+                        })
+                        .ToDictionary(
+                            dataGroup => dataGroup.Key,
+                            dataGroup =>
+                            {
+                                var sum = dataGroup.Sum(item => item.Value);
+                                var count = dataGroup.Count();
+                                return count > 0 ? sum / count : 0;  // Avoid division by zero
+                            }
+                        );
+
+                    return new WeeklyResult
+                    {
+                        res_name = resName,
+                        res_email_id = resEmailId,
+                        allocationData = allocationData
+                    };
+
+                }).ToList();
+            }
+                
+
+            return crosstab; 
 
         }
 
@@ -214,6 +405,58 @@ namespace ResourceManagerAPI.Controllers
         public ActionResult<IEnumerable<DateMaster>> GetDates()
         {
             return dateMasterList;
+        }
+        [HttpGet, Authorize]
+        [Route("Weeks")]
+        public ActionResult<IEnumerable<WeekMaster>> GetWeeks()
+        {
+            return weekMasterList;
+        }
+
+        [HttpGet, Authorize]
+        [Route("WeeklyCrossTab")]
+        public ActionResult<IEnumerable<WeeklyResult>> GeWeeklyData()
+        {
+            return weeklyCrossTab;
+        }
+        [HttpGet, Authorize]
+        [Route("Months")]
+        public ActionResult<IEnumerable<MonthMaster>> GetMonths()
+        {
+            return monthMasterList;
+        }
+
+        [HttpGet, Authorize]
+        [Route("MonthlyCrossTab")]
+        public ActionResult<IEnumerable<MonthlyResult>> GetMonthlyData()
+        {
+            return monthlyCrossTab;
+        }
+        [HttpGet, Authorize]
+        [Route("Quaters")]
+        public ActionResult<IEnumerable<QuarterMaster>> GetQuarters()
+        {
+            return quarterMasterList;
+        }
+
+        [HttpGet, Authorize]
+        [Route("QuarterlyCrossTab")]
+        public ActionResult<IEnumerable<QuarterlyResult>> GetQuarterlyData()
+        {
+            return quarterlyCrossTab;
+        }
+        [HttpGet, Authorize]
+        [Route("Years")]
+        public ActionResult<IEnumerable<YearMaster>> GetYears()
+        {
+            return yearMasterList;
+        }
+
+        [HttpGet, Authorize]
+        [Route("YearlyCrossTab")]
+        public ActionResult<IEnumerable<YearlyResult>> GetYearlyData()
+        {
+            return yearlyCrossTab;
         }
     }
 }

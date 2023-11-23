@@ -81,7 +81,7 @@ export class AddResourceProjectDialogComponent {
       res_id: new FormControl(),
       skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
-      allocation_perc: new FormControl(),
+      allocation_perc: new FormControl(1),
       start_date: new FormControl(),
       end_date: new FormControl()
     })
@@ -113,9 +113,9 @@ export class AddResourceProjectDialogComponent {
         res_id: null,
         skillGroupID: null,
         skillID: null,
-        allocation_perc: null,
-        start_date:null,
-        end_date: null
+        allocation_perc: 1,
+        start_date:this.dataRes.dataOfProjects.start_date,
+        end_date: this.dataRes.dataOfProjects.end_date
         // partner_incharge: this.dataOfClient.element.partner_incharge,
         // status: this.dataOfClient.element.status
       });
@@ -240,6 +240,17 @@ export class AddResourceProjectDialogComponent {
     this.projectService.getProjects(clientID,this.emptyFilter).subscribe(data=>{
       this.projectData=data
     })
+  }
+  onProjectSelection(){
+    const projectID = Number(this.addResource.get('project_id')?.value);
+    const projectDetails=this.projectData.find(pd => pd.project_id === projectID)
+    this.addResource.patchValue({
+      start_date:projectDetails.start_date
+    })
+    this.addResource.patchValue({
+      end_date:projectDetails.end_date
+    })
+
   }
   windowClose(){
     window.close();

@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -20,21 +19,21 @@ import { MY_FORMATS } from 'src/app/home/home.component';
 import moment from 'moment';
 
 @Component({
-  selector: 'app-allocate-resource-dialog',
-  templateUrl: './allocate-resource-dialog.component.html',
-  styleUrls: ['./allocate-resource-dialog.component.scss']
-  // ,
-  // providers: [
-  //   {
-  //     provide: DateAdapter,
-  //     useClass: MomentDateAdapter,
-  //     deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-  //   },
-  //   { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  // ],
+  selector: 'app-allocate-resource-by-name-dialog',
+  templateUrl: './allocate-resource-by-name-dialog.component.html',
+  styleUrls: ['./allocate-resource-by-name-dialog.component.scss']
+  ,
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
-export class AllocateResourceDialogComponent {
+export class AllocateResourceByNameDialogComponent {
   [x: string]: any;
   allocateResource: FormGroup;
   projectStatus!: any[];
@@ -73,8 +72,8 @@ export class AllocateResourceDialogComponent {
 
   constructor(
     private skillService:SkillsService,
-    public dialogRef: MatDialogRef<AllocateResourceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public dataRes: any,
+    public dialogRef: MatDialogRef<AllocateResourceByNameDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public dataProj: any,
     private resourceService:ResourcesService,
     private route: ActivatedRoute,
     private clientService:ClientService,
@@ -105,15 +104,27 @@ export class AllocateResourceDialogComponent {
     
   }
   ngOnInit() {
+    this.allocateResource.setValue({
+      client_id: this.dataProj.dataOfProjects.client_id,
+      project_id: this.dataProj.dataOfProjects.project_id,//this.dataOfProjects.dataOfProjects.project_name
+      res_id: null,
+      skillGroupID: null,
+      skillID: null,
+      allocation_perc: 1,
+      start_date:this.dataProj.dataOfProjects.start_date,
+      end_date: this.dataProj.dataOfProjects.end_date
+      // partner_incharge: this.dataOfClient.element.partner_incharge,
+      // status: this.dataOfClient.element.status
+    });
     this.resourceService.getResources().subscribe(data=>{
       this.resourceData=data
-      this.allocateResource.patchValue({
-        res_id: this.resourceData.find(res=>res.res_email_id==this.dataRes.email).res_id,
-      });
     });
-    this.allocateResource.patchValue({
-      allocation_perc: 1,
-    });
+    this.projectService.getProjects(this.dataProj.dataOfProjects.client_id,this.emptyFilter).subscribe(data=>{
+      this.projectData=data
+    })
+    // this.allocateResource.patchValue({
+    //   client_id:,
+    // });
     // this.route.queryParamMap.subscribe((params: any) => {
     //   console.log(params);
     //   console.log(params.params.data);
@@ -157,20 +168,6 @@ export class AllocateResourceDialogComponent {
     // console.log(this.dataOfProjects.dataOfProjects);
     this.skillSetService.getSkillGroups().subscribe(res => {
     this.DataofSkillGroup = res;  
-    const encodedEmailID = encodeURIComponent(this.dataRes.email);
-    this.skillService.getSkill(encodedEmailID).subscribe(datas => {
-      console.log(datas);
-
-      console.log(this.DataofSkillGroup);
-      this.resSkillData=datas
-      const intersection = this.DataofSkillGroup.filter(skillGroup =>
-        datas.some((resSkill:any) => resSkill.skillGroupID === skillGroup.skillGroupID)
-      );
-      this.skillgroupData=intersection
-            console.log(intersection);
-      
-      
-    });
     })
     
     this.clientService.getActiveClients().subscribe(data=>{
@@ -193,23 +190,25 @@ export class AllocateResourceDialogComponent {
     this.temp.res_id = this.resSkillData[0].resourceID;
     this.temp.skill_id = this.temp.skillID;
 
-    // if (moment.isMoment(this.temp.end_date)) {
-    //   this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
-    // } else {
-    //   this.temp.end_date = this.temp.end_date;
-    // }
-    // if (moment.isMoment(this.temp.start_date)) {
-    //   this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
-    // } else {
-    //   this.temp.start_date = this.temp.start_date;
-    // }
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
     // this.temp.project_id=this.dataOfProjects.dataOfProjects.project_id;
     console.log(this.temp);
     
     this.projectService.AddResource(this.temp).subscribe(
       () => {
         this._coreService.openSnackBar('Resource Added Successfully ', 'done');
-        this.allocateResource.reset();
+        this.allocateResource.reset()
+        this.skillgroupData=[]
+        this.skillData=[]
         // this.input.nativeElement.value = '';
         // this.addResource.setValue({
         //   client_id: null,
@@ -274,6 +273,7 @@ export class AllocateResourceDialogComponent {
     })
     this.projectService.getProjects(clientID,this.emptyFilter).subscribe(data=>{
       this.projectData=data
+
     })
   }
   onResourceSelection(){
@@ -290,6 +290,7 @@ export class AllocateResourceDialogComponent {
       console.log(this.resSkillData);
       
     })
+    
     // this.skillSetService.getSkillGroups().subscribe(res => {
     //   this.DataofSkillGroup = res;
     //   console.log(this.DataofSkillGroup);

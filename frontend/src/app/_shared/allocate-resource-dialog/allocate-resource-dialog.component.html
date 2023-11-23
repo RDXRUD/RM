@@ -25,7 +25,7 @@
             <mat-form-field fxFlex="50">
                 <mat-label>Project Name</mat-label>
                 <!-- <input readonly formControlName="project_id" matInput> -->
-                <mat-select formControlName="project_id">
+                <mat-select formControlName="project_id"single (selectionChange)="onProjectSelection()">
                     <mat-option *ngFor="let pd of projectData" [value]="pd.project_id">
                         {{pd.project_name}}
                     </mat-option>
