@@ -25,7 +25,7 @@
               <td mat-cell *matCellDef="let  res"> {{ res.res_user_id}} </td>
             </ng-container>
             <ng-container matColumnDef="res_create_date">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Create Date </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
               <td mat-cell *matCellDef="let  res"> {{ res.res_create_date| date: 'dd MMM yyyy' }} </td>
             </ng-container>
             <ng-container matColumnDef="res_last_modified">
@@ -507,7 +507,7 @@
 
             <ng-container matColumnDef="addResource">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
-                <button mat-raised-button color="primary" (click)="AddProjectResourceBySkill(clientExtensionData)"> Add Resource
+                <button mat-raised-button color="primary" (click)="AddProjectResourceBySkill(clientExtensionData)"> Res- by Skill
                 </button>
                   <!-- <a mat-raised-button target="_blank" [routerLink]="['/app-add-resource-project-dialog']" color="primary" style="width: 100%;" > Add Resource
                   </a> -->
@@ -570,7 +570,7 @@
                         <th mat-header-cell *matHeaderCellDef> Action-Add By Skill</th>
                         <td mat-cell *matCellDef="let element">
                           <mat-dialog-actions>
-                            <button mat-raised-button color="primary" (click)="AddProjectResourceBySkill(element)"> Add Resource </button>
+                            <button mat-raised-button color="primary" (click)="AddProjectResourceBySkill(element)"> Res- by Skill </button>
                             <!-- <a mat-raised-button  (click)="sendDataToRoute(element)" color="primary" > Add Resource
                             </a> -->
                           </mat-dialog-actions>
@@ -580,7 +580,7 @@
                         <th mat-header-cell *matHeaderCellDef> Action-Add By Name</th>
                         <td mat-cell *matCellDef="let element">
                           <mat-dialog-actions>
-                            <button mat-raised-button color="primary" (click)="AddProjectResourceByName(element)"> Add Resource </button>
+                            <button mat-raised-button color="primary" (click)="AddProjectResourceByName(element)"> Res- by Name </button>
                             <!-- <a mat-raised-button  (click)="sendDataToRoute(element)" color="primary" > Add Resource
                             </a> -->
                           </mat-dialog-actions>

@@ -193,7 +193,7 @@
             <td mat-cell *matCellDef="let user"> {{user.project_name}} </td>
           </ng-container>
           <ng-container matColumnDef="project_manager">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Managers</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Manager(s)</th>
             <td mat-cell *matCellDef="let user">
               <ng-container *ngFor="let manager of user.project_managers[0].split(','); let last = last">
                 {{ manager.trim() }}

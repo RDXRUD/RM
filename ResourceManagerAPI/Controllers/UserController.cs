@@ -78,7 +78,7 @@ namespace ResourceManagerAPI.Controllers
                     var userRoles = await (from rr in _dbContext.resource_role
                                            join role in _dbContext.role_master
                                            on rr.role_id equals role.role_id
-                                           where rr.resource_id == user.res_id // Assuming UserID corresponds to resource_id
+                                           where rr.resource_id == user.res_id 
                                            select role.role_name).ToListAsync();
 
                     userName = user.res_user_id;
