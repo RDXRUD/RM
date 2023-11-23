@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
@@ -88,6 +88,7 @@ export class HomeComponent implements OnInit {
   // @ViewChild('sortAll') sortAll!: MatSort;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private tabService: SharedDataService,
     private router: Router,
@@ -322,10 +323,11 @@ export class HomeComponent implements OnInit {
 
   OnSearch(formdata: any) {
     this.detailService.getDetailView(formdata).subscribe(data => {
-      this.details = data
+      this.details = data;
       console.log(this.details);
 
       this.searchClicked = true;
+      this.submitClicked = true;
     }, (error: HttpErrorResponse) => {
       if (error.status === 502) {
         this.details = [];
@@ -357,16 +359,18 @@ export class HomeComponent implements OnInit {
     this.displayedColumns = []
     this.columns = []
     this.dataOfAllocation = []
+    this.cdr.detectChanges();
   }
   OnResetDetail() {
     this.searchClicked = true;
     this.filteringDetails.reset({
       res_name: [], // Default value for res_name
-      location: null, // Default value for location
+      location: [], // Default value for location
       client_name: [], // Default value for client_name
       project_name: [], // Default value for project_name
     });
     this.details = [];
+    this.cdr.detectChanges();
   }
   onSkillGroupSelection() {
     const skillGroupID = Number(this.filteringForm.get('skillGroupID')?.value);

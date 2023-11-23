@@ -18,7 +18,9 @@
         <div fxFlex="25" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
           <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
             value="AddEmpSkill">Add</button>
+           
         </div>
+        
         </div>
     </form>
   </div>
@@ -78,4 +80,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+  <div mat-dialog-actions align="end"  >    
+    <button mat-raised-button color="primary" mat-dialog-close="false">Cancel</button>
+  </div>
 </mat-dialog-content>

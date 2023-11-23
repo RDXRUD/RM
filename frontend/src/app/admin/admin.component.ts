@@ -140,8 +140,11 @@ export class AdminComponent implements OnInit, AfterViewInit {
   @ViewChild('matSorted') matSorted!: MatSort;
   clientData!: MatTableDataSource<any>;
   @ViewChild('sortedClientData') sortedClientData!: MatSort;
+  clientDatas!: MatTableDataSource<any>;
+  @ViewChild('sortedClientDatas') sortedClientDatas!: MatSort;
   dataOfProjects!:MatTableDataSource<any>;
   @ViewChild('innerTables1') innerTables1!: MatSort;
+  
   element: any;
 
   constructor(
@@ -279,9 +282,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.dataOfClient = data;
       this.filterClientData=data;
       console.log(this.dataOfClient);
-      
       this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
+      this.filterClientData = new MatTableDataSource(this.filterClientData);
+      this.filterClientData.sort = this.sortedClientDatas;
     });
     this.projectService.getAllProjects().subscribe(data =>{
       this.dataProject = data;
@@ -501,7 +505,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
       }
       
       this.filterClientData = new MatTableDataSource(this.filterClientData);
+      this.filterClientData.sort = this.sortedClientDatas;
+      this.dataOfClient = new MatTableDataSource(this.dataOfClient);
       this.dataOfClient.sort = this.sortedClientData;
+
     });
   }
   // onSkillGroupSelection() {
