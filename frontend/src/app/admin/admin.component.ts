@@ -506,8 +506,8 @@ export class AdminComponent implements OnInit, AfterViewInit {
       
       this.filterClientData = new MatTableDataSource(this.filterClientData);
       this.filterClientData.sort = this.sortedClientDatas;
-      this.dataOfClient = new MatTableDataSource(this.dataOfClient);
-      this.dataOfClient.sort = this.sortedClientData;
+      // this.dataOfClient = new MatTableDataSource(this.dataOfClient);
+      // this.dataOfClient.sort = this.sortedClientData;
 
     });
   }
