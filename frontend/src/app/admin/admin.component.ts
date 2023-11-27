@@ -9,7 +9,7 @@ import { EditSkillDialogComponent } from '../_shared/edit-skill-dialog/edit-skil
 import { addEmployee } from '../_model/addEmployee';
 import { CoreService } from '../_services/core.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatSort } from '@angular/material/sort';
+import { MatSort ,Sort} from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SkillsetService } from '../_services/skillset.service';
 import { ResourcesService } from '../_services/resources.service';
@@ -83,7 +83,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumnsOfemp: string[] = ['empID', 'resourceName', 'emailID', 'taskName', 'start', 'finish'];
   displayedColumnsOfLists: string[] = ['columnLists', 'selectors'];
   displayedClientColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'status', 'edit', 'action_dis'];
-  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand','addResource'];
+  displayedClientExtensionColumns: string[] = ['client_id', 'client_name', 'expand','addResource_skill','addResource'];
   displayedProjectExpansionColumns: string[] = ['project_id', 'project_name', 'res_name', 'start_date', 'end_date', 'type', 'status', 'edit','add_skill','add_name', 'inner_expand']
   displayedProjectResourceExpansionColumns: string[] = ['client_id', 'client_name', 'partner_incharge', 'start_date', 'end_date', 'edit'];
   displayedAllocatedResourceExpansionColumns: string[] = ['res_name', 'skill', 'allocation_perc', 'start_date', 'end_date', 'edit', 'delete'];
@@ -248,7 +248,12 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.data = data;
       this.resourceExtensionData = data.sort((a, b) => a.res_name.toLowerCase().localeCompare(b.res_name.toLowerCase()));
       this.dataOfRes = new MatTableDataSource(this.data);
+      console.log(this.dataOfRes);
+      
+      
+      
       this.dataOfRes.sort = this.sortRes;
+      console.log(this.dataOfRes.sort);
     })
     this.resources_Service.GetLocations().subscribe(data => {
       this.locations = data;
@@ -711,5 +716,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
   
     // Open the URL in a new window
     window.open(url, '_blank');  
+  }
+
+  annouceSortChaange(temp:any){
+    console.log(temp);
+    
   }
 }

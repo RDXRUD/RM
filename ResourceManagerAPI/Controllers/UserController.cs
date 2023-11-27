@@ -26,6 +26,8 @@ namespace ResourceManagerAPI.Controllers
         //public string? FullName { get; internal set; }
         public string? Token { get; set; }
     }
+
+
     [Route("[controller]")]
     [ApiController]
     public class UserController : Controller
@@ -38,6 +40,7 @@ namespace ResourceManagerAPI.Controllers
         private readonly IAccount _account;
         public IConfiguration _configuration;
         private readonly PGDBContext _dbContext;
+
         public UserController(IAccount account, IConfiguration config, PGDBContext context)
         {
             _account = account;

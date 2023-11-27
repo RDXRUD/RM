@@ -22,6 +22,8 @@ namespace ResourceManagerAPI.Models
              public int res_id { get; set; }
         [ForeignKey("SkillSetID")]
         public int SkillSetID { get; set; }
+        public DateTime last_modified { get; set; }
+        public int modified_by { get; set; }
     }
     public class ResourceSkillSet
     {

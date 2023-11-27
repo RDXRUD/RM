@@ -15,12 +15,16 @@ export class SkillsService {
     let url = `${environment.apiUrl}/Skills/SkillByEmail/${emailID}`;
     return this.http.get<skillset[]>(url);
   }
-  AddEmpSkill(empSkills:SkillsofEmp):Observable<SkillsofEmp[]>{
-   let url = `${environment.apiUrl}/Skills/AddSkillToSkillGroup`;
+  getSkillReport(): Observable<any[]> {
+    let url = `${environment.apiUrl}/Skills/SkillReport`;
+    return this.http.get<any[]>(url);
+  }
+  AddEmpSkill(empSkills:SkillsofEmp,id:number):Observable<SkillsofEmp[]>{
+   let url = `${environment.apiUrl}/Skills/AddSkillToSkillGroup/${id}`;
     return this.http.post<SkillsofEmp[]>(url, empSkills);
   };
-  UpdateSkills(formdatas: skillset): Observable<skillset[]> {
-    let url = `${environment.apiUrl}/Skills/UpdateSetOfSkill`;
+  UpdateSkills(formdatas: skillset,id:number): Observable<skillset[]> {
+    let url = `${environment.apiUrl}/Skills/UpdateSetOfSkill/${id}`;
     return this.http.put<skillset[]>(url, formdatas);
   }
   FilterResource(filter: resFilter): Observable<ResourceWithSkillCount[]> {

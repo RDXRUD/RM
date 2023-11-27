@@ -10,6 +10,8 @@ import { addskillgroupdata } from '../../_model/addskillgroupdata';
 import { SkillGroups } from 'src/app/_model/SkillGroups';
 import { CoreService } from 'src/app/_services/core.service';
 import { EditEmpSkillDialogComponent } from '../edit-emp-skill-dialog/edit-emp-skill-dialog.component';
+import { ResourcesService } from 'src/app/_services/resources.service';
+import { resource } from 'src/app/_model/resource';
 @Component({
   selector: 'app-edit-res-skill-dialog',
   templateUrl: './edit-res-skill-dialog.component.html',
@@ -34,6 +36,8 @@ export class EditResSkillDialogComponent implements OnInit {
   empSkills!:SkillsofEmp;
   userdatas: any;
   skillDataSorted:any[] | undefined;
+  userID: any;
+  userData!: resource[];
   constructor(private skills_service: SkillsService,
     private skillsetService: SkillsetService,
     public dialogRef: MatDialogRef<EditEmpSkillDialogComponent>,
@@ -41,7 +45,9 @@ export class EditResSkillDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private _formBuilder: FormBuilder,
-    private _coreService:CoreService
+    private _coreService:CoreService,
+    private resources_Service: ResourcesService,
+
   ) {
     this.skillgroupadd = _formBuilder.group({
       skillGroup: new FormControl(),
@@ -51,6 +57,7 @@ export class EditResSkillDialogComponent implements OnInit {
       skillGroupID: new FormControl(),
       skillID: new FormControl(),
     })
+    this.userID = localStorage.getItem("UserID")
   }
   ngOnInit() {
     const encodedEmailID = encodeURIComponent(this.datadialog.emailID);
@@ -59,6 +66,10 @@ export class EditResSkillDialogComponent implements OnInit {
     })
     this.skillsetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
+    })
+    this.resources_Service.GetResource(this.userID).subscribe(data => {
+      this.userData = data;
+      console.log(this.userData);
     })
   }
 
@@ -77,7 +88,7 @@ export class EditResSkillDialogComponent implements OnInit {
       ...this.addEmpskills.value,
       emailID: emailID,
     };
-    this.skills_service.AddEmpSkill(this.empSkills).subscribe(
+    this.skills_service.AddEmpSkill(this.empSkills,this.userData[0].res_id).subscribe(
       () => {
 
         this._coreService.openSnackBar('Record Added', 'done')

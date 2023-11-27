@@ -50,7 +50,12 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { EditSkillGroupDialogComponent } from './_shared/edit-skill-group-dialog/edit-skill-group-dialog.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AllocateResourceByNameDialogComponent } from './_shared/allocate-resource-by-name-dialog/allocate-resource-by-name-dialog.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
 import { AllocateResourceDialogComponent } from './_shared/allocate-resource-dialog/allocate-resource-dialog.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { InterceptorService } from './_interceptors/http-request-interceptor';
 
 @NgModule({
   declarations: [
@@ -72,9 +77,12 @@ import { AllocateResourceDialogComponent } from './_shared/allocate-resource-dia
     EditProjectResourceDialogComponent,
     EditSkillGroupDialogComponent,
     AllocateResourceByNameDialogComponent,
-    AllocateResourceDialogComponent
+    AllocateResourceDialogComponent,
+    SpinnerComponent
   ],
   imports: [
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatSortModule,
     BrowserModule,
     AppRoutingModule,
@@ -111,6 +119,12 @@ import { AllocateResourceDialogComponent } from './_shared/allocate-resource-dia
     NgFor,
     AsyncPipe,
     DragDropModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+          allowedUrls: ['http://www.angular.at/api'],
+          sendAccessToken: true
+      }
+  }),
 
     RouterModule.forRoot(routes),
     JwtModule.forRoot({
@@ -125,7 +139,8 @@ import { AllocateResourceDialogComponent } from './_shared/allocate-resource-dia
   providers: [
   { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -13,5 +13,17 @@ namespace ResourceManagerAPI.Models
         public string? EmailID { get; set; }
         public string? SkillGroup { get; set; }
         public string? Skill { get; set; }
+        public DateTime last_modified { get; set; }
+        public int modified_by { get;}
     }
+
+    public class GroupedResourceSkill
+    {
+        public int ResourceID { get; set; }
+        public string ResourceName { get; set; }
+        public string EmailID { get; set; }
+        public string SkillGroup { get; set; }
+        public string Skills { get; set; }
+    }
+
 }

@@ -3,7 +3,7 @@
     <mat-tab label="Resource Master">
       <div style="height: 100%; overflow-y: auto;">
         <div style="height: 100%;">
-          <table mat-table [dataSource]="dataOfRes" matSort #sortRes="matSort" matSortDirection="asc">
+          <table mat-table [dataSource]="dataOfRes" matSort #sortRes="matSort" matSortDirection="asc" (matSortChange)="annouceSortChaange($event)">
             <ng-container matColumnDef="res_id">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource ID </th>
               <td mat-cell *matCellDef="let res"> {{res.res_id}} </td>
@@ -481,33 +481,27 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Client Name</th>
               <td mat-cell *matCellDef="let element"> {{element.client_name}} </td>
             </ng-container>
-            <ng-container matColumnDef="partner_incharge">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Partner In Charge </th>
-              <td mat-cell *matCellDef="let element"> {{element.partner_incharge}} </td>
-            </ng-container>
-
-            
-
             <ng-container style="text-align: end;" matColumnDef="expand">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
                 <mat-dialog-actions>
                   <button mat-raised-button color="primary" id="addresource" (click)="AddProject(clientExtensionData)">Add Project</button>
-
-                  <!-- <a mat-raised-button target="_blank" [routerLink]="['/app-add-project-dialog']" color="primary" > Add Project
-                  </a> -->
                 </mat-dialog-actions>
               </th>
               <td mat-cell *matCellDef="let element">
-                <!-- <button mat-icon-button aria-label="expand row">
-                  <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-                  <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-                </button> -->
               </td>
             </ng-container>
-
+            <ng-container style="text-align: end;" matColumnDef="addResource_skill">
+              <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+                <mat-dialog-actions>
+                  <button mat-raised-button color="primary"  (click)="AddProjectResourceBySkill(clientExtensionData)">Res- by Skill</button>
+                </mat-dialog-actions>
+              </th>
+              <td mat-cell *matCellDef="let element">
+              </td>
+            </ng-container>
             <ng-container matColumnDef="addResource">
               <th mat-header-cell *matHeaderCellDef aria-label="row actions">
-                <button mat-raised-button color="primary" (click)="AddProjectResourceBySkill(clientExtensionData)"> Res- by Skill
+                <button mat-raised-button color="primary" (click)="AddProjectResourceByName(clientExtensionData)"> Res- by Name
                 </button>
                   <!-- <a mat-raised-button target="_blank" [routerLink]="['/app-add-resource-project-dialog']" color="primary" style="width: 100%;" > Add Resource
                   </a> -->

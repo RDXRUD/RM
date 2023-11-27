@@ -11,7 +11,7 @@ namespace ResourceManagerAPI.Controllers
     public class SkillsController : ControllerBase
     {
         private readonly PGDBContext _dbContext;
-
+        
         public SkillsController(PGDBContext context)
         {
             _dbContext = context;
@@ -61,14 +61,64 @@ namespace ResourceManagerAPI.Controllers
                 return resourceskills;
         }
 
-        
+        [HttpGet, Authorize]
+        [Route("SkillReport")]
+        public List<GroupedResourceSkill> GetSkillReport()
+        {
+            var resSkills = from r in _dbContext.resource_master
+                            join rs in _dbContext.resource_skill
+                            on r.res_id equals rs.res_id into resSkils
+                            from subres in resSkils.DefaultIfEmpty()
+                            select new
+                            {
+                                ResourceID = r.res_id,
+                                ResourceName=r.res_name,
+                                EmailID = r.res_email_id,
+                                ResourceSkillID = (subres == null) ? -1 : subres.ID,
+                                SkillSetID = (subres == null) ? -1 : subres.SkillSetID
+                            };
 
-        [HttpPost, Authorize]
-        [Route("AddSkillToSkillGroup")]
-        public async Task<IActionResult> AddSkillToSkillGroup([FromBody] ResourceSkillManager request)
+            var groupedSkills = (from x in resSkills
+                                 join ss in _dbContext.skill_set on x.SkillSetID equals ss.SkillSetID
+                                 join sg in _dbContext.skill_group on ss.SkillGroupID equals sg.SkillGroupID
+                                 join s in _dbContext._skill on ss.SkillID equals s.SkillID into detail
+                                 from m in detail.DefaultIfEmpty()
+                                 select new 
+                                 {
+                                     ResourceID = x.ResourceID,
+                                     ResourceName=x.ResourceName,
+                                     EmailID = x.EmailID,
+                                     SkillID = ss.SkillID,
+                                     ResourceSkillID = x.ResourceSkillID,
+                                     SkillSetID = x.SkillSetID,
+                                     SkillGroupID = sg.SkillGroupID,
+                                     SkillGroup = sg.SkillGroup,
+                                     Skill = m.Skill
+                                 })
+                    .GroupBy(rsm => new { rsm.ResourceID, rsm.ResourceName,rsm.EmailID,rsm.SkillGroup })
+                    .Select(group => new GroupedResourceSkill
+                    {
+                        ResourceID = group.Key.ResourceID,
+                        ResourceName=group.Key.ResourceName,
+                        EmailID=group.Key.EmailID,
+                        SkillGroup = group.Key.SkillGroup,
+                        Skills = string.Join(", ", group.Select(item => item.Skill))
+                    })
+                    .OrderBy(item=>item.ResourceID)
+                    .ThenBy(item=>item.SkillGroup).ToList();
+
+            return groupedSkills;
+        }
+
+            [HttpPost, Authorize]
+        [Route("AddSkillToSkillGroup/{id}")]
+        public async Task<IActionResult> AddSkillToSkillGroup([FromBody] ResourceSkillManager request,int id)
         {
             try
             {
+                var userID = id;
+                var modified_date= DateTime.UtcNow;
+          
                 var resource = await _dbContext.resource_master.FirstOrDefaultAsync(r => r.res_email_id == request.EmailID);
 
                 if (resource == null)
@@ -103,7 +153,9 @@ namespace ResourceManagerAPI.Controllers
                     var resourceSkill = new NewResourceSkills
                     {
                         res_id = resource.res_id,
-                        SkillSetID = result.SkillSetID
+                        SkillSetID = result.SkillSetID,
+                        last_modified=modified_date,
+                        modified_by=userID
                     };
 
                     _dbContext.resource_skill.Add(resourceSkill);
@@ -120,11 +172,14 @@ namespace ResourceManagerAPI.Controllers
         }
 
 		[HttpPut, Authorize]
-        [Route("UpdateSetOfSkill")]
-        public async Task<IActionResult> UpdateSkill([FromBody] ResourceSkillManager skill)
+        [Route("UpdateSetOfSkill/{id}")]
+        public async Task<IActionResult> UpdateSkill([FromBody] ResourceSkillManager skill, int id)
         {
             try
             {
+                var userID = id;
+                var modified_date = DateTime.UtcNow;
+
                 var existingSkillSet = await _dbContext.skill_set.FindAsync(skill.SkillSetID);
                 if (existingSkillSet == null)
                 {
@@ -157,6 +212,9 @@ namespace ResourceManagerAPI.Controllers
                     return NotFound();
                 }
                 existingResourceSkill.SkillSetID = skill.SkillSetID;
+                existingResourceSkill.modified_by = userID;
+                existingResourceSkill.last_modified = modified_date;
+
                 _dbContext.Entry(existingResourceSkill).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
                 return Ok("{\"message\": \"Record Updated Successfully\"}");

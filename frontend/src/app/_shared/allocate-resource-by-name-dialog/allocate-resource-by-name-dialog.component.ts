@@ -89,7 +89,7 @@ export class AllocateResourceByNameDialogComponent {
       res_id: new FormControl(),
       skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
-      allocation_perc: new FormControl(),
+      allocation_perc: new FormControl(1),
       start_date: new FormControl(),
       end_date: new FormControl()
     })
@@ -104,24 +104,33 @@ export class AllocateResourceByNameDialogComponent {
     
   }
   ngOnInit() {
-    this.allocateResource.setValue({
-      client_id: this.dataProj.dataOfProjects.client_id,
-      project_id: this.dataProj.dataOfProjects.project_id,//this.dataOfProjects.dataOfProjects.project_name
-      res_id: null,
-      skillGroupID: null,
-      skillID: null,
-      allocation_perc: 1,
-      start_date:this.dataProj.dataOfProjects.start_date,
-      end_date: this.dataProj.dataOfProjects.end_date
-      // partner_incharge: this.dataOfClient.element.partner_incharge,
-      // status: this.dataOfClient.element.status
-    });
+
+    if(Array.isArray(this.dataProj.dataOfProjects)){
+      // console.log("UNDEFINED");
+      this.data=null
+    }
+    else{
+      this.allocateResource.setValue({
+        client_id: this.dataProj.dataOfProjects.client_id,
+        project_id: this.dataProj.dataOfProjects.project_id,//this.dataOfProjects.dataOfProjects.project_name
+        res_id: null,
+        skillGroupID: null,
+        skillID: null,
+        allocation_perc: 1,
+        start_date:this.dataProj.dataOfProjects.start_date,
+        end_date: this.dataProj.dataOfProjects.end_date
+        // partner_incharge: this.dataOfClient.element.partner_incharge,
+        // status: this.dataOfClient.element.status
+      });
+      this.projectService.getProjects(this.dataProj.dataOfProjects.client_id,this.emptyFilter).subscribe(data=>{
+        this.projectData=data
+      })
+    }
+    
     this.resourceService.getResources().subscribe(data=>{
       this.resourceData=data
     });
-    this.projectService.getProjects(this.dataProj.dataOfProjects.client_id,this.emptyFilter).subscribe(data=>{
-      this.projectData=data
-    })
+    
     // this.allocateResource.patchValue({
     //   client_id:,
     // });
@@ -209,6 +218,9 @@ export class AllocateResourceByNameDialogComponent {
         this.allocateResource.reset()
         this.skillgroupData=[]
         this.skillData=[]
+        this.allocateResource.patchValue({
+          allocation_perc:1
+        })
         // this.input.nativeElement.value = '';
         // this.addResource.setValue({
         //   client_id: null,

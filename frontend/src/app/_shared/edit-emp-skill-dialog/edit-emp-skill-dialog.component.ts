@@ -6,6 +6,8 @@ import { skillset } from '../../_model/skillset';
 import { SkillsetService } from '../../_services/skillset.service';
 import { CoreService } from 'src/app/_services/core.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ResourcesService } from 'src/app/_services/resources.service';
+import { resource } from 'src/app/_model/resource';
 @Component({
   selector: 'app-edit-emp-skill-dialog',
   templateUrl: './edit-emp-skill-dialog.component.html',
@@ -19,18 +21,22 @@ export class EditEmpSkillDialogComponent {
   apiData!: any[];
   apiDataa!: any[];
   DataofSkill: any;
+  userData!: resource[];
+  userID: any;
   constructor(
     public dialogRef: MatDialogRef<EditEmpSkillDialogComponent>,
     private skillsService: SkillsService,
     private skillsetService: SkillsetService,
     frmbuilder: FormBuilder,
     private _coreService:CoreService,
+    private resources_Service:ResourcesService,
     @Inject(MAT_DIALOG_DATA) public dataOfskills: any,
   ) {
     this.skillgroupskill = frmbuilder.group({
       skillSetID: new FormControl(''),
       skillGroupID: new FormControl(''),
     });
+    this.userID = localStorage.getItem("UserID")
   }
   ngOnInit() {
     this.skillgroupskill.setValue({
@@ -41,6 +47,9 @@ export class EditEmpSkillDialogComponent {
       this.apiData = data;
     });
     this.getSkillSets();
+    this.resources_Service.GetResource(this.userID).subscribe(data => {
+      this.userData = data;
+    });
   }
   getSkillSets(){
   this.skillsetService.getActiveSkillSets().subscribe((datas) => {
@@ -59,7 +68,7 @@ filterSkillsBySkillGroup() {
       resourceSkillID: resourceSkillID,
       resourceID: resourceID,
     };
-    this.skillsService.UpdateSkills(this.formdatas).subscribe((res) => {  
+    this.skillsService.UpdateSkills(this.formdatas,this.userData[0].res_id).subscribe((res) => {  
       this._coreService.openSnackBar('Record Updated Successfully', 'done')
       this.skillgroupskill.reset();
       this.dialogRef.close('success');

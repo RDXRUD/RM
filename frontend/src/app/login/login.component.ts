@@ -5,6 +5,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TokenService } from '../_services/token.service';
 import { CoreService } from '../_services/core.service';
 import { environment } from 'src/environments/environment';
+import { OAuthService } from 'angular-oauth2-oidc';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,6 +15,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   hide = true;
   constructor(
+    private oauthService:OAuthService,
     fb: FormBuilder,
     private http: HttpClient,
     private tokenService: TokenService,
@@ -26,6 +28,7 @@ export class LoginComponent {
     });
   }
   OnLogin() {
+    // this.oauthService.initImplicitFlow();
     const { UserName, Password } = this.loginForm.value;
     this.http.post(`${environment.apiUrl}/User/Login`, { userID: UserName, password: Password }).subscribe(
       (response: any) => {

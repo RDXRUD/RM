@@ -23,15 +23,15 @@ import moment from 'moment';
   selector: 'app-allocate-resource-dialog',
   templateUrl: './allocate-resource-dialog.component.html',
   styleUrls: ['./allocate-resource-dialog.component.scss']
-  // ,
-  // providers: [
-  //   {
-  //     provide: DateAdapter,
-  //     useClass: MomentDateAdapter,
-  //     deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-  //   },
-  //   { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  // ],
+  ,
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class AllocateResourceDialogComponent {
@@ -193,18 +193,18 @@ export class AllocateResourceDialogComponent {
     this.temp.res_id = this.resSkillData[0].resourceID;
     this.temp.skill_id = this.temp.skillID;
 
-    // if (moment.isMoment(this.temp.end_date)) {
-    //   this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
-    // } else {
-    //   this.temp.end_date = this.temp.end_date;
-    // }
-    // if (moment.isMoment(this.temp.start_date)) {
-    //   this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
-    // } else {
-    //   this.temp.start_date = this.temp.start_date;
-    // }
+    if (moment.isMoment(this.temp.end_date)) {
+      this.temp.end_date = new Date(this.temp.end_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.end_date = this.temp.end_date;
+    }
+    if (moment.isMoment(this.temp.start_date)) {
+      this.temp.start_date = new Date(this.temp.start_date.format('YYYY-MM-DD'));
+    } else {
+      this.temp.start_date = this.temp.start_date;
+    }
     // this.temp.project_id=this.dataOfProjects.dataOfProjects.project_id;
-    console.log(this.temp);
+    // console.log(this.temp);
     
     this.projectService.AddResource(this.temp).subscribe(
       () => {

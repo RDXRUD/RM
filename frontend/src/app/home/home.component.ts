@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatOption } from '@angular/material/core';
@@ -21,7 +21,10 @@ import moment from 'moment';
 import { Router } from '@angular/router';
 import { SharedDataService } from '../_services/shared-data.service';
 import { MatDialog } from '@angular/material/dialog';
+import { SkillsService } from '../_services/skills.service';
 import { AllocateResourceDialogComponent } from '../_shared/allocate-resource-dialog/allocate-resource-dialog.component';
+import { SpinnerService } from '../_services/spinner.service';
+
 
 
 export const MY_FORMATS = {
@@ -62,7 +65,7 @@ export class HomeComponent implements OnInit {
   skillSetID: any;
   dates!: any[];
   columns: string[] = [];
-  dataOfAllocation = [];
+  // dataOfAllocation = [];
   dataOfAllocat!: MatTableDataSource<[]>;
   displayedColumns = [...this.columns];
   startDateString !: any;
@@ -74,18 +77,38 @@ export class HomeComponent implements OnInit {
   selectAll: boolean = false;
   submitClicked: boolean = false;
   searchClicked: boolean = false;
-  DetailsdisplayedColumns: string[] = ['sno', 'res_name', 'email_id', 'client_name', 'project_name', 'project_manager', 'skill_group', 'skill', 'start_date', 'end_date'];
-  dataSource!: MatTableDataSource<any>;
-  @ViewChild('sortData') sortData!: MatSort;
-  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  DetailsdisplayedColumns: string[] = ['sno', 'res_name', 'res_email_id', 'client_name', 'project_name', 'project_managers', 'skillGroup', 'skill', 'start_date', 'end_date'];
+  SkillsdisplayedColumns: string[] = ['sno', 'resourceName', 'emailID',  'skillGroup', 'skills'];//,
+
+  // dataSource!: MatTableDataSource<any>;
+  // @ViewChild('sortData') sortData!: MatSort;
+  // 
+
+
+  
+ 
   currentTab: string = 'Allocation Report';
   temp: any;
-  details: any;
+  // details: any;
   Roles: any;
   reportType: any[] = ["Week", "Month", "Quarter", "Year", "Custom"]
   isCustom: boolean=false;
-  // dataOfAllocation!: MatTableDataSource<any[]>;
-  // @ViewChild('sortAll') sortAll!: MatSort;
+  datas: any;
+  res: any;
+  response: any;
+  // skillReport:any;
+  @ViewChild('sortAll') sortAll!: MatSort;
+  dataOfAllocation: MatTableDataSource<any>=new MatTableDataSource();
+  emptyData = new MatTableDataSource([{ empty: "row" }]);
+  
+  detailtReport!: MatTableDataSource<any>;
+  @ViewChild('sortProject') sortProject!: MatSort;
+
+  skillReport!: MatTableDataSource<any>;
+  @ViewChild('sortSkill') sortSkill!: MatSort;
+  // @ViewChild(MatSort) sortSkill!: MatSort;
+  
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -101,6 +124,8 @@ export class HomeComponent implements OnInit {
     private projectService: ProjectService,
     private detailService: DetailService,
     private _coreService: CoreService,
+    private skillService:SkillsService,
+    private spinnerService:SpinnerService
   ) {
     this.Roles = localStorage.getItem("Role")
     this.filteringForm = frmbuilder.group({
@@ -119,6 +144,8 @@ export class HomeComponent implements OnInit {
       project_name: new FormControl([]),
     });
   }
+
+
   ngOnInit() {
     this.skillSetService.getSkillGroups().subscribe(res => {
       this.DataofSkillGroup = res;
@@ -135,7 +162,16 @@ export class HomeComponent implements OnInit {
     this.projectService.getAllProjects().subscribe(data => {
       this.dataProject = data;
     });
+    this.skillService.getSkillReport().subscribe(response => {
+      console.log(response);
+      this.response=response;
+      this.skillReport = new MatTableDataSource(this.response);
+      this.skillReport.sort=this.sortSkill;
+      console.log(this.skillReport);
+      
+    });
   }
+
 
   OnSubmit() {
 
@@ -222,8 +258,10 @@ export class HomeComponent implements OnInit {
           this.filteringForm.value.endDate = new Date(end_Date.getFullYear(), endQuarter * 3, 0, 23, 59, 59, 999);
         }
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
+          
           this.submitClicked = true
-          this.dataOfAllocation = [];
+          // this.dataOfAllocation = [];
+          // this.dataOfAllocation = new MatTableDataSource();
           console.log(this.Roles);
           if (!(this.Roles.includes('NON ADMIN'))) {
             this.displayedColumns = ["sno", "res_name", "res_email_id", "allocate"];
@@ -235,8 +273,9 @@ export class HomeComponent implements OnInit {
           this.columns = [];
           if (this.filteringForm.value.report_type == "Custom") {
             this.isCustom=true
-            this.dataOfAllocation = response;
-            console.log(this.dataOfAllocation[0]);
+            // this.dataOfAllocation = response;
+            this.dataOfAllocation =  new MatTableDataSource(response)
+            // console.log(this.dataOfAllocation[0]);
             this.allocationService.getDates().subscribe(date => {
               this.dates = date;
               for (const date of this.dates) {
@@ -249,7 +288,8 @@ export class HomeComponent implements OnInit {
             this.isCustom=false
             this.allocationService.getWeeklyData().subscribe((data: any) => {
               console.log("weekly data", data)
-              this.dataOfAllocation = data
+              // this.dataOfAllocation = data
+              this.dataOfAllocation =  new MatTableDataSource(data)
               this.allocationService.getWeeks().subscribe(data => {
                 console.log("weeks", data);
                 for (const week of data) {
@@ -265,7 +305,8 @@ export class HomeComponent implements OnInit {
             this.isCustom=false
             this.allocationService.getMonthlyData().subscribe((data: any) => {
               console.log("Monthly data", data)
-              this.dataOfAllocation = data
+              // this.dataOfAllocation = data
+              this.dataOfAllocation =  new MatTableDataSource(data)
               this.allocationService.getMonths().subscribe(data => {
                 console.log("Months", data);
                 for (const month of data) {
@@ -281,7 +322,8 @@ export class HomeComponent implements OnInit {
             this.isCustom=false
             this.allocationService.getQuarterlyData().subscribe((data: any) => {
               console.log("Quarterly data", data)
-              this.dataOfAllocation = data
+              // this.dataOfAllocation = data
+              this.dataOfAllocation =  new MatTableDataSource(data)
               this.allocationService.getQuarters().subscribe(data => {
                 console.log("Months", data);
                 for (const quarter of data) {
@@ -297,7 +339,8 @@ export class HomeComponent implements OnInit {
             this.isCustom=false
             this.allocationService.getYearlyData().subscribe((data: any) => {
               console.log("Yearly data", data)
-              this.dataOfAllocation = data
+              // this.dataOfAllocation =  data
+              this.dataOfAllocation =  new MatTableDataSource(data)
               this.allocationService.getYears().subscribe(data => {
                 console.log("Years", data);
                 for (const year of data) {
@@ -309,10 +352,16 @@ export class HomeComponent implements OnInit {
               })
             });
           }
+          this.dataOfAllocation.sort=this.sortAll
+          console.log(this.dataOfAllocation.sort);
+          console.log(this.sortAll);
+          
+          
 
         }, (error: HttpErrorResponse) => {
           if (error.status === 502) {
-            this.dataOfAllocation = [];
+            // this.dataOfAllocation = [];
+            this.dataOfAllocation = new MatTableDataSource();
             this.submitClicked = true
           }
 
@@ -323,14 +372,15 @@ export class HomeComponent implements OnInit {
 
   OnSearch(formdata: any) {
     this.detailService.getDetailView(formdata).subscribe(data => {
-      this.details = data;
-      console.log(this.details);
+      this.detailtReport = new MatTableDataSource(data);
+      console.log(this.detailtReport);
 
       this.searchClicked = true;
       this.submitClicked = true;
     }, (error: HttpErrorResponse) => {
       if (error.status === 502) {
-        this.details = [];
+        this.detailtReport = new MatTableDataSource();
+        this.detailtReport.sort=this.sortProject
         this._coreService.openSnackBar("No Records Found!");
       }
     })
@@ -358,7 +408,8 @@ export class HomeComponent implements OnInit {
     });
     this.displayedColumns = []
     this.columns = []
-    this.dataOfAllocation = []
+    // this.dataOfAllocation = []
+    this.dataOfAllocation = new MatTableDataSource;
     this.cdr.detectChanges();
   }
   OnResetDetail() {
@@ -369,7 +420,7 @@ export class HomeComponent implements OnInit {
       client_name: [], // Default value for client_name
       project_name: [], // Default value for project_name
     });
-    this.details = [];
+    this.detailtReport = new MatTableDataSource();
     this.cdr.detectChanges();
   }
   onSkillGroupSelection() {
@@ -524,6 +575,22 @@ export class HomeComponent implements OnInit {
     XLSX.writeFile(wb, fileName);
   }
 
+  skillReportToExcel() {
+    const tableElement = document.getElementById('skill_report_data');
+    const tableData = XLSX.utils.table_to_sheet(tableElement, { raw: true });
+    console.log(tableElement);
+
+    const tableDataArray: any[] = XLSX.utils.sheet_to_json(tableData, { header: 1 });
+
+    const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(tableDataArray);
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws1, 'Skill Data');
+
+    const fileName = `RM_SkillReport.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  }
+
   toggleAllSelection() {
     if (this.filteringForm.get('res_name') && this.data) {
       if (!this.selectAll) {
@@ -608,5 +675,11 @@ export class HomeComponent implements OnInit {
 
       //   });
     });
+  }
+  annouceSortChaange(temp:any){
+    console.log(temp);
+    console.log(this.detailtReport);
+
+    
   }
 }

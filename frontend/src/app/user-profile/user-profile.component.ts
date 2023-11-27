@@ -23,13 +23,6 @@ export class UserProfileComponent {
   userID: any;
   userData!: resource[];
   resourceProfile!: FormGroup;
-  locations: Location[] = [
-    { value: 'IN', viewValue: 'IN' },
-    { value: 'US', viewValue: 'US' },
-    { value: 'EU', viewValue: 'EU' },
-    { value: 'JP', viewValue: 'JP' },
-    { value: 'UK', viewValue: 'UK' }
-  ];
   displayedColumns: string[] = ['skillGroup', 'skill'];
   resSkillData:any;
   dataofSkillGroup!:any[];
@@ -61,6 +54,8 @@ export class UserProfileComponent {
   ngOnInit() {
     this.resources_Service.GetResource(this.userID).subscribe(data => {
       this.userData = data;
+      console.log(this.userData);
+      
       this.resourceProfile.setValue({
         res_name: this.userData[0].res_name,
         res_email_id: this.userData[0].res_email_id,
@@ -104,7 +99,7 @@ export class UserProfileComponent {
       ...this.addEmpskills.value,
       emailID: emailID,
     };
-    this.skills_service.AddEmpSkill(this.empSkills).subscribe(
+    this.skills_service.AddEmpSkill(this.empSkills,this.userData[0].res_id).subscribe(
       () => {
 
         this._coreService.openSnackBar('Record Added', 'done')
