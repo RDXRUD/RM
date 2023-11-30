@@ -15,7 +15,7 @@ import { ResourcesService } from 'src/app/_services/resources.service';
 import { SkillsService } from 'src/app/_services/skills.service';
 import { projectFilter } from 'src/app/_model/projectFilter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter , MatMomentDateModule} from '@angular/material-moment-adapter';
 import { MY_FORMATS } from 'src/app/home/home.component';
 import moment from 'moment';
 
@@ -24,14 +24,14 @@ import moment from 'moment';
   templateUrl: './allocate-resource-dialog.component.html',
   styleUrls: ['./allocate-resource-dialog.component.scss']
   ,
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+  // providers: [
+  //   {
+  //     provide: DateAdapter,
+  //     useClass: MomentDateAdapter,
+  //     deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+  //   },
+  //   //  { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  // ],
 })
 
 export class AllocateResourceDialogComponent {
@@ -91,8 +91,10 @@ export class AllocateResourceDialogComponent {
       skillGroupID: new FormControl(''),
       skillID: new FormControl(''),
       allocation_perc: new FormControl(),
-      start_date: new FormControl(),
-      end_date: new FormControl()
+      // start_date: new FormControl(),
+      // end_date: new FormControl()
+      start_date: new FormControl(""),
+      end_date: new FormControl("")
     })
     // this.subscription = this.sharedDataService.data$.subscribe((data) => {
     //   console.log(data);
@@ -107,13 +109,58 @@ export class AllocateResourceDialogComponent {
   ngOnInit() {
     this.resourceService.getResources().subscribe(data=>{
       this.resourceData=data
-      this.allocateResource.patchValue({
-        res_id: this.resourceData.find(res=>res.res_email_id==this.dataRes.email).res_id,
-      });
-    });
-    this.allocateResource.patchValue({
-      allocation_perc: 1,
-    });
+      if(this.dataRes.filterFormData){
+        this.projectService.getProjects(this.dataRes.filterFormData.client_name,this.emptyFilter).subscribe(data=>{
+          this.projectData=data
+        })
+        this.projectService.getProjects(this.dataRes.filterFormData.client_name,this.emptyFilter).subscribe(data=>{
+          this.projectData=data
+        })
+
+        console.log("this.dataRes.filterFormData 123: ",this.dataRes.filterFormData.startDates);
+
+
+        // this.allocateResource.controls['start_date'].setValue("2023-10-04T00:00:00")
+        // this.allocateResource.controls['end_date'].setValue("2023-12-15T00:00:00")
+        // this.allocateResource.get('start_date') = "2023-10-04T00:00:00";
+        // this.allocateResource.controls['end_date'].setValue("2023-12-15T00:00:00")
+        
+        this.allocateResource.setValue({
+          res_id: this.resourceData.find(res=>res.res_email_id==this.dataRes.email).res_id,
+          client_id: this.dataRes.filterFormData.client_name,
+          project_id: this.dataRes.filterFormData.project_name,
+          skillGroupID: this.dataRes.skillGroupID,
+          skillID: this.dataRes.skillID,
+          allocation_perc: 1,
+          // start_date: this.dataRes.filterFormData.startDate,
+          // end_date: this.dataRes.filterFormData.endDate
+          start_date: this.dataRes.filterFormData.startDates,
+          end_date: this.dataRes.filterFormData.endDates
+          // start_date:  "2023-10-04T00:00:00",
+          // end_date: "2023-12-15T00:00:00"
+        })
+        this.onClientSelection()
+        this.allocateResource.patchValue({
+          project_id: this.dataRes.filterFormData.project_name
+        })
+        this.onSkillGroupSelection()
+        this.allocateResource.patchValue({
+          skillID: this.dataRes.skillID
+        })
+      }
+        else{
+          this.allocateResource.patchValue({
+            res_id: this.resourceData.find(res=>res.res_email_id==this.dataRes.email).res_id,
+          });
+          this.allocateResource.patchValue({
+            allocation_perc: 1,
+          });
+        }
+
+        console.log("this.allocateResource 151: ",this.allocateResource.value);
+  });
+    
+    
     // this.route.queryParamMap.subscribe((params: any) => {
     //   console.log(params);
     //   console.log(params.params.data);
@@ -160,7 +207,7 @@ export class AllocateResourceDialogComponent {
     const encodedEmailID = encodeURIComponent(this.dataRes.email);
     this.skillService.getSkill(encodedEmailID).subscribe(datas => {
       console.log(datas);
-
+      console.log("data:",this.dataRes)
       console.log(this.DataofSkillGroup);
       this.resSkillData=datas
       const intersection = this.DataofSkillGroup.filter(skillGroup =>
@@ -179,7 +226,7 @@ export class AllocateResourceDialogComponent {
     this.skillSetService.getSkillSets().subscribe(datas => {
       this.skillSets=datas
     });
-    
+    console.log("data:",this.dataRes.email)
     // const valiGroups=this.DataofSkillGroup.skillgroupID.intersect(this.resSkillData.skillGroupID)
 
     

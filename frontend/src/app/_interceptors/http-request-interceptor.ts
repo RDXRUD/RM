@@ -12,14 +12,20 @@ export class InterceptorService implements HttpInterceptor {
   constructor(public spinnerService: SpinnerService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.spinnerService.isLoading.next(true);
+    // this.spinnerService.isLoading.next(true);
 
     return next.handle(req).pipe(
       finalize(
         () => {
-          this.spinnerService.isLoading.next(false);
+        //   this.spinnerService.isLoading.next(false);
         }
       )
     );
   }
 }
+
+// if (this.spinnerService.isLoading.getValue()) {
+//     this.spinnerService.isLoading.next(true);
+//   } else {
+//     this.spinnerService.isLoading.next(false);
+//   }

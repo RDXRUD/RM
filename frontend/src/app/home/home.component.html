@@ -13,8 +13,7 @@
           </mat-form-field>
           <mat-form-field fxFlex="25">
             <mat-label>Location</mat-label>
-            <mat-select input formControlName="location">
-              <mat-option>None</mat-option>
+            <mat-select input formControlName="location" multiple>
               <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
               </mat-option>
             </mat-select>
@@ -74,23 +73,24 @@
       <div style="height: 100%;">
         <div style="height: calc(100vh - 64px);" class="table-container">
           <!-- <table mat-table id="table_data" [dataSource]="dataOfAllocation" matSort #sortAll="matSort" -->
-          <table mat-table id="table_data" [dataSource]="dataOfAllocation.data.length > 0 && dataOfAllocation.filteredData.length > 0 ? dataOfAllocation : emptyData" matSort #sortAll="matSort"
-            matSortDirection="desc" (matSortChange)="annouceSortChaange($event)">
+          <table mat-table id="table_data"
+            [dataSource]="dataOfAllocation.data.length > 0 && dataOfAllocation.filteredData.length > 0 ? dataOfAllocation : emptyData"
+            matSort #sortAll="matSort" matSortDirection="desc" (matSortChange)="annouceSortChaange($event)">
             <ng-container matColumnDef="sno" sticky>
               <th mat-header-cell *matHeaderCellDef>S.No</th>
               <td mat-cell class="sno" *matCellDef="let user; let i = index" style="text-align: right;">{{ i + 1 }}</td>
             </ng-container>
             <ng-container matColumnDef="res_name" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+              <th mat-header-cell *matHeaderCellDef >Resource Name</th>
               <td mat-cell *matCellDef="let user" (click)="selectTab(1,user.res_email_id)"
                 style="cursor: pointer; color: blue;text-align: left;">{{user.res_name}}</td>
             </ng-container>
             <ng-container matColumnDef="res_email_id" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+              <th mat-header-cell *matHeaderCellDef >Email ID</th>
               <td mat-cell *matCellDef="let user" style="text-align: left;"> {{user.res_email_id}} </td>
             </ng-container>
             <ng-container matColumnDef="allocate" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+              <th mat-header-cell *matHeaderCellDef ></th>
               <td mat-cell id="allocation" *matCellDef="let user">
                 <mat-icon (click)="navigateToAdmin(user.res_email_id)" style="cursor: pointer;"
                   matTooltip="Allocate Project" matTooltipPosition="above">input</mat-icon>
@@ -110,17 +110,15 @@
               <td mat-cell *matCellDef="let user" [ngStyle]="getCellStyle(user.allocationData[col])">
                 {{user.allocationData[col]*100<0 ? "-" : (user.allocationData[col] * 100 | number:'1.0-0') + '%' }}
                   </ng-container>
-                  <td ng-container matColumnDef="empty-row">
-                    <mat-cell *matCellDef="let element">No Data</mat-cell>
-                  </td>
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false"></tr>
-                  <tr mat-row *matRowDef="let row; 
-                  columns: dataOfAllocation.filteredData.length > 0 ? displayedColumns : ['empty-row']"
-                  
-                   ></tr>
-                   <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
-                  
-                   
+              <td ng-container matColumnDef="empty-row">
+                <mat-cell *matCellDef="let element">No Data</mat-cell>
+              </td>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: false"></tr>
+              <tr mat-row *matRowDef="let row; 
+                  columns: dataOfAllocation.filteredData.length > 0 ? displayedColumns : ['empty-row']"></tr>
+              <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+
+
           </table>
           <!-- <div class="noData" *ngIf="dataOfAllocation.length === 0 && submitClicked">No records found</div> -->
         </div>
@@ -181,29 +179,30 @@
     </div>
     <div class="container" style="height: calc(75vh - 64px);">
       <div style="height: 100%; overflow-y: auto;">
-        <table mat-table id="detail_report_data" [dataSource]="detailtReport" matSort #sortProjects="matSort" (matSortChange)="annouceSortChaange($event)">
+        <table mat-table id="detail_report_data" [dataSource]="detailtReport" matSort #sortProjects="matSort"
+          (matSortChange)="annouceSortChaange($event)">
           <ng-container matColumnDef="sno" sticky>
             <th mat-header-cell *matHeaderCellDef>S.No</th>
             <td mat-cell class="sno" *matCellDef="let user; let i = index" style="text-align: right;">{{ i + 1 }}</td>
           </ng-container>
           <ng-container matColumnDef="res_name" sticky>
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</th>
+            <th mat-header-cell *matHeaderCellDef >Resource Name</th>
             <td mat-cell *matCellDef="let user" style="text-align: left;"> {{user.res_name}} </td>
           </ng-container>
           <ng-container matColumnDef="res_email_id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email ID</th>
+            <th mat-header-cell *matHeaderCellDef >Email ID</th>
             <td mat-cell *matCellDef="let user" style="text-align: left;"> {{user.res_email_id}} </td>
           </ng-container>
           <ng-container matColumnDef="client_name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+            <th mat-header-cell *matHeaderCellDef >Client</th>
             <td mat-cell *matCellDef="let user"> {{user.client_name}} </td>
           </ng-container>
           <ng-container matColumnDef="project_name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</th>
+            <th mat-header-cell *matHeaderCellDef >Project Name</th>
             <td mat-cell *matCellDef="let user"> {{user.project_name}} </td>
           </ng-container>
           <ng-container matColumnDef="project_managers">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Manager(s)</th>
+            <th mat-header-cell *matHeaderCellDef >Project Manager(s)</th>
             <td mat-cell *matCellDef="let user">
               <ng-container *ngFor="let manager of user.project_managers[0].split(','); let last = last">
                 {{ manager.trim() }}
@@ -241,9 +240,10 @@
     <div class="container" style="height: calc(100vh - 64px);">
       <div style="height: 100%; overflow-y: auto;">
         <mat-table [dataSource]="skillReport" matSort #sortSkill="matSort" (matSortChange)="annouceSortChaange($event)">
-          <ng-container matColumnDef="sno" >
+          <ng-container matColumnDef="sno">
             <mat-header-cell *matHeaderCellDef mat-sort-header>S.No</mat-header-cell>
-            <mat-cell class="sno" *matCellDef="let user; let i = index" style="text-align: right;">{{ i + 1 }}</mat-cell>
+            <mat-cell class="sno" *matCellDef="let user; let i = index" style="text-align: right;">{{ i + 1
+              }}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="resourceName">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Resource Name</mat-header-cell>
@@ -269,6 +269,143 @@
           <mat-header-row *matHeaderRowDef="SkillsdisplayedColumns; sticky: true"></mat-header-row>
           <mat-row *matRowDef="let row; columns: SkillsdisplayedColumns;"></mat-row>
         </mat-table>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Intelligence Resourcing">
+    <div class="uppar">
+      <form [formGroup]="filteringAllForm" sticky="true">
+        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxFlexFill fxLayoutGap="10px grid">
+          <mat-form-field fxFlex="25">
+            <mat-label>Client Name</mat-label>
+            <mat-select formControlName="client_name" single (selectionChange)="onClientSelection()">
+              <mat-option *ngFor="let cli of clientData" [value]="cli.client_id">{{cli.client_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Project</mat-label>
+            <mat-select formControlName="project_name" single (selectionChange)="onProjectSelection()">
+              <mat-option *ngFor="let pro of projectOnClient" [value]="pro.project_id">{{pro.project_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Skill Group</mat-label>
+            <mat-select formControlName="skillGroupID" multiple (selectionChange)="onSkillGroupSelections()">
+              <!-- <mat-option value=0>None</mat-option> -->
+              <mat-option *ngFor="let select of DataofSkillGroup"
+                [value]="select.skillGroupID">{{select.skillGroup}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Skill</mat-label>
+            <mat-select formControlName="skillID" multiple>
+              <option (click)="AI_allSkillSelection()" [value]="0">Select All</option>
+              <mat-option *ngFor="let select of skillsData" [value]="select.skillID">{{select.skill}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Location</mat-label>
+            <mat-select input formControlName="location" multiple>
+              <mat-option *ngFor="let loc of locations" [value]="loc.id">{{loc.location}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Start Date</mat-label>
+            <input formControlName="startDates" matInput [matDatepicker]="ones">
+            <mat-datepicker-toggle matIconSuffix [for]="ones"></mat-datepicker-toggle>
+            <mat-datepicker #ones></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>End Date</mat-label>
+            <input formControlName="endDates" matInput [matDatepicker]="twos">
+            <mat-datepicker-toggle matIconSuffix [for]="twos"></mat-datepicker-toggle>
+            <mat-datepicker #twos></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Report Type</mat-label>
+            <mat-select input formControlName="report_type">
+              <!-- <mat-option>None</mat-option> -->
+              <mat-option *ngFor="let rt of reportType" [value]="rt">{{rt}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="25">
+            <mat-label>Minimum Availability</mat-label>
+            <mat-select input formControlName="availability" single>
+              <mat-option *ngFor="let dat of availability" [value]="dat">{{dat*100}}%
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div fxFlex="10" fxFlexFill fxLayout="row" fxLayoutAlign="center stretch">
+            <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+              (click)="AI_OnSubmit()" value="OnSubmit">Search</button>
+          </div>
+          <div fxFlex="10" fxFlexFill>
+            <button class="btn" fxFlex fxLayoutAlign="center center" mat-raised-button color="primary"
+              (click)="AI_OnReset()">
+              Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="container" style="height: calc(100vh - 64px);">
+      <div style="height: 100%;">
+        <div style="height: calc(100vh - 64px);" class="table-container">
+          <!-- <table mat-table id="table_data" [dataSource]="dataOfAllocation" matSort #sortAll="matSort" -->
+          <div *ngFor="let skillData of selectedSkillsData;let i = index;">
+            
+            <!-- <div #skillDataRef style="display: none" >{{ skillData | json }}</div> -->
+
+            <h3>{{ skillData.skillGroup }} - {{ skillData.skill }}</h3>
+            <!-- <ng-container *ngIf="tempp(skillData)"></ng-container> -->
+            <table mat-table [dataSource]="aiData[i]">
+            <ng-container matColumnDef="sno" sticky>
+              <th mat-header-cell *matHeaderCellDef>S.No</th>
+              <td mat-cell class="sno" *matCellDef="let user; let i = index" style="text-align: right;">{{ i + 1 }}</td>
+            </ng-container>
+            <ng-container matColumnDef="res_name" sticky>
+              <th mat-header-cell *matHeaderCellDef >Resource Name</th>
+              <td mat-cell *matCellDef="let user">{{user.res_name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="res_email_id" sticky>
+              <th mat-header-cell *matHeaderCellDef >Email ID</th>
+              <td mat-cell *matCellDef="let user" style="text-align: left;"> {{user.res_email_id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="availableData" sticky>
+              <th mat-header-cell *matHeaderCellDef >Available </th>
+              <td mat-cell *matCellDef="let user" style="text-align: left;"> {{(user.availableData* 100| number:'1.0-0')+ '%'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="allocate" sticky>
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell id="allocation" *matCellDef="let user">
+                <mat-icon (click)="AIallocation(user.res_email_id,skillData)" style="cursor: pointer;"
+                  matTooltip="Allocate Project" matTooltipPosition="above">input</mat-icon>
+              </td>
+            </ng-container>
+            <ng-container *ngFor="let aicol of aicolumns" [matColumnDef]="aicol">
+              <th mat-header-cell *matHeaderCellDef sticky>
+                {{ aicol }}
+    
+                
+              </th>
+              <!-- <th mat-header-cell *matHeaderCellDef sticky>{{ col | date: 'EEE' }} {{ col | date: 'dd-MMM-yyyy'}}</th> -->
+              <!-- [ngStyle]="getCellStyle(user.availableData[aicol])" -->
+              <td mat-cell *matCellDef="let user" >
+                {{ (user.availableData[aicol] * 100| number:'1.0-0' ) + '%' }}
+                  </ng-container>
+              <!-- <td ng-container matColumnDef="empty-row">
+                <mat-cell *matCellDef="let element">No Data</mat-cell>
+              </td> -->
+              <tr mat-header-row *matHeaderRowDef="aidisplayedColumns; sticky: false"></tr>
+              <tr mat-row *matRowDef="let row; columns:  aidisplayedColumns"></tr>
+              <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+          </table>
+          </div>
+          <!-- <div class="noData" *ngIf="dataOfAllocation.length === 0 && submitClicked">No records found</div> -->
+        </div>
       </div>
     </div>
   </mat-tab>

@@ -14,7 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -59,6 +59,7 @@ import { InterceptorService } from './_interceptors/http-request-interceptor';
 
 @NgModule({
   declarations: [
+    // { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_TIME_FORMAT},
     AppComponent,
     HomeComponent,
     AdminComponent,

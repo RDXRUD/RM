@@ -24,6 +24,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SkillsService } from '../_services/skills.service';
 import { AllocateResourceDialogComponent } from '../_shared/allocate-resource-dialog/allocate-resource-dialog.component';
 import { SpinnerService } from '../_services/spinner.service';
+import { AIresourcingService } from '../_services/airesourcing.service';
+import { Observable, map } from 'rxjs';
 
 
 
@@ -56,15 +58,19 @@ export const MY_FORMATS = {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  
+
   data: any[] = [];
   locations!: any[];
   skillData!: any[];
   filteringForm: FormGroup;
   filteringDetails: FormGroup;
+filteringAllForm:FormGroup;
   DataofSkillGroup!: any[];
   skillSetID: any;
   dates!: any[];
   columns: string[] = [];
+  aicolumns:string[] = [];
   // dataOfAllocation = [];
   dataOfAllocat!: MatTableDataSource<[]>;
   displayedColumns = [...this.columns];
@@ -72,14 +78,19 @@ export class HomeComponent implements OnInit {
   Resnames!: any[];
   endDateString!: any;
   filter!: any;
+  AIFilter!: any;
   dataProject!: any[];
   clientData: any;
   selectAll: boolean = false;
   submitClicked: boolean = false;
   searchClicked: boolean = false;
+  AI_selectAll:boolean = false;
   DetailsdisplayedColumns: string[] = ['sno', 'res_name', 'res_email_id', 'client_name', 'project_name', 'project_managers', 'skillGroup', 'skill', 'start_date', 'end_date'];
   SkillsdisplayedColumns: string[] = ['sno', 'resourceName', 'emailID',  'skillGroup', 'skills'];//,
-
+  aidisplayedColumns:string[] = [...this.aicolumns];
+  selectedSkillsData!:any[];
+  skillSetData:any;
+  skillsData!:any[];
   // dataSource!: MatTableDataSource<any>;
   // @ViewChild('sortData') sortData!: MatSort;
   // 
@@ -92,6 +103,7 @@ export class HomeComponent implements OnInit {
   // details: any;
   Roles: any;
   reportType: any[] = ["Week", "Month", "Quarter", "Year", "Custom"]
+  availability:any[]=[0,0.25,0.5,0.75,1]
   isCustom: boolean=false;
   datas: any;
   res: any;
@@ -100,6 +112,9 @@ export class HomeComponent implements OnInit {
   @ViewChild('sortAll') sortAll!: MatSort;
   dataOfAllocation: MatTableDataSource<any>=new MatTableDataSource();
   emptyData = new MatTableDataSource([{ empty: "row" }]);
+
+  aiData:any[]=[];
+  // aiData:MatTableDataSource<any>=new MatTableDataSource();
   
   detailtReport!: MatTableDataSource<any>;
   @ViewChild('sortProject') sortProject!: MatSort;
@@ -109,6 +124,13 @@ export class HomeComponent implements OnInit {
   // @ViewChild(MatSort) sortSkill!: MatSort;
   
   @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  projectOnClient!: any[];
+
+  @ViewChild('skillDataRef') skillDataRef: ElementRef|undefined;
+  aiMonths!: any[];
+  aiWeeks!: any[];
+  aiYears!:any[];
+  aiQuarters!:any[];
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -125,12 +147,13 @@ export class HomeComponent implements OnInit {
     private detailService: DetailService,
     private _coreService: CoreService,
     private skillService:SkillsService,
-    private spinnerService:SpinnerService
+    private spinnerService:SpinnerService,
+    private aiService:AIresourcingService
   ) {
     this.Roles = localStorage.getItem("Role")
     this.filteringForm = frmbuilder.group({
       res_name: new FormControl([]),
-      location: new FormControl(null),
+      location: new FormControl([]),
       skillGroupID: new FormControl(),
       skillID: new FormControl(),
       startDate: new FormControl(new Date()),
@@ -142,6 +165,17 @@ export class HomeComponent implements OnInit {
       location: new FormControl(null),
       client_name: new FormControl([]),
       project_name: new FormControl([]),
+    });
+    this.filteringAllForm=frmbuilder.group({
+      client_name:new FormControl(),
+      project_name:new FormControl(),
+      skillGroupID:new FormControl(),
+      skillID:new FormControl(),
+      location:new FormControl([]),
+      startDates: new FormControl(),
+      endDates: new FormControl(),
+      report_type: new FormControl("Month"),
+      availability:new FormControl(0)
     });
   }
 
@@ -168,8 +202,12 @@ export class HomeComponent implements OnInit {
       this.skillReport = new MatTableDataSource(this.response);
       this.skillReport.sort=this.sortSkill;
       console.log(this.skillReport);
-      
     });
+    this.skillSetService.getSkillSets().subscribe(data=>{
+      this.skillSetData=data
+      console.log(this.skillSetData);
+      
+    })
   }
 
 
@@ -184,8 +222,11 @@ export class HomeComponent implements OnInit {
     else {
       this.displayedColumns = [];
       this.columns = [];
+      console.log(this.spinnerService.isLoading);  
 
       this.skillSetService.getSkillSets().subscribe(datas => {
+        console.log(this.spinnerService.isLoading);  
+
         const temp = datas.filter(data => data.skillGroupID === skillGroupID && skillID.includes(data.skillID));
         if (temp.length > 0) {
           this.skillSetID = temp.map(item => item.skillSetID);
@@ -257,8 +298,10 @@ export class HomeComponent implements OnInit {
           const endQuarter = Math.floor((end_Date.getMonth() + 3) / 3);
           this.filteringForm.value.endDate = new Date(end_Date.getFullYear(), endQuarter * 3, 0, 23, 59, 59, 999);
         }
+        // this.spinnerService.isLoading.next(false);
+        console.log(this.spinnerService.isLoading);
         this.allocationService.getCrossView(this.filteringForm.value).subscribe((response: any) => {
-          
+          console.log(this.spinnerService.isLoading);  
           this.submitClicked = true
           // this.dataOfAllocation = [];
           // this.dataOfAllocation = new MatTableDataSource();
@@ -356,7 +399,8 @@ export class HomeComponent implements OnInit {
           console.log(this.dataOfAllocation.sort);
           console.log(this.sortAll);
           
-          
+          // this.spinnerService.isLoading.next(false);
+
 
         }, (error: HttpErrorResponse) => {
           if (error.status === 502) {
@@ -364,6 +408,7 @@ export class HomeComponent implements OnInit {
             this.dataOfAllocation = new MatTableDataSource();
             this.submitClicked = true
           }
+          // this.spinnerService.isLoading.next(false);
 
         });
       });
@@ -399,7 +444,7 @@ export class HomeComponent implements OnInit {
     this.submitClicked = false
     this.filteringForm.reset({
       res_name: [], // Default value for res_name
-      location: null, // Default value for location
+      location: [], // Default value for location
       skillGroupID: null, // Default value for skillGroupID
       skillID: null, // Default value for skillID
       startDate: new Date(), // Default value for startDate
@@ -497,11 +542,12 @@ export class HomeComponent implements OnInit {
 
     const ws1: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(formDataArray);
     const ws2: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(verticalData);
+    const ws3: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(tableDataArray);
 
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws1, 'Criteria');
-    XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data');
-
+    XLSX.utils.book_append_sheet(wb, ws2, 'Allocation Data_view1');
+    XLSX.utils.book_append_sheet(wb, ws3, 'Allocation Data_view2');
     const fileName = `RM_${StartDate}_${EndDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
@@ -619,6 +665,23 @@ export class HomeComponent implements OnInit {
       }
     }
   }
+  AI_allSkillSelection() {
+    console.log(this.skillData);
+
+    if (this.filteringAllForm.get('skillID') && this.skillsData) {
+      if (!this.AI_selectAll) {
+        this.filteringAllForm.get('skillID')?.patchValue(this.skillsData.map((item) => item.skillID));
+        this.AI_selectAll = true
+        console.log("if");
+
+      } else {
+        this.filteringAllForm.get('skillID')?.patchValue([]);
+        this.AI_selectAll = false
+        console.log("else");
+
+      }
+    }
+  }
   allSelection() {
     if (this.filteringDetails.get('res_name') && this.data) {
       if (!this.selectAll) {
@@ -680,6 +743,349 @@ export class HomeComponent implements OnInit {
     console.log(temp);
     console.log(this.detailtReport);
 
-    
   }
+  onClientSelection(){
+    const clients = (this.filteringAllForm.get('client_name')?.value);
+    console.log("clients",clients);
+    console.log(this.dataProject);
+   
+    this.projectOnClient=this.dataProject.filter(project => project.client_id==clients && (project.project_status === 1 || project.project_status === 2));
+    console.log("projectOnClient",this.projectOnClient);
+  }
+  onSkillGroupSelections() {
+    const skillGroupID = (this.filteringAllForm.get('skillGroupID')?.value);
+    console.log(skillGroupID);
+    
+    // const skillGroup: SkillGroups = {
+    //   skillGroupID: skillGroupID,
+    //   skillGroup: ''
+    // };
+    this.skillsData=this.skillSetData.filter((skill:any) => skillGroupID.includes(skill.skillGroupID));
+    console.log("projectOnClient",this.skillsData);
+    // this.skillSetService.getSkillAsPerSkillGroup(skillGroup).subscribe(res => {
+    //   this.skillData = res;
+    //   this.filteringAllForm.patchValue({
+    //     skillID: this.skillData.map(item => item.skillID)
+    //   })
+    // });
+  }
+  onProjectSelection(){
+    const projectID = Number(this.filteringAllForm.get('project_name')?.value);
+    const projectDetails=this.projectOnClient.find(pd => pd.project_id === projectID)
+    this.filteringAllForm.patchValue({
+      startDates:projectDetails.start_date
+      
+      
+    })
+    console.log("datee:",projectDetails.start_date);
+    this.filteringAllForm.patchValue({
+      endDates:projectDetails.end_date
+    })
+
+  }
+  AI_OnSubmit(){
+    console.log(this.filteringAllForm.value);
+
+    const formValues = Object.values(this.filteringAllForm.value);
+    console.log(formValues);
+    
+    if (formValues.some(value => value === null || value === undefined)) {
+      this._coreService.openSnackBar("Form Field can't be left empty");
+
+    } else {
+
+      const startDateValue = this.filteringAllForm.get('startDates')?.value;
+      let startDate;
+      console.log(this.filteringAllForm.value);
+      
+      if (moment.isMoment(startDateValue)) {
+        startDate = new Date(startDateValue.format('YYYY-MM-DD')).toISOString();
+      } else {
+        startDate = startDateValue;
+      }
+      
+      const endDateValue = this.filteringAllForm.get('endDates')?.value;
+      let endDate;
+      if (moment.isMoment(endDateValue)) {
+        endDate = new Date(endDateValue.format('YYYY-MM-DD')).toISOString();
+      } else {
+        endDate = endDateValue;
+      }
+
+      // this.filteringAllForm.value.startDates=startDate
+      // this.filteringAllForm.value.endDates=endDate
+
+      this.AIFilter=this.filteringAllForm.value
+      this.AIFilter.startDate=startDate
+      this.AIFilter.endDate=endDate
+
+      console.log(this.AIFilter);
+      
+
+      const skillGroupIds=this.filteringAllForm.value.skillGroupID
+      const skillIds=this.filteringAllForm.value.skillID
+      console.log(skillGroupIds);
+      console.log(skillIds);
+      
+      
+
+      this.skillSetService.getSkillSets().subscribe(datas => {
+        const temp = datas.filter(data => skillGroupIds.includes(data.skillGroupID) && skillIds.includes(data.skillID));
+        if (temp.length > 0) {
+          this.AIFilter.skillSetID= temp.map(item => item.skillSetID);
+        }
+        console.log(this.AIFilter);
+        this.selectedSkillsData=datas.filter(data=>this.AIFilter.skillSetID.includes(data.skillSetID));
+        console.log("HEAD",this.selectedSkillsData);
+        
+        const start_Date=new Date(this.AIFilter.startDate)
+        const end_Date=new Date(this.AIFilter.endDate)
+
+        if (this.AIFilter.report_type == "Year") {
+          this.AIFilter.startDate = new Date(start_Date.getFullYear(), 0, 1, 12, 0, 0, 0);
+          this.AIFilter.endDate = new Date(end_Date.getFullYear(), 11, 31, 23, 59, 59, 999);
+        }
+        if (this.AIFilter.report_type == "Week") {
+
+          const currentDay = start_Date.getUTCDay();
+          const difference = (currentDay - 1 + 7) % 7;
+          const mondayDate = new Date(start_Date.setUTCHours(12, 0, 0, 0));
+          mondayDate.setUTCDate(start_Date.getUTCDate() - difference);
+          this.AIFilter.startDate = mondayDate
+
+          const currentDayy = end_Date.getUTCDay();
+          const differ = (7 - currentDayy) % 7;
+          const sundayDate = new Date(end_Date.setUTCHours(12, 0, 0, 0));
+          sundayDate.setUTCDate(end_Date.getUTCDate() + differ);
+          this.AIFilter.endDate = sundayDate;
+          console.log(this.AIFilter.endDate);
+          
+        }
+        if (this.AIFilter.report_type == "Month") {
+          this.AIFilter.startDate = new Date(start_Date.getFullYear(), start_Date.getMonth(), 1, 12, 0, 0, 0);
+          this.AIFilter.endDate = new Date(end_Date.getFullYear(), end_Date.getMonth() + 1, 0, 23, 59, 59, 999);
+        }
+
+        if (this.AIFilter.report_type == "Quarter") {
+          const startQuarter = Math.floor((start_Date.getMonth() + 3) / 3);
+          this.AIFilter.startDate = new Date(start_Date.getFullYear(), (startQuarter - 1) * 3, 1, 12, 0, 0, 0);
+          const endQuarter = Math.floor((end_Date.getMonth() + 3) / 3);
+          this.AIFilter.endDate = new Date(end_Date.getFullYear(), endQuarter * 3, 0, 23, 59, 59, 999);
+        }
+
+        this.aiService.filterAIdata(this.AIFilter).subscribe(data=>{
+          console.log(this.aidisplayedColumns);
+          if (!(this.Roles.includes('NON ADMIN'))) {
+            this.aidisplayedColumns=['sno', 'res_name', 'res_email_id','allocate']
+          }
+          else {
+            this.aidisplayedColumns=['sno', 'res_name', 'res_email_id']
+          }
+
+          this.aicolumns=[]
+          console.log(data);
+          
+          
+          
+          console.log(this.aiData);
+          // this.AIdataSource()
+          if(this.AIFilter.report_type=="Custom"){
+            console.log(this.aidisplayedColumns);
+            // this.aidisplayedColumns=[]
+            // this.aidisplayedColumns= ['sno', 'res_name', 'res_email_id'];
+            console.log(this.aidisplayedColumns);
+            if (!(this.Roles.includes('NON ADMIN'))) {
+              this.aidisplayedColumns=['sno', 'res_name', 'res_email_id','allocate','availableData']
+            }
+            else {
+              this.aidisplayedColumns=['sno', 'res_name', 'res_email_id','availableData']
+            }
+            this.aicolumns=[]
+            console.log("data",data);
+            
+            const temp=data.filter((item:any) => item.availableData >=this.AIFilter.availability);
+            this.aiSkillDataFilter(temp)
+          }
+          if(this.AIFilter.report_type=="Month"){
+            console.log(this.aidisplayedColumns);
+            // this.aidisplayedColumns=[]
+            // this.aidisplayedColumns= ['sno', 'res_name', 'res_email_id'];
+            console.log(this.aidisplayedColumns);
+            
+            this.aiService.getMonths().subscribe(data=>{
+              this.aiMonths=data
+              for (const month of this.aiMonths) {
+                this.aicolumns.push(month.monthData)
+                this.aidisplayedColumns.push(month.monthData);
+              }
+              console.log("Months",data);
+            })        
+            
+            this.aiService.getMonthlyData().subscribe(data=>{
+              console.log("Monthy",data);
+              const temp=data.filter(item =>
+                Object.values(item.availableData).every((value:any) => value >=this.AIFilter.availability));
+              this.aiSkillDataFilter(temp)
+            })
+            console.log(this.aidisplayedColumns);
+          }
+          if(this.AIFilter.report_type=="Week"){
+            this.aiService.getWeeks().subscribe(data=>{
+              this.aiWeeks=data
+              console.log("Weeks",data);
+              for (const week of this.aiWeeks) {
+                this.aicolumns.push(week.weekData)
+                this.aidisplayedColumns.push(week.weekData);
+              }
+            })
+            this.aiService.getWeeklyData().subscribe(data=>{
+              console.log("Week",data);
+              const temp=data.filter(item =>
+                Object.values(item.availableData).every((value:any) => value >=this.AIFilter.availability));
+                console.log("temp",temp);
+                
+              this.aiSkillDataFilter(temp)
+            })
+          }
+          if(this.AIFilter.report_type=="Year"){
+            this.aiService.getYears().subscribe(data=>{
+              this.aiYears=data
+              console.log("Years",data);
+              for (const year of this.aiYears) {
+                this.aicolumns.push(year.year)
+                this.aidisplayedColumns.push(year.year);
+              }
+            })
+            this.aiService.getYearlyData().subscribe(data=>{
+              console.log("Yearly",data);
+              const temp=data.filter(item =>
+                Object.values(item.availableData).every((value:any) => value >=this.AIFilter.availability));
+              this.aiSkillDataFilter(temp)
+            })
+          }
+          if(this.AIFilter.report_type=="Quarter"){
+            this.aiService.getQuarters().subscribe(data=>{
+              this.aiQuarters=data
+              console.log("Quarters",data);
+              for (const quarter of this.aiQuarters) {
+                this.aicolumns.push(quarter.quarterData)
+                this.aidisplayedColumns.push(quarter.quarterData);
+              }
+            })
+            this.aiService.getQuarterlyData().subscribe(data=>{
+              console.log("Quarterly",data);
+              const temp=data.filter(item =>
+                Object.values(item.availableData).every((value:any) => value >=this.AIFilter.availability));
+              this.aiSkillDataFilter(temp)
+            })
+          }
+
+          
+        })
+      })
+
+      
+
+    }
+
+  }
+
+  aiSkillDataFilter(data:any){
+    this.aiData=[]
+    for (const skill of this.selectedSkillsData) {
+
+      this.skillSetService.getResourceAsPerSkillSet(skill.skillSetID).subscribe(res => {
+        console.log("resdata",res);
+      const resIds = res.map((item) => item.res_id);
+      console.log("resIds",resIds);
+      console.log("data",data);
+      
+      const filteredData = data.filter((item:any) => resIds.includes(item.res_id));
+      console.log("filteredData",filteredData);
+      this.aiData.push(filteredData)
+      console.log("this.aidata",this.aiData);
+      
+      });
+    console.log(data);
+    }
+  }
+
+  // tempp(data:any){
+  //   console.log(data);
+  //   this.skillSetService.getResourceAsPerSkillSet(data.skillSetID).subscribe(res => {
+  //         console.log("resdata",res);
+  //     //     return this.aiData
+  //   const filteredData = data.filter((temp: any) => temp.res_id === res.res_id);
+  //   console.log(filteredData);
+      
+  //       });
+  // }
+  // AIdataSource(id:number){
+  //   console.log("ID",id);
+    
+  //   this.skillSetService.getResourceAsPerSkillSet(id).subscribe(data => {
+  //     console.log("resdata",data);
+  //     return this.aiData
+  //   });
+  //   return this.aiData
+  // }
+  // AIdataSource(skillSetID: number): Observable<any[]> {
+  //   // Use skillSetID to fetch or filter data for the given skill set
+  //   // Return an Observable that emits the filtered data
+  //   return this.filterDataBasedOnSkillSet(skillSetID).pipe(
+  //     map(filteredData => {
+  //       // Return the filtered data
+  //       return filteredData;
+  //     })
+  //   );
+  // }
+  
+  // filterDataBasedOnSkillSet(skillSetID: number): Observable<any> {
+  //   // Use the map operator to transform the data received from the service
+  //   return this.skillSetService.getResourceAsPerSkillSet(skillSetID).pipe(
+  //     map(data => {
+  //       console.log("resdata", data);
+  //       // Implement logic to filter your data based on the skill set ID
+  //       // Return the filtered data
+  //       // Replace YourDataType with the actual type of your data
+  //       return this.aiData;
+  //     })
+  //   );
+  // }
+  AIallocation(email: any,skillData:any) {
+    // this.router.navigate(['/Admin']).then(() => {
+    //   this.tabService.setActiveTabIndex(4); // Set the index based on your tab order
+    //   console.log(email);
+    console.log("skillData",skillData);
+    
+    const dialogRef = this.dialog.open(AllocateResourceDialogComponent, {
+      width: '600px',
+      height: '550px',
+      data: {
+        email: email,
+        filterFormData: this.AIFilter,
+        skillGroupID:skillData.skillGroupID,
+        skillID:skillData.skillID
+      }
+    
+
+      //   });
+    });
+  }
+  
+  AI_OnReset(){
+  this.filteringAllForm.reset()
+  this.filteringAllForm.patchValue({
+    report_type:"Month"
+  })
+  this.filteringAllForm.patchValue({
+    location:[]
+  })
+  this.filteringAllForm.patchValue({
+    availability:0
+  })
+  this.aiData=[]
+  this.selectedSkillsData=[]
+  }
+  
 }

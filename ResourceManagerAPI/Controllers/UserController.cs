@@ -28,6 +28,7 @@ namespace ResourceManagerAPI.Controllers
     }
 
 
+
     [Route("[controller]")]
     [ApiController]
     public class UserController : Controller

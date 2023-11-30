@@ -12,7 +12,6 @@
         public Dictionary<DateTime, float> allocationData { get; set; }
     }
 
- 
     public class WeeklyResult : ICommonReturnType
     {
         public string res_name { get; set; }
